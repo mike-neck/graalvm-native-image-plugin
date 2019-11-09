@@ -5,8 +5,14 @@ on: [push]
 jobs:
   build:
 
-    runs-on: oracle/graalvm-ce
+    name: Run Tests
+    runs-on: ubuntu-18.04
 
     steps:
-    - name: Run Tests with Gradle
-      run: ./gradlew clean functionalTest
+      - uses: actions/checkout@latest
+      - uses: DeLaGuardo/setup-graalvm@1.0
+        with:
+          graalvm-version: 19.2.1
+
+      - name: Run Tests with Gradle
+        run: ./gradlew clean functionalTest
