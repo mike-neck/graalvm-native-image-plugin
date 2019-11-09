@@ -1,0 +1,12 @@
+name: Run Gradle Tests
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: oracle/graalvm-ce
+
+    steps:
+    - name: Run Tests with Gradle
+      run: ./gradlew clean functionalTest
