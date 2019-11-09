@@ -19,6 +19,8 @@ And you can configure arguments to be passed to GraalVM via `arguments(String...
 Example
 ---
 
+### script
+
 ```groovy
 plugins {
   id 'java'
@@ -43,4 +45,21 @@ nativeImage {
       '--initialize-at-runtime=com.example.runtime',
   )
 }
+```
+
+### run task
+
+Before running `nativeImage` task, GraalVM and `native-image` command should be installed.
+
+```shell-session
+# Prerequisites: GraalVM is installed to your machine.
+# Then install native-image.
+$ gu install native-image
+
+# Run nativeImage task.
+$ ./gradlew nativeImage
+
+# An executable will be created at native-image directory under the project's build directory
+$ ls build/native-image
+my-native-application
 ```
