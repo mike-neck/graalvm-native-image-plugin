@@ -11,6 +11,7 @@ repositories {
 }
 
 dependencies {
+    compileOnly 'org.jetbrains:annotations:18.0.0'
     testImplementation 'junit:junit:4.12'
 }
 
