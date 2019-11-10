@@ -6,10 +6,11 @@ package org.mikeneck.graalvm;
 import org.gradle.api.Project;
 import org.gradle.api.Plugin;
 import org.gradle.api.tasks.TaskContainer;
+import org.jetbrains.annotations.NotNull;
 
 public class GraalvmNativeImagePlugin implements Plugin<Project> {
 
-    public void apply(Project project) {
+    public void apply(@NotNull Project project) {
         NativeImageExtension nativeImageExtension = new NativeImageExtension(project);
         project.getExtensions().add("nativeImage", nativeImageExtension);
 
