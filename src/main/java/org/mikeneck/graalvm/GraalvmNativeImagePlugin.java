@@ -16,7 +16,7 @@ public class GraalvmNativeImagePlugin implements Plugin<Project> {
         TaskContainer taskContainer = project.getTasks();
         taskContainer.create("nativeImage", NativeImageTask.class, task -> {
             task.setExtension(nativeImageExtension);
-            task.dependsOn(nativeImageExtension.jarTask.get());
+            task.dependsOn("jar");
             task.setDescription("Creates native executable");
             task.setGroup("graalvm");
         });
