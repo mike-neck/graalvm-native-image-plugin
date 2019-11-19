@@ -42,7 +42,7 @@ nativeImage {
   arguments(
       '--no-fallback',
       '--enable-all-security-services',
-      '--initialize-at-runtime=com.example.runtime',
+      '--initialize-at-run-time=com.example.runtime',
   )
 }
 ```
