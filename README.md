@@ -1,4 +1,4 @@
-GraalVM Native Image Plugin
+GraalVM Native Image Plugin [![master build status](https://github.com/mike-neck/graalvm-native-image-plugin/workflows/Run%20Gradle%20Tests/badge.svg)](https://github.com/mike-neck/graalvm-native-image-plugin/actions")
 ---
 
 This plugin offers a task to make native executable using GraalVM installed in a machine.
