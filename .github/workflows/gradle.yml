@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-18.04
 
     steps:
-      - uses: actions/checkout@latest
+      - uses: actions/checkout@v1
       - uses: DeLaGuardo/setup-graalvm@1.0
         with:
           graalvm-version: 19.2.1
