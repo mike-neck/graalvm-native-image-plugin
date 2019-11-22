@@ -10,9 +10,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v1
-      - uses: DeLaGuardo/setup-graalvm@1.0
+      
+      - name: Set up GraalVM
+        uses: DeLaGuardo/setup-graalvm@1.0
         with:
-          graalvm-version: 19.2.1
+          graalvm-version: '19.2.0.1'
+          
+      - name: install GraalVM native-image
+        run: gu install native-image
 
       - name: Run Tests with Gradle
         run: ./gradlew clean functionalTest
