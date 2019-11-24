@@ -9,10 +9,15 @@ jobs:
     runs-on: ubuntu-18.04
 
     steps:
-      - uses: actions/checkout@latest
-      - uses: DeLaGuardo/setup-graalvm@1.0
+      - uses: actions/checkout@v1
+      
+      - name: Set up GraalVM
+        uses: DeLaGuardo/setup-graalvm@1.0
         with:
-          graalvm-version: 19.2.1
+          graalvm-version: '19.2.0.1'
+          
+      - name: install GraalVM native-image
+        run: gu install native-image
 
       - name: Run Tests with Gradle
         run: ./gradlew clean functionalTest

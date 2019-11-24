@@ -1,6 +1,10 @@
 plugins {
     id 'java-gradle-plugin'
+    id 'com.gradle.plugin-publish' version '0.10.1'
 }
+
+group = 'org.mikeneck'
+version = '0.1'
 
 repositories {
     jcenter()
@@ -11,11 +15,22 @@ dependencies {
 }
 
 gradlePlugin {
-    // Define the plugin
     plugins {
-        'graalvmNativeImage' {
+        graalvmNativeImage {
             id = 'org.mikeneck.graalvm-native-image'
             implementationClass = 'org.mikeneck.graalvm.GraalvmNativeImagePlugin'
+        }
+    }
+}
+
+pluginBundle {
+    website = 'https://github.com/mike-neck/graalvm-native-image-plugin'
+    vcsUrl = 'https://github.com/mike-neck/graalvm-native-image-plugin'
+    description = 'Generates native image via GraalVM'
+    tags = ['graalvm', 'native-image']
+    plugins {
+        graalvmNativeImage {
+            displayName = 'GraalVM Native Image Plugin'
         }
     }
 }
