@@ -23,13 +23,8 @@ import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
 
 import java.io.File;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class NativeImageTask extends DefaultTask {
@@ -56,17 +51,17 @@ public class NativeImageTask extends DefaultTask {
     }
 
     private Path nativeImageCommand() {
-        Path graalVmHome = graalVmHome();
-        Path nativeImageCommand = graalVmHome.resolve("bin/native-image");
-        if (!Files.exists(nativeImageCommand)) {
+        GraalVmHome graalVmHome = graalVmHome();
+        Optional<Path> nativeImage = graalVmHome.nativeImage();
+        if (!nativeImage.isPresent()) {
             getLogger().warn("native-image not found in graalVmHome({})", graalVmHome);
             throw new InvalidUserDataException("native-image not found in graalVmHome(" + graalVmHome + ")");
         }
-        return nativeImageCommand;
+        return nativeImage.get();
     }
 
-    private Path graalVmHome() {
-        return Paths.get(extension.get().graalVmHome.get());
+    private GraalVmHome graalVmHome() {
+        return extension.get().graalVmHome();
     }
 
     private File outputDirectory() {

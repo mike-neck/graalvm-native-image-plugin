@@ -23,6 +23,8 @@ import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -57,6 +59,12 @@ public class NativeImageExtension {
 
     private void configureDefaultRuntimeClasspath(Project project) {
         this.runtimeClasspath.set(new DefaultProvider<>(() -> project.getConfigurations().getByName("runtimeClasspath")));
+    }
+
+    GraalVmHome graalVmHome() {
+        String pathString = this.graalVmHome.get();
+        Path path = Paths.get(pathString);
+        return new GraalVmHome(path);
     }
 
     public void setGraalVmHome(String graalVmHome) {
