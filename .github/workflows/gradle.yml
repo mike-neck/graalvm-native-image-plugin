@@ -20,4 +20,4 @@ jobs:
         run: gu install native-image
 
       - name: Run Tests with Gradle
-        run: ./gradlew clean functionalTest
+        run: ./gradlew clean test functionalTest

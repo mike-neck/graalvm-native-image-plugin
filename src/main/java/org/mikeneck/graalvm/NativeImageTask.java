@@ -23,14 +23,11 @@ import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
 
 import java.io.File;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 public class NativeImageTask extends DefaultTask {
 
@@ -56,17 +53,17 @@ public class NativeImageTask extends DefaultTask {
     }
 
     private Path nativeImageCommand() {
-        Path graalVmHome = graalVmHome();
-        Path nativeImageCommand = graalVmHome.resolve("bin/native-image");
-        if (!Files.exists(nativeImageCommand)) {
+        GraalVmHome graalVmHome = graalVmHome();
+        Optional<Path> nativeImage = graalVmHome.nativeImage();
+        if (!nativeImage.isPresent()) {
             getLogger().warn("native-image not found in graalVmHome({})", graalVmHome);
             throw new InvalidUserDataException("native-image not found in graalVmHome(" + graalVmHome + ")");
         }
-        return nativeImageCommand;
+        return nativeImage.get();
     }
 
-    private Path graalVmHome() {
-        return Paths.get(extension.get().graalVmHome.get());
+    private GraalVmHome graalVmHome() {
+        return extension.get().graalVmHome();
     }
 
     private File outputDirectory() {
@@ -82,35 +79,16 @@ public class NativeImageTask extends DefaultTask {
         }
     }
 
-    private Collection<File> runtimeClasspath() {
-        return extension.get().runtimeClasspath.get().getFiles();
-    }
-
-    private File jarFile() {
-        return extension.get().jarTask.get().getOutputs().getFiles().getSingleFile();
-    }
-
     private List<String> arguments() {
+        NativeImageArguments arguments = NativeImageArguments.create(getProject(), extension.get());
         List<String> args = new ArrayList<>();
         args.add("-cp");
-        args.add(classpath());
-        args.add("-H:Path=" + outputDirectory().getAbsolutePath());
-        if (extension.get().executableName.isPresent()) {
-            args.add("-H:Name=" + extension.get().executableName.get());
-        }
-        if (extension.get().additionalArguments.isPresent()) {
-            args.addAll(extension.get().additionalArguments.get());
-        }
-        args.add(extension.get().mainClass.get());
+        args.add(arguments.classpath());
+        args.add(arguments.outputPath());
+        arguments.executableName().ifPresent(args::add);
+        args.addAll(arguments.additionalArguments());
+        args.add(arguments.mainClass());
         return Collections.unmodifiableList(args);
-    }
-
-    private String classpath() {
-        List<File> paths = new ArrayList<>(runtimeClasspath());
-        paths.add(jarFile());
-        return paths.stream()
-                .map(File::getAbsolutePath)
-                .collect(Collectors.joining(":"));
     }
 
     @OutputFile
