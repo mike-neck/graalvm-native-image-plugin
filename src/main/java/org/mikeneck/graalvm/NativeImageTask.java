@@ -103,9 +103,11 @@ public class NativeImageTask extends DefaultTask {
     private String classpath() {
         List<File> paths = new ArrayList<>(runtimeClasspath());
         paths.add(jarFile());
-        return paths.stream()
+        String classpath = paths.stream()
                 .map(File::getAbsolutePath)
-                .collect(Collectors.joining(":"));
+                .collect(Collectors.joining(File.pathSeparator));
+        getLogger().info("using classpath: {}", classpath);
+        return classpath;
     }
 
     @OutputFile
