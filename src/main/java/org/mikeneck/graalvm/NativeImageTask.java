@@ -24,8 +24,10 @@ import org.gradle.api.tasks.TaskAction;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 public class NativeImageTask extends DefaultTask {
 
@@ -77,37 +79,16 @@ public class NativeImageTask extends DefaultTask {
         }
     }
 
-    private Collection<File> runtimeClasspath() {
-        return extension.get().runtimeClasspath.get().getFiles();
-    }
-
-    private File jarFile() {
-        return extension.get().jarTask.get().getOutputs().getFiles().getSingleFile();
-    }
-
     private List<String> arguments() {
+        NativeImageArguments arguments = NativeImageArguments.create(getProject(), extension.get());
         List<String> args = new ArrayList<>();
         args.add("-cp");
-        args.add(classpath());
-        args.add("-H:Path=" + outputDirectory().getAbsolutePath());
-        if (extension.get().executableName.isPresent()) {
-            args.add("-H:Name=" + extension.get().executableName.get());
-        }
-        if (extension.get().additionalArguments.isPresent()) {
-            args.addAll(extension.get().additionalArguments.get());
-        }
-        args.add(extension.get().mainClass.get());
+        args.add(arguments.classpath());
+        args.add(arguments.outputPath());
+        arguments.executableName().ifPresent(args::add);
+        args.addAll(arguments.additionalArguments());
+        args.add(arguments.mainClass());
         return Collections.unmodifiableList(args);
-    }
-
-    private String classpath() {
-        List<File> paths = new ArrayList<>(runtimeClasspath());
-        paths.add(jarFile());
-        String classpath = paths.stream()
-                .map(File::getAbsolutePath)
-                .collect(Collectors.joining(File.pathSeparator));
-        getLogger().info("using classpath: {}", classpath);
-        return classpath;
     }
 
     @OutputFile
