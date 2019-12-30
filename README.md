@@ -78,6 +78,8 @@ nativeImage {
 
 ### run task
 
+##### For linux/mac users
+
 Before running `nativeImage` task, GraalVM and `native-image` command should be installed.
 
 ```shell-session
@@ -92,3 +94,7 @@ $ ./gradlew nativeImage
 $ ls build/native-image
 my-native-application
 ```
+
+##### For Windows users
+
+Make sure you are running `nativeImage` task on Windows SDK 7.1 Command Prompt.
