@@ -24,7 +24,7 @@ Example
 ```groovy
 plugins {
   id 'java'
-  id 'org.mikeneck.graal-native-image' version '0.1.1'
+  id 'org.mikeneck.graal-native-image' version '0.2'
 }
 
 repositories {
@@ -52,7 +52,7 @@ nativeImage {
 ```kotlin
 plugins {
   kotlin("jvm") version "1.3.50"
-  id("org.mikeneck.graalvm-native-image") version "0.1.1"
+  id("org.mikeneck.graalvm-native-image") version "0.2"
 }
 
 repositories {
@@ -78,6 +78,8 @@ nativeImage {
 
 ### run task
 
+##### For linux/mac users
+
 Before running `nativeImage` task, GraalVM and `native-image` command should be installed.
 
 ```shell-session
@@ -92,3 +94,7 @@ $ ./gradlew nativeImage
 $ ls build/native-image
 my-native-application
 ```
+
+##### For Windows users
+
+Make sure you are running `nativeImage` task on Windows SDK 7.1 Command Prompt.
