@@ -24,6 +24,7 @@ import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -31,9 +32,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("WeakerAccess")
 public class NativeImageExtension {
 
-    @SuppressWarnings("WeakerAccess")
     final Property<String> graalVmHome;
     final Property<Task> jarTask;
     final Property<String> mainClass;
@@ -53,6 +54,11 @@ public class NativeImageExtension {
         this.graalVmHome.set((System.getProperty("java.home")));
         configureDefaultJarTask(project);
         configureDefaultRuntimeClasspath(project);
+    }
+
+    @NotNull
+    File jarFile() {
+        return this.jarTask.get().getOutputs().getFiles().getSingleFile();
     }
 
     @NotNull 
