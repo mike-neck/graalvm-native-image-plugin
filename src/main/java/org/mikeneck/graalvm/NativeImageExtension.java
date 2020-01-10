@@ -22,7 +22,9 @@ import org.gradle.api.internal.provider.DefaultProvider;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
+import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -30,6 +32,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("WeakerAccess")
 public class NativeImageExtension {
 
     final Property<String> graalVmHome;
@@ -51,6 +54,16 @@ public class NativeImageExtension {
         this.graalVmHome.set((System.getProperty("java.home")));
         configureDefaultJarTask(project);
         configureDefaultRuntimeClasspath(project);
+    }
+
+    @NotNull
+    File jarFile() {
+        return this.jarTask.get().getOutputs().getFiles().getSingleFile();
+    }
+
+    @NotNull 
+    String executableName() {
+        return this.executableName.get();
     }
 
     private void configureDefaultJarTask(Project project) {
@@ -95,6 +108,7 @@ public class NativeImageExtension {
         this.additionalArguments.addAll(list);
     }
 
+    @SuppressWarnings("StringBufferReplaceableByString")
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("GraalExtension{");

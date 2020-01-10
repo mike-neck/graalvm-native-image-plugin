@@ -19,6 +19,7 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.InvalidUserDataException;
 import org.gradle.api.Project;
 import org.gradle.api.provider.Property;
+import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
 
@@ -37,7 +38,7 @@ public class NativeImageTask extends DefaultTask {
         this.extension = getProject().getObjects().property(NativeImageExtension.class);
     }
 
-    public void setExtension(NativeImageExtension extension) {
+    void setExtension(NativeImageExtension extension) {
         this.extension.set(extension);
     }
 
@@ -67,10 +68,15 @@ public class NativeImageTask extends DefaultTask {
     }
 
     private File outputDirectory() {
-        Project project = getProject();
-        return project.getBuildDir().toPath().resolve("native-image").toFile();
+        return outputDirectoryPath().toFile();
     }
 
+    private Path outputDirectoryPath() {
+        Project project = getProject();
+        return project.getBuildDir().toPath().resolve("native-image");
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private void createOutputDirectoryIfNotExisting() {
         File outputDir = outputDirectory();
         getLogger().info("create output directory if not exists: {}", outputDir);
@@ -91,8 +97,15 @@ public class NativeImageTask extends DefaultTask {
         return Collections.unmodifiableList(args);
     }
 
+    @InputFile
+    public File getJarFile() {
+        NativeImageExtension nativeImageExtension = extension.get();
+        return nativeImageExtension.jarFile();
+    }
+
     @OutputFile
     public File getOutputExecutable() {
-        return outputDirectory().toPath().resolve(extension.get().executableName.get()).toFile();
+        NativeImageExtension nativeImageExtension = extension.get();
+        return outputDirectoryPath().resolve(nativeImageExtension.executableName()).toFile();
     }
 }

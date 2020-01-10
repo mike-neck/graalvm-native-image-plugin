@@ -58,7 +58,7 @@ class NixLikeOsArguments implements NativeImageArguments {
     @Override
     public String classpath() {
         List<File> paths = new ArrayList<>(runtimeClasspath());
-        paths.add(jarFile());
+        paths.add(extension.jarFile());
         return paths
                 .stream()
                 .map(File::getAbsolutePath)
@@ -67,10 +67,6 @@ class NixLikeOsArguments implements NativeImageArguments {
 
     private Collection<File> runtimeClasspath() {
         return extension.runtimeClasspath.get().getFiles();
-    }
-
-    private File jarFile() {
-        return extension.jarTask.get().getOutputs().getFiles().getSingleFile();
     }
 
     @Override
