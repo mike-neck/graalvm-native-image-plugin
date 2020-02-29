@@ -46,7 +46,7 @@ gradlePlugin.testSourceSets(sourceSets.functionalTest)
 configurations.functionalTestImplementation.extendsFrom(configurations.testImplementation)
 
 // Add a task to run the functional tests
-task functionalTest(type: Test, dependsOn: ['clean']) {
+task functionalTest(type: Test) {
     testClassesDirs = sourceSets.functionalTest.output.classesDirs
     classpath = sourceSets.functionalTest.runtimeClasspath
 }
@@ -55,4 +55,8 @@ tasks.compileFunctionalTestJava.dependsOn('pluginDescriptors')
 
 check {
     dependsOn(tasks.functionalTest)
+}
+
+wrapper {
+    version "6.2.1"
 }
