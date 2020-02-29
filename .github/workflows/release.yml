@@ -1,0 +1,43 @@
+name: Release Plugin
+
+on:
+  push:
+    tag:
+      - v*
+    branch:
+      - master
+      - graalvm-*
+
+jobs:
+  build:
+    name: Release Plugin
+    runs-on: ubuntu-18.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Set up Java
+        uses: actions/setup-java@v1.3.0
+        with:
+          java-version: '8.0.242'
+
+      - name: Cache gradle
+        id: gradle
+        uses: actions/cache@v1
+        with:
+          path: ~/.gradle/caches
+          key: gradle-${{ hashFiles('**/*.gradle') }}-${{ hashFiles('**/gradle-wrapper.properties') }}
+          restore-keys: gradle-
+
+      - name: Release to gradle plugin portal
+        if: contains(github.ref, 'refs/tags/v')
+        env:
+          REF: ${{ github.ref }}
+          GRADLE_PUBLISH_KEY: ${{ secrets.GRADLE_PUBLISH_KEY }}
+          GRADLE_PUBLISH_SECRET: ${{ secrets.GRADLE_PUBLISH_SECRET }}
+        run: |
+          ./gradlew clean publishPlugins \
+            -Pgradle.publish.key=$GRADLE_PUBLISH_KEY \
+            -Pgradle.publish.secret=$GRADLE_PUBLISH_SECRET \
+            -PpluginVersion=`echo $REF | tr ':' ' ' | awk {print $3}`

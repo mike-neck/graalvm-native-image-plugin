@@ -3,8 +3,14 @@ plugins {
     id 'com.gradle.plugin-publish' version '0.10.1'
 }
 
+ext {
+    thisPluginVersion = project.hasProperty('pluginVersion')?
+            project.property('pluginVersion'):
+            '0.3.0'
+}
+
 group = 'org.mikeneck'
-version = '0.2.1'
+version = thisPluginVersion
 
 repositories {
     jcenter()
@@ -57,6 +63,12 @@ check {
     dependsOn(tasks.functionalTest)
 }
 
-wrapper {
-    version "6.2.1"
+task showVersion {
+    group = 'help'
+    doLast {
+        logger.lifecycle("project: ${project.name}")
+        logger.lifecycle("group: ${project.group}")
+        logger.lifecycle("version: ${project.version}")
+        logger.lifecycle("artifact: ${tasks.jar.archiveFileName.orNull}")
+    }
 }
