@@ -3,21 +3,86 @@ name: Run Gradle Tests
 on: [push]
 
 jobs:
-  build:
-
+  test:
     name: Run Tests
     runs-on: ubuntu-18.04
 
     steps:
       - uses: actions/checkout@v1
       
+      - name: Set up Java
+        uses: actions/setup-java@v1.3.0
+        with:
+          java-version: '8.0.242'
+
+      - name: Run Tests with Gradle
+        run: ./gradlew clean test
+
+      - name: Store reports
+        uses: actions/upload-artifact@v1
+        if: always()
+        with:
+          name: test-report
+          path: build/reports/tests/test
+
+  functionalTest:
+    runs-on: ubuntu-18.04
+    needs: test
+    strategy:
+      matrix:
+        graal:
+          - 19.3.0.java8
+          - 19.3.0.java11
+          - 19.3.1.java8
+          - 19.3.1.java11
+          - 20.0.0.java8
+          - 20.0.0.java11
+    name: Run functionalTest on graalvm ${{ matrix.graal }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Set up GraalVM
+        uses: DeLaGuardo/setup-graalvm@2.0
+        with:
+          graalvm-version: ${{ matrix.graal }}
+
+      - name: Install GraalVM native-image
+        run: gu install native-image
+
+      - name: Run functional test
+        run: ./gradlew clean functionalTest
+
+      - name: Store reports
+        uses: actions/upload-artifact@v1
+        if: always()
+        with:
+          name: test-report-${{ matrix.graal }}
+          path: build/reports/tests/functionalTest
+
+  oldGraalFunctionalTest:
+    runs-on: ubuntu-18.04
+    needs: functionalTest
+    name: Run functionalTest on graalvm 19.2.1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
       - name: Set up GraalVM
         uses: DeLaGuardo/setup-graalvm@1.0
         with:
-          graalvm-version: '19.2.0.1'
-          
-      - name: install GraalVM native-image
+          graalvm-version: 19.2.1
+
+      - name: Install GraalVM native-image
         run: gu install native-image
 
-      - name: Run Tests with Gradle
-        run: ./gradlew clean test functionalTest
+      - name: Run functional test
+        run: ./gradlew clean functionalTest
+
+      - name: Store reports
+        uses: actions/upload-artifact@v1
+        if: always()
+        with:
+          name: test-report-19.2.1
+          path: build/reports/tests/functionalTest
