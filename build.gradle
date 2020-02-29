@@ -3,15 +3,21 @@ plugins {
     id 'com.gradle.plugin-publish' version '0.10.1'
 }
 
+ext {
+    thisPluginVersion = project.hasProperty('pluginVersion')?
+            project.property('pluginVersion'):
+            'snapshot'
+}
+
 group = 'org.mikeneck'
-version = '0.2.1'
+version = thisPluginVersion
 
 repositories {
     jcenter()
 }
 
 dependencies {
-    compileOnly 'org.jetbrains:annotations:18.0.0'
+    compileOnly 'org.jetbrains:annotations:19.0.0'
     testImplementation 'junit:junit:4.12'
 }
 
@@ -36,6 +42,10 @@ pluginBundle {
     }
 }
 
+if (!project.hasProperty('gradle.publish.key') || !project.hasProperty('gradle.publish.secret')) {
+    tasks.publishPlugins.enabled(false)
+}
+
 sourceSets {
     functionalTest {
         
@@ -46,7 +56,7 @@ gradlePlugin.testSourceSets(sourceSets.functionalTest)
 configurations.functionalTestImplementation.extendsFrom(configurations.testImplementation)
 
 // Add a task to run the functional tests
-task functionalTest(type: Test, dependsOn: ['clean']) {
+task functionalTest(type: Test) {
     testClassesDirs = sourceSets.functionalTest.output.classesDirs
     classpath = sourceSets.functionalTest.runtimeClasspath
 }
@@ -55,4 +65,15 @@ tasks.compileFunctionalTestJava.dependsOn('pluginDescriptors')
 
 check {
     dependsOn(tasks.functionalTest)
+}
+
+task showVersion {
+    group = 'help'
+    doLast {
+        logger.lifecycle("project: ${project.name}")
+        logger.lifecycle("group: ${project.group}")
+        logger.lifecycle("version: ${project.version}")
+        logger.lifecycle("artifact: ${tasks.jar.archiveFileName.orNull}")
+        logger.lifecycle("can release plugin: ${tasks.publishPlugins.enabled}")
+    }
 }

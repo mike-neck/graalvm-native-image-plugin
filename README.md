@@ -1,4 +1,4 @@
-GraalVM Native Image Plugin [![master build status](https://github.com/mike-neck/graalvm-native-image-plugin/workflows/Run%20Gradle%20Tests/badge.svg)](https://github.com/mike-neck/graalvm-native-image-plugin/actions)
+GraalVM Native Image Plugin ![Run Gradle Tests](https://github.com/mike-neck/graalvm-native-image-plugin/workflows/Run%20Gradle%20Tests/badge.svg?branch=master&event=push)
 ---
 
 This plugin offers a task (`nativeImage`) to make native executable using GraalVM installed in a machine.
@@ -24,7 +24,7 @@ Example
 ```groovy
 plugins {
   id 'java'
-  id 'org.mikeneck.graal-native-image' version '0.2.1'
+  id 'org.mikeneck.graal-native-image' version '0.3.0'
 }
 
 repositories {
@@ -52,7 +52,7 @@ nativeImage {
 ```kotlin
 plugins {
   kotlin("jvm") version "1.3.50"
-  id("org.mikeneck.graalvm-native-image") version "0.2.1"
+  id("org.mikeneck.graalvm-native-image") version "0.3.0"
 }
 
 repositories {
