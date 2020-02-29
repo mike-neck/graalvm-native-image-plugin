@@ -6,7 +6,7 @@ plugins {
 ext {
     thisPluginVersion = project.hasProperty('pluginVersion')?
             project.property('pluginVersion'):
-            '0.3.0'
+            'snapshot'
 }
 
 group = 'org.mikeneck'
@@ -42,6 +42,10 @@ pluginBundle {
     }
 }
 
+if (!project.hasProperty('gradle.publish.key') || !project.hasProperty('gradle.publish.secret')) {
+    tasks.publishPlugins.enabled(false)
+}
+
 sourceSets {
     functionalTest {
         
@@ -70,5 +74,6 @@ task showVersion {
         logger.lifecycle("group: ${project.group}")
         logger.lifecycle("version: ${project.version}")
         logger.lifecycle("artifact: ${tasks.jar.archiveFileName.orNull}")
+        logger.lifecycle("can release plugin: ${tasks.publishPlugins.enabled}")
     }
 }
