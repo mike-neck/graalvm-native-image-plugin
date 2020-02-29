@@ -15,6 +15,14 @@ jobs:
         with:
           java-version: '8.0.242'
 
+      - name: Cache gradle
+        id: gradle
+        uses: actions/cache@v1
+        with:
+          path: ~/.gradle/caches
+          key: gradle-${{ hashFiles('**/*.gradle') }}-${{ hashFiles('**/gradle-wrapper.properties') }}
+          restore-keys: gradle-
+
       - name: Run Tests with Gradle
         run: ./gradlew clean test
 
@@ -51,6 +59,14 @@ jobs:
       - name: Install GraalVM native-image
         run: gu install native-image
 
+      - name: Cache gradle
+        id: gradle
+        uses: actions/cache@v1
+        with:
+          path: ~/.gradle/caches
+          key: gradle-${{ hashFiles('**/*.gradle') }}-${{ hashFiles('**/gradle-wrapper.properties') }}
+          restore-keys: gradle-
+
       - name: Run functional test
         run: ./gradlew clean functionalTest
 
@@ -76,6 +92,14 @@ jobs:
 
       - name: Install GraalVM native-image
         run: gu install native-image
+
+      - name: Cache gradle
+        id: gradle
+        uses: actions/cache@v1
+        with:
+          path: ~/.gradle/caches
+          key: gradle-${{ hashFiles('**/*.gradle') }}-${{ hashFiles('**/gradle-wrapper.properties') }}
+          restore-keys: gradle-
 
       - name: Run functional test
         run: ./gradlew clean functionalTest
