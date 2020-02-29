@@ -3,7 +3,7 @@ name: Release Plugin
 on:
   push:
     tag:
-      - v*
+      - "*"
     branch:
       - master
       - graalvm-*
@@ -31,7 +31,7 @@ jobs:
           restore-keys: gradle-
 
       - name: Release to gradle plugin portal
-        if: contains(github.ref, 'refs/tags/v')
+        if: contains(github.ref, 'refs/tags/')
         env:
           REF: ${{ github.ref }}
           GRADLE_PUBLISH_KEY: ${{ secrets.GRADLE_PUBLISH_KEY }}
