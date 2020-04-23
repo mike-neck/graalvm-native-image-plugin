@@ -24,7 +24,7 @@ Example
 ```groovy
 plugins {
   id 'java'
-  id 'org.mikeneck.graal-native-image' version '0.3.0'
+  id 'org.mikeneck.graalvm-native-image' version '0.3.0'
 }
 
 repositories {
