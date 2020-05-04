@@ -3,20 +3,25 @@
  */
 package org.mikeneck.graalvm;
 
-import org.gradle.testkit.runner.BuildResult;
-import org.gradle.testkit.runner.BuildTask;
-import org.gradle.testkit.runner.GradleRunner;
-import org.gradle.testkit.runner.TaskOutcome;
-import org.junit.Test;
-
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Writer;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.gradle.testkit.runner.BuildResult;
+import org.gradle.testkit.runner.BuildTask;
+import org.gradle.testkit.runner.GradleRunner;
+import org.gradle.testkit.runner.TaskOutcome;
+import org.junit.Test;
 
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -47,6 +52,27 @@ public class GraalvmNativeImagePluginFunctionalTest {
                 .collect(Collectors.toList());
         assertThat(succeededTasks, hasItems(":compileJava", ":classes", ":jar", ":nativeImage"));
         assertTrue(Files.exists(projectDir.toPath().resolve("build/native-image/test-app")));
+    }
+
+    @Test public void runTaskWithCustomOutputDirectory() throws IOException {
+        // Setup the test build
+        File projectDir = createProjectRoot("build/functionalTest/java-custom-output-directory");
+        copyFile("java-project/build-gradle-output-directory.txt", projectDir.toPath().resolve("build.gradle"));
+        Path dir = projectDir.toPath().resolve("src/main/java/com/example");
+        Files.createDirectories(dir);
+        Path appJava = dir.resolve("App.java");
+        copyFile("java-project/com_example_App_java.txt", appJava);
+
+        // Run the build
+        GradleRunner runner = GradleRunner.create();
+        runner.forwardOutput();
+        runner.withPluginClasspath();
+        runner.withArguments("clean","nativeImage", "--stacktrace");
+        runner.withProjectDir(projectDir);
+        BuildResult result = runner.build();
+
+        assertThat(result.taskPaths(TaskOutcome.SUCCESS), hasItem(":nativeImage"));
+        assertTrue(Files.exists(projectDir.toPath().resolve("build/executable/test-app")));
     }
 
     @Test public void runTaskOnKotlinProject() throws IOException {
