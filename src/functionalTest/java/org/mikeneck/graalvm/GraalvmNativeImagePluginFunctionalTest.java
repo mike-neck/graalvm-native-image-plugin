@@ -43,7 +43,7 @@ public class GraalvmNativeImagePluginFunctionalTest {
         GradleRunner runner = GradleRunner.create();
         runner.forwardOutput();
         runner.withPluginClasspath();
-        runner.withArguments("nativeImage");
+        runner.withArguments("clean","nativeImage");
         runner.withProjectDir(projectDir);
         BuildResult result = runner.build();
 
@@ -88,7 +88,7 @@ public class GraalvmNativeImagePluginFunctionalTest {
         GradleRunner runner = GradleRunner.create();
         runner.forwardOutput();
         runner.withPluginClasspath();
-        runner.withArguments("nativeImage");
+        runner.withArguments("clean","nativeImage");
         runner.withProjectDir(projectDir);
         BuildResult result = runner.build();
 
@@ -112,6 +112,7 @@ public class GraalvmNativeImagePluginFunctionalTest {
         if (url == null) {
             throw new FileNotFoundException(resourceName);
         }
+        Files.deleteIfExists(file);
         try (final InputStream inputStream = loader.getResourceAsStream(resourceName)) {
             Files.copy(Objects.requireNonNull(inputStream), file);
         }
