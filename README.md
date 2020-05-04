@@ -13,6 +13,7 @@ You can configure options via `nativeImage {}`.
 * `mainClass` - A name of main class, required.
 * `executableName` - A name of executable, required.
 * `runtimeClasspath` - A configuration of runtime classpath.(default: `runtimeClasspath` Configuration)
+* `outputDirectory` - An output directory under which the native image will be generated.(default: `$buildDir/native-image`)
 
 And you can configure arguments to be passed to GraalVM via `arguments(String...)` method.
 
@@ -39,6 +40,7 @@ nativeImage {
   graalVmHome = System.getProperty('java.home')
   mainClass = 'com.example.App'
   executableName = 'my-native-application'
+  outputDirectory = file("$buildDir/bin")
   arguments(
       '--no-fallback',
       '--enable-all-security-services',
@@ -67,6 +69,7 @@ nativeImage {
     setGraalVmHome(System.getProperty("java.home"))
     setMainClass("com.example.App")
     setExecutableName("my-native-application")
+    setOutputDirectory("$buildDir/executable")
     arguments(
         "--no-fallback",
         "--enable-all-security-services",

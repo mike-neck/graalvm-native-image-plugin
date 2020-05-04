@@ -4,9 +4,6 @@ on:
   push:
     tag:
       - "*"
-    branch:
-      - master
-      - graalvm-*
 
 jobs:
   build:
@@ -14,6 +11,12 @@ jobs:
     runs-on: ubuntu-18.04
 
     steps:
+      - name: calculate version
+        run: echo "::set-output name=value::`echo $REF | tr '/' ' ' | awk '{print $3}'`"
+        id: version
+        env:
+          REF: ${{ github.ref }}
+
       - name: Checkout
         uses: actions/checkout@v1
 
@@ -33,23 +36,23 @@ jobs:
       - name: Release to gradle plugin portal
         if: contains(github.ref, 'refs/tags/')
         env:
-          REF: ${{ github.ref }}
+          PROJECT_VERSION: ${{ steps.version.outputs.value }}
           GRADLE_PUBLISH_KEY: ${{ secrets.GRADLE_PUBLISH_KEY }}
           GRADLE_PUBLISH_SECRET: ${{ secrets.GRADLE_PUBLISH_SECRET }}
         run: |
           ./gradlew clean publishPlugins \
             -Pgradle.publish.key=$GRADLE_PUBLISH_KEY \
             -Pgradle.publish.secret=$GRADLE_PUBLISH_SECRET \
-            -PpluginVersion=`echo $REF | tr '/' ' ' | awk '{print $3}'`
+            -PpluginVersion=`$PROJECT_VERSION
 
       - name: Show project version
         if: contains(github.ref, 'refs/heads')
         env:
-          REF: ${{ github.ref }}
+          PROJECT_VERSION: ${{ steps.version.outputs.value }}
           GRADLE_PUBLISH_KEY: ${{ secrets.GRADLE_PUBLISH_KEY }}
           GRADLE_PUBLISH_SECRET: ${{ secrets.GRADLE_PUBLISH_SECRET }}
         run: |
           ./gradlew clean showVersion \
             -Pgradle.publish.key=$GRADLE_PUBLISH_KEY \
             -Pgradle.publish.secret=$GRADLE_PUBLISH_SECRET \
-            -PpluginVersion=`echo $REF | tr '/' ' ' | awk '{print $3}'`
+            -PpluginVersion=$PROJECT_VERSION

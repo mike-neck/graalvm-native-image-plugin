@@ -15,15 +15,6 @@
  */
 package org.mikeneck.graalvm;
 
-import org.gradle.api.Project;
-import org.gradle.api.Task;
-import org.gradle.api.artifacts.Configuration;
-import org.gradle.api.internal.provider.DefaultProvider;
-import org.gradle.api.model.ObjectFactory;
-import org.gradle.api.provider.ListProperty;
-import org.gradle.api.provider.Property;
-import org.jetbrains.annotations.NotNull;
-
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -31,15 +22,27 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.gradle.api.Project;
+import org.gradle.api.Task;
+import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.internal.provider.DefaultProvider;
+import org.gradle.api.model.ObjectFactory;
+import org.gradle.api.provider.ListProperty;
+import org.gradle.api.provider.Property;
+import org.jetbrains.annotations.NotNull;
 
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings({"WeakerAccess", "UnstableApiUsage"})
 public class NativeImageExtension {
+
+    public static final String DEFAULT_OUTPUT_DIRECTORY_NAME = "native-image";
 
     final Property<String> graalVmHome;
     final Property<Task> jarTask;
     final Property<String> mainClass;
     final Property<String> executableName;
     final Property<Configuration> runtimeClasspath;
+    final DirectoryProperty outputDirectory;
     final ListProperty<String> additionalArguments;
 
     NativeImageExtension(Project project) {
@@ -49,11 +52,13 @@ public class NativeImageExtension {
         this.mainClass = objects.property(String.class);
         this.executableName = objects.property(String.class);
         this.runtimeClasspath = objects.property(Configuration.class);
+        this.outputDirectory = objects.directoryProperty();
         this.additionalArguments = objects.listProperty(String.class);
 
         this.graalVmHome.set((System.getProperty("java.home")));
         configureDefaultJarTask(project);
         configureDefaultRuntimeClasspath(project);
+        configureOutputDirectory(project.getBuildDir().toPath().resolve(DEFAULT_OUTPUT_DIRECTORY_NAME).toFile());
     }
 
     @NotNull
@@ -72,6 +77,10 @@ public class NativeImageExtension {
 
     private void configureDefaultRuntimeClasspath(Project project) {
         this.runtimeClasspath.set(new DefaultProvider<>(() -> project.getConfigurations().getByName("runtimeClasspath")));
+    }
+
+    private void configureOutputDirectory(File defaultOutputDirectory) {
+        this.outputDirectory.set(defaultOutputDirectory);
     }
 
     GraalVmHome graalVmHome() {
@@ -98,6 +107,18 @@ public class NativeImageExtension {
 
     public void setRuntimeClasspath(Configuration configuration) {
         this.runtimeClasspath.set(configuration);
+    }
+
+    public void setOutputDirectory(File directory) {
+        outputDirectory.fileProvider(OutputDirectoryProvider.ofFile(directory));
+    }
+
+    public void setOutputDirectory(Path directory) {
+        outputDirectory.fileProvider(OutputDirectoryProvider.ofPath(directory));
+    }
+
+    public void setOutputDirectory(String directory) {
+        outputDirectory.dir(directory);
     }
 
     public void arguments(String... arguments) {

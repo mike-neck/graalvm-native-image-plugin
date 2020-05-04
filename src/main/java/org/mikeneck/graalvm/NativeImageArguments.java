@@ -15,12 +15,15 @@
  */
 package org.mikeneck.graalvm;
 
-import org.gradle.api.Project;
-
 import java.io.File;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import org.gradle.api.Project;
 
 public interface NativeImageArguments {
 
@@ -75,7 +78,7 @@ class NixLikeOsArguments implements NativeImageArguments {
     }
 
     private Path outputDirectory() {
-        return project.getBuildDir().toPath().resolve("native-image");
+        return extension.outputDirectory.getAsFile().map(File::toPath).get();
     }
 
     @Override
