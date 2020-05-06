@@ -45,7 +45,10 @@ jobs:
           - 19.3.1.java11
           - 20.0.0.java8
           - 20.0.0.java11
-    name: functionalTest ${{ matrix.graal }}
+        nativeImage:
+          - installed
+          - "uninstalled"
+    name: "functionalTest ${{ matrix.graal }}(native-image: ${{ matrix.nativeImage }})"
 
     steps:
       - name: Checkout
@@ -56,8 +59,14 @@ jobs:
         with:
           graalvm-version: ${{ matrix.graal }}
 
+      - name: show gu command
+        run: |
+          which gu
+          echo $JAVA_HOME
+
       - name: Install GraalVM native-image
         run: gu install native-image
+        if: "startsWith(matrix.nativeImage, 'installed')"
 
       - name: Cache gradle
         id: gradle
@@ -74,7 +83,7 @@ jobs:
         uses: actions/upload-artifact@v1
         if: always()
         with:
-          name: test-report-${{ matrix.graal }}
+          name: test-report-${{ matrix.graal }}-${{ matrix.nativeImage }}
           path: build/reports/tests/functionalTest
 
   oldGraalFunctionalTest:

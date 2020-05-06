@@ -12,7 +12,7 @@ dependencies {
 }
 
 nativeImage {
-  graalVmHome = System.getProperty('java.home')
+  graalVmHome = System.getenv('JAVA_HOME')
   mainClass = 'com.example.App'
   executableName = 'test-app'
   outputDirectory = file("$buildDir/executable")

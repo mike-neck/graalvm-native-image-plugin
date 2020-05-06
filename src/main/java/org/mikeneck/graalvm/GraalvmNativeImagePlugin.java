@@ -3,8 +3,8 @@
  */
 package org.mikeneck.graalvm;
 
-import org.gradle.api.Project;
 import org.gradle.api.Plugin;
+import org.gradle.api.Project;
 import org.gradle.api.tasks.TaskContainer;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,11 +15,19 @@ public class GraalvmNativeImagePlugin implements Plugin<Project> {
         project.getExtensions().add("nativeImage", nativeImageExtension);
 
         TaskContainer taskContainer = project.getTasks();
+
+        InstallNativeImageTask installNativeImageTask = taskContainer.create(
+                "installNativeImage", InstallNativeImageTask.class, project);
+        installNativeImageTask.setExtension(nativeImageExtension);
+        installNativeImageTask.setDescription("Installs native-image command by graalVm Updater command");
+        installNativeImageTask.setGroup("graalvm");
+
         taskContainer.create("nativeImage", NativeImageTask.class, task -> {
             task.setExtension(nativeImageExtension);
             task.dependsOn("jar");
             task.setDescription("Creates native executable");
             task.setGroup("graalvm");
+            task.dependsOn(installNativeImageTask);
         });
     }
 }

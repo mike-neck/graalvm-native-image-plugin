@@ -29,6 +29,28 @@ class GraalVmHome {
         graalVmHome = home;
     }
 
+    boolean notFound() {
+        return !exists();
+    }
+
+    boolean exists() {
+        return Files.exists(graalVmHome);
+    }
+
+    Optional<Path> graalVmUpdater() {
+        return graalVmUpdaterCandidates()
+                .stream()
+                .filter(Files::exists)
+                .findFirst();
+    }
+
+    private List<Path> graalVmUpdaterCandidates() {
+        return Arrays.asList(
+                graalVmHome.resolve("bin/gu"),
+                graalVmHome.resolve("bin/gu.cmd")
+        );
+    }
+
     Optional<Path> nativeImage() {
         return nativeImageCandidates()
                 .stream()
