@@ -39,13 +39,16 @@ jobs:
     strategy:
       matrix:
         graal:
-          - 19.3.0.java8
-          - 19.3.0.java11
-          - 19.3.1.java8
-          - 19.3.1.java11
-          - 20.0.0.java8
-          - 20.0.0.java11
-    name: functionalTest ${{ matrix.graal }}
+          - 19.3.0
+          - 19.3.1
+          - 20.0.0
+        javaVersion:
+          - java8
+          - java11
+        nativeImage:
+          - installed
+          - "uninstalled"
+    name: "test ${{ matrix.graal }}.${{ matrix.javaVersion }}(native-image: ${{ matrix.nativeImage }})"
 
     steps:
       - name: Checkout
@@ -54,10 +57,16 @@ jobs:
       - name: Set up GraalVM
         uses: DeLaGuardo/setup-graalvm@2.0
         with:
-          graalvm-version: ${{ matrix.graal }}
+          graalvm-version: "${{ matrix.graal }}.${{ matrix.javaVersion }}"
+
+      - name: show gu command
+        run: |
+          which gu
+          echo $JAVA_HOME
 
       - name: Install GraalVM native-image
         run: gu install native-image
+        if: "startsWith(matrix.nativeImage, 'installed')"
 
       - name: Cache gradle
         id: gradle
@@ -74,13 +83,19 @@ jobs:
         uses: actions/upload-artifact@v1
         if: always()
         with:
-          name: test-report-${{ matrix.graal }}
+          name: test-report-${{ matrix.graal }}-${{ matrix.javaVersion }}-${{ matrix.nativeImage }}
           path: build/reports/tests/functionalTest
 
   oldGraalFunctionalTest:
     runs-on: ubuntu-18.04
     needs: functionalTest
-    name: functionalTest on graalvm 19.2.1
+    name: test on graalvm 19.2.1
+    strategy:
+      matrix:
+        nativeImage:
+          - installed
+          - "uninstalled"
+
     steps:
       - name: Checkout
         uses: actions/checkout@v1
@@ -108,5 +123,5 @@ jobs:
         uses: actions/upload-artifact@v1
         if: always()
         with:
-          name: test-report-19.2.1
+          name: test-report-19.2.1-${{ matrix.nativeImage }}
           path: build/reports/tests/functionalTest
