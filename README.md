@@ -29,7 +29,7 @@ Example
 ```groovy
 plugins {
   id 'java'
-  id 'org.mikeneck.graalvm-native-image' version '0.5.0'
+  id 'org.mikeneck.graalvm-native-image' version 'v0.5.0'
 }
 
 repositories {
@@ -58,7 +58,7 @@ nativeImage {
 ```kotlin
 plugins {
   kotlin("jvm") version "1.3.72"
-  id("org.mikeneck.graalvm-native-image") version "0.5.0"
+  id("org.mikeneck.graalvm-native-image") version "v0.5.0"
 }
 
 repositories {
@@ -88,7 +88,7 @@ nativeImage {
 ##### For linux/mac users
 
 (Optional)Before running `nativeImage` task, GraalVM and `native-image` command should be installed.
-Version 0.5.0 or later, the plugin has `installNativeImage` task which execute installation command(`gu install native-image`)
+Version v0.5.0 or later, the plugin has `installNativeImage` task which execute installation command(`gu install native-image`)
 so that users do not need to run `gu` command.
 
 ```shell-session
