@@ -103,3 +103,7 @@ my-native-application
 ##### For Windows users
 
 Make sure you are running `nativeImage` task on Windows SDK 7.1 Command Prompt.
+
+##### For GitHub Actions
+
+If you are planning releasing both MacOS X and Linux applications, please refer example workflow under `example` directory.
