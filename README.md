@@ -1,7 +1,7 @@
 GraalVM Native Image Plugin
 
 ![Run Gradle Tests](https://github.com/mike-neck/graalvm-native-image-plugin/workflows/Run%20Gradle%20Tests/badge.svg?branch=master&event=push)
-[![Gradle Plugin Portal](https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/org/mikeneck/graalvm-native-image/org.mikeneck.graalvm-native-image.gradle.plugin/maven-metadata.xml.svg?colorB=0e2400&label=gradlePluginPortal)](https://plugins.gradle.org/plugin/org.mikeneck.graalvm-native-image)
+[![Gradle Plugin Portal](https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/org/mikeneck/graalvm-native-image/org.mikeneck.graalvm-native-image.gradle.plugin/maven-metadata.xml.svg?colorB=358504&label=gradlePluginPortal)](https://plugins.gradle.org/plugin/org.mikeneck.graalvm-native-image)
 
 ---
 
