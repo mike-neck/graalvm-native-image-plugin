@@ -74,3 +74,14 @@ jobs:
             -Pgradle.publish.key=$GRADLE_PUBLISH_KEY \
             -Pgradle.publish.secret=$GRADLE_PUBLISH_SECRET \
             -PpluginVersion=$PROJECT_VERSION
+
+      - name: Release to gradle plugin portal
+        env:
+          PROJECT_VERSION: ${{ steps.next-version.outputs.new_version }}
+          GRADLE_PUBLISH_KEY: ${{ secrets.GRADLE_PUBLISH_KEY }}
+          GRADLE_PUBLISH_SECRET: ${{ secrets.GRADLE_PUBLISH_SECRET }}
+        run: |
+          ./gradlew clean publishPlugins \
+            -Pgradle.publish.key=$GRADLE_PUBLISH_KEY \
+            -Pgradle.publish.secret=$GRADLE_PUBLISH_SECRET \
+            -PpluginVersion=$(echo "${PROJECT_VERSION}" | sed 's/v//g')
