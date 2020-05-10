@@ -1,0 +1,51 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+
+  # This job builds and uploads binary
+  build-and-upload:
+    name: build and upload release
+    strategy:
+      matrix:
+        os: [macos, ubuntu]
+    runs-on: ${{ matrix.os }}-latest
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v1
+
+      # No need to install normal Java, you can build application only with GraalVM
+      - name: setup GraalVM
+        uses: DeLaGuardo/setup-graalvm@2.0
+        with:
+          graalvm-version: "20.0.0.java11"
+
+      # (Optional) Install native-image
+      - name: install native-image
+        run: gu install native-image
+
+      - name: cache
+        uses: actions/cache@v1
+        with:
+          path: ~/.gradle/caches
+          key: gradle-${{ matrix.os }}-${{ hashFiles('build.gradle') }}-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: gradle-${{ matrix.os }}-
+
+      # Builds native image
+      - name: "build for ${{ matrix.os }}"
+        run: ./gradlew nativeImage
+        env:
+          RUNNING_OS: ${{ matrix.os }}
+          PROJECT_VERSION: ${{ steps.config.outputs.projectVersion }}
+
+      # Uploads binary
+      - name: upload ${{ matrix.os }} image
+        uses: actions/upload-artifacts@v1
+        with:
+          name: app-${{ matrix.os }}
+          path: build/native-image/app

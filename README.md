@@ -1,7 +1,11 @@
-GraalVM Native Image Plugin ![Run Gradle Tests](https://github.com/mike-neck/graalvm-native-image-plugin/workflows/Run%20Gradle%20Tests/badge.svg?branch=master&event=push)
+GraalVM Native Image Plugin
+
+![Run Gradle Tests](https://github.com/mike-neck/graalvm-native-image-plugin/workflows/Run%20Gradle%20Tests/badge.svg?branch=master&event=push)
+[![Gradle Plugin Portal](https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/org/mikeneck/graalvm-native-image/org.mikeneck.graalvm-native-image.gradle.plugin/maven-metadata.xml.svg?colorB=358504&label=gradlePluginPortal)](https://plugins.gradle.org/plugin/org.mikeneck.graalvm-native-image)
+
 ---
 
-This plugin offers a task (`nativeImage`) to make native executable using GraalVM installed in a machine.
+This plugin offers a task (`nativeImage`), which wraps GraalVM's tool `native-image` installed in a machine.
 
 Configuration
 ---
@@ -25,7 +29,7 @@ Example
 ```groovy
 plugins {
   id 'java'
-  id 'org.mikeneck.graalvm-native-image' version '0.3.0'
+  id 'org.mikeneck.graalvm-native-image' version '0.5.0'
 }
 
 repositories {
@@ -53,8 +57,8 @@ nativeImage {
 #### Gradle Kotlin DSL
 ```kotlin
 plugins {
-  kotlin("jvm") version "1.3.50"
-  id("org.mikeneck.graalvm-native-image") version "0.3.0"
+  kotlin("jvm") version "1.3.72"
+  id("org.mikeneck.graalvm-native-image") version "0.5.0"
 }
 
 repositories {
@@ -83,7 +87,9 @@ nativeImage {
 
 ##### For linux/mac users
 
-Before running `nativeImage` task, GraalVM and `native-image` command should be installed.
+(Optional)Before running `nativeImage` task, GraalVM and `native-image` command should be installed.
+Version 0.5.0 or later, the plugin has `installNativeImage` task which execute installation command(`gu install native-image`)
+so that users do not need to run `gu` command.
 
 ```shell-session
 # Prerequisites: GraalVM is installed to your machine.
@@ -101,3 +107,7 @@ my-native-application
 ##### For Windows users
 
 Make sure you are running `nativeImage` task on Windows SDK 7.1 Command Prompt.
+
+##### For GitHub Actions
+
+If you are planning releasing both MacOS X and Linux applications, please refer example workflow under `example` directory.

@@ -1,0 +1,32 @@
+plugins {
+    id 'java'
+    id 'org.mikeneck.graalvm-native-image' version '0.5.0'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    annotationProcessor 'info.picocli:picocli-codegen:4.2.0'
+    implementation 'info.picocli:picocli:4.2.0'
+    implementation 'com.fizzed:rocker:1.2.3'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.6.1'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+nativeImage {
+    graalVmHome = System.getProperty('java.home')
+    mainClass = 'com.example.App'
+    executableName = 'app'
+    outputDirectory = file("$buildDir/bin")
+    arguments(
+            '--no-fallback',
+            '--enable-all-security-services',
+            '--initialize-at-run-time=com.example.runtime',
+            '--report-unsupported-elements-at-runtime'
+    )
+}
