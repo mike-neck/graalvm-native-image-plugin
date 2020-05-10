@@ -19,7 +19,7 @@ jobs:
           echo "::set-output name=value::$(echo ${RELEASE_TITLE} | cut -d '/' -f2)"
 
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
 
       - name: current version
         uses: actions-ecosystem/action-get-latest-tag@v1
