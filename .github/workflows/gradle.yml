@@ -49,6 +49,7 @@ jobs:
           - installed
           - "uninstalled"
     name: "test ${{ matrix.graal }}.${{ matrix.javaVersion }}(native-image: ${{ matrix.nativeImage }})"
+    if: contains( github.ref , 'refs/heads/release' ) == false
 
     steps:
       - name: Checkout
@@ -95,6 +96,7 @@ jobs:
         nativeImage:
           - installed
           - "uninstalled"
+    if: contains( github.ref , 'refs/heads/release' ) == false
 
     steps:
       - name: Checkout
