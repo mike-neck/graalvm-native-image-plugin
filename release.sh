@@ -30,4 +30,4 @@ gh pr create \
   --body "release/${level}" 
 
 git checkout "${current_branch}"
-git branch -D ${branch_name}
+git branch -D release/${branch_name}
