@@ -65,6 +65,20 @@ class GraalVmHome {
         );
     }
 
+    Optional<Path> javaExecutable() {
+        return javaExecutableCandidates()
+                .stream()
+                .filter(Files::exists)
+                .findFirst();
+    }
+
+    private List<Path> javaExecutableCandidates() {
+        return Arrays.asList(
+                graalVmHome.resolve("bin/java"),
+                graalVmHome.resolve("bin/java.exe")
+        );
+    }
+
     @Override
     public String toString() {
         return graalVmHome.toString();

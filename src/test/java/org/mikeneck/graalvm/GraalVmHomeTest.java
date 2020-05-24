@@ -15,12 +15,11 @@
  */
 package org.mikeneck.graalvm;
 
-import org.junit.Test;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
+import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -28,7 +27,7 @@ import static org.junit.Assert.assertTrue;
 public class GraalVmHomeTest {
 
     @Test
-    public void on_nixLikeOs() throws IOException {
+    public void nativeImageOnNixLikeOs() throws IOException {
         Path graalVmHome = Files.createTempDirectory("test-on_nixLikeOs");
         Path binDirectory = Files.createDirectory(graalVmHome.resolve("bin"));
         Files.createFile(binDirectory.resolve("native-image"));
@@ -41,7 +40,7 @@ public class GraalVmHomeTest {
     }
 
     @Test
-    public void onWindows() throws IOException {
+    public void nativeImageOnWindows() throws IOException {
         Path graalVmHome = Files.createTempDirectory("test-onWindows");
         Path binDirectory = Files.createDirectory(graalVmHome.resolve("bin"));
         Files.createFile(binDirectory.resolve("native-image.cmd"));
@@ -51,6 +50,32 @@ public class GraalVmHomeTest {
         Optional<Path> nativeImage = home.nativeImage();
 
         assertTrue(nativeImage.isPresent());
+    }
+
+    @Test
+    public void javaExecutableOnNixLikeOs() throws IOException {
+        Path graalVmHome = Files.createTempDirectory("test-on_nixLikeOs");
+        Path binDirectory = Files.createDirectory(graalVmHome.resolve("bin"));
+        Files.createFile(binDirectory.resolve("java"));
+
+        GraalVmHome home = new GraalVmHome(graalVmHome);
+
+        Optional<Path> javaExecutable = home.javaExecutable();
+
+        assertTrue(javaExecutable.isPresent());
+    }
+
+    @Test
+    public void javaExecutableOnWindows() throws IOException {
+        Path graalVmHome = Files.createTempDirectory("test-onWindows");
+        Path binDirectory = Files.createDirectory(graalVmHome.resolve("bin"));
+        Files.createFile(binDirectory.resolve("java.exe"));
+
+        GraalVmHome home = new GraalVmHome(graalVmHome);
+
+        Optional<Path> javaExecutable = home.javaExecutable();
+
+        assertTrue(javaExecutable.isPresent());
     }
 
     @Test
