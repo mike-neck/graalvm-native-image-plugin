@@ -1,0 +1,1 @@
+usage.text=app [-p|-x] < <json-file>

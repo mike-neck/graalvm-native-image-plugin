@@ -16,8 +16,15 @@ repositories {
     jcenter()
 }
 
+sourceSets {
+    functionalTest {
+
+    }
+}
+
 dependencies {
     compileOnly 'org.jetbrains:annotations:19.0.0'
+    functionalTestImplementation 'io.github.classgraph:classgraph:4.8.78'
     testImplementation 'junit:junit:4.12'
 }
 
@@ -44,12 +51,6 @@ pluginBundle {
 
 if (!project.hasProperty('gradle.publish.key') || !project.hasProperty('gradle.publish.secret')) {
     tasks.publishPlugins.enabled(false)
-}
-
-sourceSets {
-    functionalTest {
-        
-    }
 }
 
 gradlePlugin.testSourceSets(sourceSets.functionalTest)

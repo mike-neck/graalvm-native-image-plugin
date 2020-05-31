@@ -1,0 +1,55 @@
+/*
+ * Copyright 2020 Shinya Mochida
+ *
+ * Licensed under the Apache License,Version2.0(the"License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,software
+ * Distributed under the License is distributed on an"AS IS"BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.mikeneck.graalvm;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.gradle.testkit.runner.BuildResult;
+import org.gradle.testkit.runner.BuildTask;
+import org.gradle.testkit.runner.GradleRunner;
+import org.gradle.testkit.runner.TaskOutcome;
+import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.hasItems;
+import static org.junit.Assert.assertThat;
+
+public class GenerateConfigFileTaskTest {
+
+    @Test
+    public void runMultipleTimes() {
+        FunctionalTestContext context = new FunctionalTestContext("config-project");
+        context.setup();
+        Path projectDir = context.rootDir;
+
+        GradleRunner runner = GradleRunner.create();
+        runner.forwardOutput();
+        runner.withPluginClasspath();
+        runner.withArguments("clean","generateNativeImageConfig", "--stacktrace");
+        runner.withProjectDir(projectDir.toFile());
+        BuildResult result = runner.build();
+
+        List<String> succeededTasks = result.tasks(TaskOutcome.SUCCESS).stream()
+                .map(BuildTask::getPath)
+                .collect(Collectors.toList());
+        assertThat(succeededTasks, hasItems(":compileJava", ":classes", ":generateNativeImageConfig"));
+        Files.exists(projectDir.resolve("build/tmp/native-image-config/out-0"));
+        Files.exists(projectDir.resolve("build/tmp/native-image-config/out-1"));
+        Files.exists(projectDir.resolve("build/tmp/native-image-config/out-2"));
+        Files.exists(projectDir.resolve("build/tmp/native-image-config/out-3"));
+    }
+}

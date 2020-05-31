@@ -99,14 +99,14 @@ public class GraalvmNativeImagePluginFunctionalTest {
         assertTrue(Files.exists(projectDir.toPath().resolve("build/native-image/test-app")));
     }
 
-    private File createProjectRoot(String s) throws IOException {
+    static File createProjectRoot(String s) throws IOException {
         File projectDir = new File(s);
         Files.createDirectories(projectDir.toPath());
         writeString(new File(projectDir, "settings.gradle"), "");
         return projectDir;
     }
 
-    private void copyFile(String resourceName, Path file) throws IOException {
+    static void copyFile(String resourceName, Path file) throws IOException {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         URL url = loader.getResource(resourceName);
         if (url == null) {
@@ -118,7 +118,7 @@ public class GraalvmNativeImagePluginFunctionalTest {
         }
     }
 
-    private void writeString(File file, String string) throws IOException {
+    static void writeString(File file, String string) throws IOException {
         try (Writer writer = new FileWriter(file)) {
             writer.write(string);
         }

@@ -1,0 +1,38 @@
+package com.example;
+
+import java.lang.reflect.Proxy;
+import java.lang.reflect.Method;
+
+interface PrinterFactory {
+  Printer create();
+
+  static PrinterFactory getInstance() {
+    String printerType = System.getenv("PRINTER_TYPE");
+    if (printerType == null ||
+        printerType.isEmpty() ||
+        "stdout".equals(printerType.toLowerCase())) {
+      return () -> System.out::println;
+    } else if ("proxy".equals(printerType.toLowerCase())) {
+      return () -> proxy();
+    } else if ("stderr".equals(printerType.toLowerCase())) {
+      return () -> System.err::println;
+    }
+    return () -> System.out::println;
+  }
+
+  static Printer proxy() {
+    return (Printer) Proxy.newProxyInstance(
+        Thread.currentThread().getContextClassLoader(),
+        new Class<?>[] { Printer.class },
+        (Object proxy, Method method, Object[] args) -> {
+          String name = method.getName();
+          if ("print".equals(name)) {
+            Object arg = args[0];
+            System.out.println(arg);
+            return null;
+          }
+          throw new UnsupportedOperationException("Printer proxy does not support <" + name + ">");
+        }
+    );
+  }
+}
