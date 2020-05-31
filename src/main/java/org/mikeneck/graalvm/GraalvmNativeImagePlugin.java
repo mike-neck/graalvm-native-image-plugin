@@ -29,5 +29,15 @@ public class GraalvmNativeImagePlugin implements Plugin<Project> {
             task.setGroup("graalvm");
             task.dependsOn(installNativeImageTask);
         });
+
+        GenerateNativeImageConfigTask generateNativeImageConfig =
+                taskContainer.create(
+                        "generateNativeImageConfig",
+                        GenerateNativeImageConfigTask.class,
+                        project);
+        generateNativeImageConfig.dependsOn("classes");
+        generateNativeImageConfig.setDescription("Generates native image config json files.");
+        generateNativeImageConfig.setGroup("graalvm");
+        generateNativeImageConfig.setNativeImageExtension(nativeImageExtension);
     }
 }
