@@ -34,16 +34,19 @@ import org.gradle.api.logging.Logger;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
+import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.process.ExecResult;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GenerateNativeImageConfigTask extends DefaultTask {
 
     @NotNull
     private final Property<NativeImageExtension> extension;
 
+    @Internal
     @NotNull
     private final Property<Boolean> exitOnApplicationError;
 
@@ -129,6 +132,30 @@ public class GenerateNativeImageConfigTask extends DefaultTask {
 
     void setNativeImageExtension(@NotNull NativeImageExtension extension) {
         this.extension.set(extension);
+    }
+
+    /**
+     * getter of output directory
+     * @return output directory
+     * @deprecated this is intended to be used by Gradle.
+     */
+    @Deprecated
+    @SuppressWarnings("unused")
+    @Nullable
+    public File getOutputDirectory() {
+        return outputDirectory.getAsFile().getOrNull();
+    }
+
+    /**
+     * getter of temporary output directory
+     * @return output directory
+     * @deprecated this is intended to be used by Gradle.
+     */
+    @Deprecated
+    @SuppressWarnings("unused")
+    @Nullable
+    public File getTemporaryDirectory() {
+        return temporaryDirectory.getAsFile().getOrNull();
     }
 
     Supplier<GraalVmHome> graalVmHome() {
