@@ -1,6 +1,9 @@
+import com.github.jengelman.gradle.plugins.shadow.transformers.ServiceFileTransformer
+
 plugins {
     id 'java-gradle-plugin'
     id 'com.gradle.plugin-publish' version '0.11.0'
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
 }
 
 ext {
@@ -22,11 +25,37 @@ sourceSets {
     }
 }
 
+configurations {
+    jackson
+}
+
 dependencies {
     compileOnly 'org.jetbrains:annotations:19.0.0'
+    jackson 'com.fasterxml.jackson.core:jackson-databind:2.11.0'
+    implementation configurations.jackson
     functionalTestImplementation 'io.github.classgraph:classgraph:4.8.78'
     testImplementation 'junit:junit:4.12'
 }
+
+
+shadowJar {
+    dependsOn 'classes'
+    relocate 'com.fasterxml.jackson', 'org.mikeneck.com.fasterxml.jackson'
+    configurations = [project.configurations.jackson]
+    exclude('module-info.class')
+    transform(new ServiceFileTransformer())
+}
+
+task replaceJar(type: Copy, dependsOn: ['jar', 'shadowJar'], group: 'build') {
+    from shadowJar
+    into "$buildDir/libs"
+    rename {
+        if ("$it".endsWith('-all.jar')) "$it".replace('-all.jar', ".jar")
+        else null
+    }
+}
+
+jar.finalizedBy(replaceJar)
 
 gradlePlugin {
     plugins {
