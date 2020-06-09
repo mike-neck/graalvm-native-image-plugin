@@ -21,38 +21,30 @@ import java.io.InputStream;
 import java.util.Collections;
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class ResourceConfigTest {
+public class ProxyConfigTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
-
     private final TestJsonReader reader = new TestJsonReader();
 
     @Test
     public void jsonWithContents() throws IOException {
-        try (InputStream inputStream = reader.configJsonResource("config/resource-config-1.json")) {
-            ResourceConfig resourceConfig = objectMapper.readValue(inputStream, ResourceConfig.class);
-            assertThat(
-                    resourceConfig.resources,
-                    hasItems(
-                            new ResourceUsage("\\QMETA-INF/services/jdk.vm.ci.hotspot.HotSpotJVMCIBackendFactory\\E"),
-                            new ResourceUsage("\\QMETA-INF/services/jdk.vm.ci.services.JVMCIServiceLocator\\E")));
-            assertThat(
-                    resourceConfig.bundles,
-                    hasItem(new BundleUsage("usage")));
+        try (InputStream inputStream = reader.configJsonResource("config/proxy-config-1.json")) {
+            ProxyConfig proxyConfig = objectMapper.readValue(inputStream, ProxyConfig.class);
+            assertThat(proxyConfig, hasItems(
+                    new ProxyUsage("com.example.App"),
+                    new ProxyUsage("com.example.Printer")));
         }
     }
 
     @Test
     public void jsonWithoutContents() throws IOException {
-        try (InputStream inputStream = reader.configJsonResource("config/resource-config-2.json")) {
-            ResourceConfig resourceConfig = objectMapper.readValue(inputStream, ResourceConfig.class);
-            assertThat(resourceConfig.resources, is(Collections.emptyList()));
-            assertThat(resourceConfig.bundles, is(Collections.emptyList()));
+        try (InputStream inputStream = reader.configJsonResource("config/proxy-config-2.json")) {
+            ProxyConfig proxyConfig = objectMapper.readValue(inputStream, ProxyConfig.class);
+            assertThat(proxyConfig, is(Collections.emptyList()));
         }
     }
 }
