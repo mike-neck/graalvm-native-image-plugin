@@ -1,0 +1,7 @@
+{
+  "resources":[
+    {"pattern":"\\QMETA-INF/services/jdk.vm.ci.hotspot.HotSpotJVMCIBackendFactory\\E"}, 
+    {"pattern":"\\QMETA-INF/services/jdk.vm.ci.services.JVMCIServiceLocator\\E"}
+  ],
+  "bundles":[{"name":"usage"}]
+}
