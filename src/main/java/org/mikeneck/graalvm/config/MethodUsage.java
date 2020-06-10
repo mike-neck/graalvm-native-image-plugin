@@ -37,6 +37,14 @@ public class MethodUsage {
         this.parameterTypes = Arrays.asList(parameterTypes);
     }
 
+    static MethodUsage of(@NotNull String name, @NotNull Class<?>... parameterTypes) {
+        return new MethodUsage(
+                name, 
+                Arrays.stream(parameterTypes)
+                        .map(Class::getCanonicalName)
+                        .toArray(String[]::new));
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

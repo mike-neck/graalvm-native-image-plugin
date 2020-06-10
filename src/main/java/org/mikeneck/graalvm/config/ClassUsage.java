@@ -51,6 +51,10 @@ public class ClassUsage {
         this.name = name;
     }
 
+    ClassUsage(@NotNull Class<?> klass, MethodUsage... methods) {
+        this(klass.getCanonicalName(), methods);
+    }
+
     ClassUsage(@NotNull String name, MethodUsage... methods) {
         this.name = name;
         this.methods = Arrays.asList(methods);

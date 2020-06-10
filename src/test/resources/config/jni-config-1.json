@@ -1,0 +1,13 @@
+[
+{
+  "name":"java.lang.IllegalArgumentException",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"java.util.ArrayList",
+  "methods":[
+    {"name":"<init>","parameterTypes":[] }, 
+    {"name":"add","parameterTypes":["java.lang.Object"] }
+  ]
+}
+]
