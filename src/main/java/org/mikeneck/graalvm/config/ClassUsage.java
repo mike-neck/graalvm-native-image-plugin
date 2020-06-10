@@ -23,7 +23,7 @@ import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ClassUsage {
+public class ClassUsage implements Comparable<ClassUsage> {
 
     @NotNull
     public String name = "";
@@ -108,5 +108,10 @@ public class ClassUsage {
         sb.append(", allDeclaredConstructors=").append(allDeclaredConstructors);
         sb.append('}');
         return sb.toString();
+    }
+
+    @Override
+    public int compareTo(@NotNull ClassUsage o) {
+        return this.name.compareTo(o.name);
     }
 }
