@@ -21,7 +21,7 @@ import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 
 @JsonFormat(shape = JsonFormat.Shape.ARRAY)
-public class ProxyUsage {
+public class ProxyUsage implements Comparable<ProxyUsage> {
 
     @NotNull
     public String canonicalClassName = "";
@@ -57,5 +57,10 @@ public class ProxyUsage {
         sb.append("canonicalClassName='").append(canonicalClassName).append('\'');
         sb.append('}');
         return sb.toString();
+    }
+
+    @Override
+    public int compareTo(@NotNull ProxyUsage o) {
+        return this.canonicalClassName.compareTo(o.canonicalClassName);
     }
 }
