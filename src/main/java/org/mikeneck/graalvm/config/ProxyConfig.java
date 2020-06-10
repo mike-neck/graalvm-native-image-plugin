@@ -15,7 +15,7 @@
  */
 package org.mikeneck.graalvm.config;
 
-import java.util.ArrayList;
+import java.util.TreeSet;
 
-public class ProxyConfig extends ArrayList<ProxyUsage> {
+public class ProxyConfig extends TreeSet<ProxyUsage> {
 }

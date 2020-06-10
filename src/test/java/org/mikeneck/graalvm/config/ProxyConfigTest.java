@@ -44,7 +44,7 @@ public class ProxyConfigTest {
     public void jsonWithoutContents() throws IOException {
         try (InputStream inputStream = reader.configJsonResource("config/proxy-config-2.json")) {
             ProxyConfig proxyConfig = objectMapper.readValue(inputStream, ProxyConfig.class);
-            assertThat(proxyConfig, is(Collections.emptyList()));
+            assertThat(proxyConfig, is(Collections.emptySortedSet()));
         }
     }
 }
