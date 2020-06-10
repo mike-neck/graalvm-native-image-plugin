@@ -18,7 +18,10 @@ package org.mikeneck.graalvm.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import org.hamcrest.Matcher;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.hasItem;
@@ -54,5 +57,74 @@ public class ResourceConfigTest {
             assertThat(resourceConfig.resources, is(Collections.emptyList()));
             assertThat(resourceConfig.bundles, is(Collections.emptyList()));
         }
+    }
+
+    @Test
+    public void merge() {
+        ResourceConfig left = new ResourceConfig(
+                Arrays.asList("resource-foo", "resource-bar"),
+                "bundle-foo", "bundle-bar");
+        ResourceConfig right = new ResourceConfig(
+                Collections.singletonList("resource-baz"),
+                "bundle-baz");
+
+        ResourceConfig resourceConfig = left.mergeWith(right);
+
+        assertThat(resourceConfig.resources, listOf(
+                new ResourceUsage("resource-bar"),
+                new ResourceUsage("resource-baz"),
+                new ResourceUsage("resource-foo")));
+        assertThat(resourceConfig.bundles, listOf(
+                new BundleUsage("bundle-bar"),
+                new BundleUsage("bundle-baz"),
+                new BundleUsage("bundle-foo")));
+    }
+
+    @SafeVarargs
+    private static <T extends Comparable<T>> Matcher<List<T>> listOf(T... items) {
+        return is(Arrays.asList(items));
+    }
+
+    @Test
+    public void mergeConfigWithSharedContents() {
+        ResourceConfig left = new ResourceConfig(
+                Arrays.asList("resource-foo", "resource-bar"),
+                "bundle-foo", "bundle-bar");
+        ResourceConfig right = new ResourceConfig(
+                Arrays.asList("resource-baz", "resource-bar"),
+                "bundle-baz", "bundle-bar");
+
+        ResourceConfig resourceConfig = left.mergeWith(right);
+
+        assertThat(resourceConfig.resources, listOf(
+                new ResourceUsage("resource-bar"),
+                new ResourceUsage("resource-baz"),
+                new ResourceUsage("resource-foo")));
+        assertThat(resourceConfig.bundles, listOf(
+                new BundleUsage("bundle-bar"),
+                new BundleUsage("bundle-baz"),
+                new BundleUsage("bundle-foo")));
+    }
+
+    @Test
+    public void mergeWithSelfBecomesSelf() {
+        ResourceConfig resourceConfig = new ResourceConfig(
+                Arrays.asList("resource-foo", "resource-bar"),
+                "bundle-foo", "bundle-bar");
+
+        ResourceConfig actual = resourceConfig.mergeWith(resourceConfig);
+
+        assertThat(actual, is(resourceConfig));
+    }
+
+    @Test
+    public void mergeWithEmptyBecomesSelf() {
+        ResourceConfig resourceConfig = new ResourceConfig(
+                Arrays.asList("resource-foo", "resource-bar"),
+                "bundle-foo", "bundle-bar");
+
+        ResourceConfig actual = resourceConfig.mergeWith(new ResourceConfig());
+
+        assertThat(actual, is(resourceConfig));
     }
 }

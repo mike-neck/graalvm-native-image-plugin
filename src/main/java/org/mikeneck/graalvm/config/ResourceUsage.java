@@ -18,7 +18,7 @@ package org.mikeneck.graalvm.config;
 import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 
-public class ResourceUsage {
+public class ResourceUsage implements Comparable<ResourceUsage> {
 
     @NotNull
     public String pattern = "";
@@ -50,5 +50,10 @@ public class ResourceUsage {
         sb.append("pattern='").append(pattern).append('\'');
         sb.append('}');
         return sb.toString();
+    }
+
+    @Override
+    public int compareTo(@NotNull ResourceUsage o) {
+        return this.pattern.compareTo(o.pattern);
     }
 }

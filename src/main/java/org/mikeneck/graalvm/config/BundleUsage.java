@@ -18,7 +18,7 @@ package org.mikeneck.graalvm.config;
 import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 
-public class BundleUsage {
+public class BundleUsage implements Comparable<BundleUsage> {
 
     @NotNull
     public String name = "";
@@ -50,5 +50,10 @@ public class BundleUsage {
         sb.append("name='").append(name).append('\'');
         sb.append('}');
         return sb.toString();
+    }
+
+    @Override
+    public int compareTo(@NotNull BundleUsage o) {
+        return this.name.compareTo(o.name);
     }
 }
