@@ -29,8 +29,12 @@ public class ProxyUsage {
     public ProxyUsage() {
     }
 
-    public ProxyUsage(@NotNull String canonicalClassName) {
+    ProxyUsage(@NotNull String canonicalClassName) {
         this.canonicalClassName = canonicalClassName;
+    }
+
+    ProxyUsage(@NotNull Class<?> klass) {
+        this(klass.getCanonicalName());
     }
 
     @Override
