@@ -50,7 +50,7 @@ public class ReflectConfigTest {
     public void jsonWithoutContents() throws IOException {
         try (final InputStream inputStream = reader.configJsonResource("config/reflect-config-2.json")) {
             ReflectConfig reflectConfig = objectMapper.readValue(inputStream, ReflectConfig.class);
-            assertThat(reflectConfig, is(Collections.emptyList()));
+            assertThat(reflectConfig, is(Collections.emptySortedSet()));
         }
-        }
+    }
 }

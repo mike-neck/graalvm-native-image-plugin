@@ -52,7 +52,7 @@ public class JniConfigTest {
     public void jsonWithoutContents() throws IOException {
         try (InputStream inputStream = reader.configJsonResource("config/jni-config-2.json")) {
             JniConfig jniConfig = objectMapper.readValue(inputStream, JniConfig.class);
-            assertThat(jniConfig, is(Collections.emptyList()));
+            assertThat(jniConfig, is(Collections.emptySortedSet()));
         }
     }
 }

@@ -18,8 +18,9 @@ package org.mikeneck.graalvm.config;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,7 +31,7 @@ public class ClassUsage implements Comparable<ClassUsage> {
 
     @NotNull
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    public List<MethodUsage> methods = Collections.emptyList();
+    public SortedSet<MethodUsage> methods = Collections.emptySortedSet();
 
     @Nullable
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -57,7 +58,7 @@ public class ClassUsage implements Comparable<ClassUsage> {
 
     ClassUsage(@NotNull String name, MethodUsage... methods) {
         this.name = name;
-        this.methods = Arrays.asList(methods);
+        this.methods = new TreeSet<>(Arrays.asList(methods));
     }
 
     ClassUsage(

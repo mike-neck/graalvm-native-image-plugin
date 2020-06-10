@@ -15,9 +15,10 @@
  */
 package org.mikeneck.graalvm.config;
 
-import java.util.ArrayList;
+import java.util.TreeSet;
 
-public class ReflectConfig extends ArrayList<ClassUsage> {
+public class ReflectConfig extends TreeSet<ClassUsage> {
+
     @Override
     public boolean equals(Object o) {
         return super.equals(o);

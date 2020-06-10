@@ -47,4 +47,14 @@ public class ProxyConfig extends TreeSet<ProxyUsage> implements MergeableConfig<
         newProxyConfig.addAll(other);
         return newProxyConfig;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }
