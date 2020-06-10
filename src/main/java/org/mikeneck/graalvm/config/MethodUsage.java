@@ -17,11 +17,12 @@ package org.mikeneck.graalvm.config;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 
-public class MethodUsage {
+public class MethodUsage implements Comparable<MethodUsage> {
 
     @NotNull
     public String name = "";
@@ -67,5 +68,28 @@ public class MethodUsage {
         sb.append(", parameterTypes=").append(parameterTypes);
         sb.append('}');
         return sb.toString();
+    }
+
+    @Override
+    public int compareTo(@NotNull MethodUsage o) {
+        int nameResult = this.name.compareTo(o.name);
+        if (nameResult != 0) {
+            return nameResult;
+        }
+        Iterator<String> iterator = o.parameterTypes.iterator();
+        for (String parameterType : parameterTypes) {
+            if (!iterator.hasNext()) {
+                return 1;
+            }
+            String other = iterator.next();
+            int current = parameterType.compareTo(other);
+            if (current != 0) {
+                return current;
+            }
+        }
+        if (iterator.hasNext()) {
+            return -1;
+        }
+        return 0;
     }
 }
