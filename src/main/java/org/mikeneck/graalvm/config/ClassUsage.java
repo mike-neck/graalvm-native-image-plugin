@@ -24,7 +24,7 @@ import java.util.TreeSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ClassUsage implements Comparable<ClassUsage> {
+public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<ClassUsage> {
 
     @NotNull
     public String name = "";
@@ -46,6 +46,19 @@ public class ClassUsage implements Comparable<ClassUsage> {
     public Boolean allDeclaredConstructors;
 
     public ClassUsage() {
+    }
+
+    public ClassUsage(
+            @NotNull String name,
+            @NotNull SortedSet<MethodUsage> methods,
+            @Nullable Boolean allDeclaredFields,
+            @Nullable Boolean allDeclaredMethods,
+            @Nullable Boolean allDeclaredConstructors) {
+        this.name = name;
+        this.methods = methods;
+        this.allDeclaredFields = allDeclaredFields;
+        this.allDeclaredMethods = allDeclaredMethods;
+        this.allDeclaredConstructors = allDeclaredConstructors;
     }
 
     ClassUsage(@NotNull String name) {
@@ -114,5 +127,18 @@ public class ClassUsage implements Comparable<ClassUsage> {
     @Override
     public int compareTo(@NotNull ClassUsage o) {
         return this.name.compareTo(o.name);
+    }
+
+    @Override
+    public ClassUsage mergeWith(ClassUsage other) {
+        if (!this.name.equals(other.name)) {
+            throw new IllegalArgumentException("A parameter has the same name with this[" + this.name + "], but [" + other.name + "].");
+        }
+        Boolean declaredFields = this.allDeclaredFields == null ? other.allDeclaredFields : this.allDeclaredFields;
+        Boolean declaredConstructors = this.allDeclaredConstructors == null ? other.allDeclaredConstructors : this.allDeclaredConstructors;
+        Boolean declaredMethods = this.allDeclaredMethods == null ? other.allDeclaredMethods : this.allDeclaredMethods;
+        TreeSet<MethodUsage> newMethods = new TreeSet<>(this.methods);
+        newMethods.addAll(other.methods);
+        return new ClassUsage(this.name, newMethods, declaredFields, declaredMethods, declaredConstructors);
     }
 }

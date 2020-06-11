@@ -19,7 +19,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.TreeSet;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.hasItems;
@@ -54,5 +56,62 @@ public class JniConfigTest {
             JniConfig jniConfig = objectMapper.readValue(inputStream, JniConfig.class);
             assertThat(jniConfig, is(Collections.emptySortedSet()));
         }
+    }
+
+    @Test
+    public void mergeWithOther() {
+        JniConfig left = new JniConfig(
+                new ClassUsage(ArrayList.class, MethodUsage.of("<init>", int.class)),
+                new ClassUsage("com.example.App", new MethodUsage("<init>")));
+        JniConfig right = new JniConfig(
+                new ClassUsage(IllegalArgumentException.class, MethodUsage.of("<init>", String.class)));
+
+        JniConfig jniConfig = left.mergeWith(right);
+
+        assertThat(jniConfig, hasItems(
+                new ClassUsage("com.example.App", new MethodUsage("<init>")),
+                new ClassUsage(IllegalArgumentException.class, MethodUsage.of("<init>", String.class)),
+                new ClassUsage(ArrayList.class, MethodUsage.of("<init>", int.class))));
+    }
+
+
+    @Test
+    public void mergeWithOtherHavingSameClass() {
+        JniConfig left = new JniConfig(
+                new ClassUsage(ArrayList.class, MethodUsage.of("<init>", int.class)),
+                new ClassUsage("com.example.App", new MethodUsage("<init>")));
+        JniConfig right = new JniConfig(
+                new ClassUsage(ArrayList.class, MethodUsage.of("<init>", int.class)),
+                new ClassUsage(IllegalArgumentException.class, MethodUsage.of("<init>", String.class)),
+                new ClassUsage("com.example.App", MethodUsage.of("run")));
+
+        JniConfig jniConfig = left.mergeWith(right);
+
+        assertThat(jniConfig, hasItems(
+                new ClassUsage("com.example.App", new MethodUsage("<init>"), MethodUsage.of("run")),
+                new ClassUsage(IllegalArgumentException.class, MethodUsage.of("<init>", String.class)),
+                new ClassUsage(ArrayList.class, MethodUsage.of("<init>", int.class))));
+    }
+
+    @Test
+    public void mergeWithAlreadyMerged() {
+        JniConfig left = new JniConfig(
+                new ClassUsage(ArrayList.class, MethodUsage.of("<init>", int.class)),
+                new ClassUsage("com.example.App", new MethodUsage("<init>")));
+        JniConfig right = new JniConfig(
+                new ClassUsage(ArrayList.class, MethodUsage.of("<init>", int.class)),
+                new ClassUsage(IllegalArgumentException.class, MethodUsage.of("<init>", String.class), MethodUsage.of("getCause")),
+                new ClassUsage("com.example.App", new TreeSet<>(
+                        Arrays.asList(MethodUsage.of("run"), MethodUsage.of("start", int.class))),
+                        null, Boolean.TRUE, Boolean.TRUE));
+
+        JniConfig jniConfig = left.mergeWith(right);
+
+        assertThat(jniConfig, hasItems(
+                new ClassUsage("com.example.App", new TreeSet<>(
+                        Arrays.asList(MethodUsage.of("run"), MethodUsage.of("<init>"), MethodUsage.of("start", int.class))),
+                        null, Boolean.TRUE, Boolean.TRUE),
+                new ClassUsage(IllegalArgumentException.class, MethodUsage.of("<init>", String.class), MethodUsage.of("getCause")),
+                new ClassUsage(ArrayList.class, MethodUsage.of("<init>", int.class))));
     }
 }
