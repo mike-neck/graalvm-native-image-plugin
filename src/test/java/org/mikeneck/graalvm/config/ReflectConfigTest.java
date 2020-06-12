@@ -18,6 +18,7 @@ package org.mikeneck.graalvm.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collections;
 import org.junit.Test;
 
@@ -52,5 +53,42 @@ public class ReflectConfigTest {
             ReflectConfig reflectConfig = objectMapper.readValue(inputStream, ReflectConfig.class);
             assertThat(reflectConfig, is(Collections.emptySortedSet()));
         }
+    }
+
+    @Test
+    public void mergeWithOther() {
+        ReflectConfig left = new ReflectConfig(
+                new ClassUsage("java.sql.Date", MethodUsage.of("getTime")),
+                new ClassUsage("java.sql.Timestamp"));
+        ReflectConfig right = new ReflectConfig(
+                new ClassUsage(ArrayList.class, MethodUsage.ofInit(int.class)),
+                new ClassUsage("com.example.App", MethodUsage.of("run")));
+
+        ReflectConfig reflectConfig = left.mergeWith(right);
+
+        assertThat(reflectConfig, hasItems(
+                new ClassUsage("com.example.App", MethodUsage.of("run")),
+                new ClassUsage("java.sql.Date", MethodUsage.of("getTime")),
+                new ClassUsage("java.sql.Timestamp"),
+                new ClassUsage(ArrayList.class, MethodUsage.ofInit(int.class))));
+    }
+
+    @Test
+    public void mergeWithOtherHavingSameClass() {
+        ReflectConfig left = new ReflectConfig(
+                new ClassUsage("java.sql.Date", MethodUsage.of("getTime")),
+                new ClassUsage("java.sql.Timestamp"));
+        ReflectConfig right = new ReflectConfig(
+                new ClassUsage(ArrayList.class, MethodUsage.ofInit(int.class)),
+                new ClassUsage("java.sql.Date", MethodUsage.of("getTime")),
+                new ClassUsage("com.example.App", MethodUsage.of("run")));
+
+        ReflectConfig reflectConfig = left.mergeWith(right);
+
+        assertThat(reflectConfig, hasItems(
+                new ClassUsage("com.example.App", MethodUsage.of("run")),
+                new ClassUsage("java.sql.Date", MethodUsage.of("getTime")),
+                new ClassUsage("java.sql.Timestamp"),
+                new ClassUsage(ArrayList.class, MethodUsage.ofInit(int.class))));
     }
 }

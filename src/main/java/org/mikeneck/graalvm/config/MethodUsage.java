@@ -46,6 +46,14 @@ public class MethodUsage implements Comparable<MethodUsage> {
                         .toArray(String[]::new));
     }
 
+    public static MethodUsage ofInit(@NotNull Class<?>... parameterTypes) {
+        return new MethodUsage(
+                "<init>",
+                Arrays.stream(parameterTypes)
+                        .map(Class::getCanonicalName)
+                        .toArray(String[]::new));
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
