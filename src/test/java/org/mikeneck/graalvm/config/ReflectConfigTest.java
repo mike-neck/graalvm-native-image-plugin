@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import org.junit.Test;
 
@@ -90,5 +91,70 @@ public class ReflectConfigTest {
                 new ClassUsage("java.sql.Date", MethodUsage.of("getTime")),
                 new ClassUsage("java.sql.Timestamp"),
                 new ClassUsage(ArrayList.class, MethodUsage.ofInit(int.class))));
+    }
+
+    @Test
+    public void mergeWithOtherHavingSameClassUsingAnotherMethods() {
+        ReflectConfig left = new ReflectConfig(
+                new ClassUsage("java.sql.Date", MethodUsage.of("getTime")),
+                new ClassUsage(ArrayList.class, 
+                        MethodUsage.ofInit(int.class),
+                        MethodUsage.of("add", Object.class),
+                        MethodUsage.of("addAll", Collection.class)),
+                new ClassUsage("java.sql.Timestamp"));
+        ReflectConfig right = new ReflectConfig(
+                new ClassUsage(ArrayList.class, MethodUsage.ofInit()),
+                new ClassUsage("java.sql.Date", MethodUsage.of("getTime")),
+                new ClassUsage("com.example.App", MethodUsage.of("run")));
+
+        ReflectConfig reflectConfig = left.mergeWith(right);
+
+        assertThat(reflectConfig, hasItems(
+                new ClassUsage("com.example.App", MethodUsage.of("run")),
+                new ClassUsage("java.sql.Date", MethodUsage.of("getTime")),
+                new ClassUsage("java.sql.Timestamp"),
+                new ClassUsage(ArrayList.class,
+                        MethodUsage.ofInit(),
+                        MethodUsage.ofInit(int.class),
+                        MethodUsage.of("add", Object.class),
+                        MethodUsage.of("addAll", Collection.class))));
+    }
+
+    @Test
+    public void mergeWithEmptyBecomesSelf() {
+        ReflectConfig left = new ReflectConfig(
+                new ClassUsage("java.sql.Date", MethodUsage.of("getTime")),
+                new ClassUsage(ArrayList.class,
+                        MethodUsage.ofInit(int.class),
+                        MethodUsage.of("add", Object.class),
+                        MethodUsage.of("addAll", Collection.class)),
+                new ClassUsage("java.sql.Timestamp"));
+        ReflectConfig right = new ReflectConfig();
+
+        ReflectConfig reflectConfig = left.mergeWith(right);
+
+        assertThat(reflectConfig, is(left));
+    }
+
+    @Test
+    public void mergeByEmptyWithEmptyBecomesEmpty() {
+        ReflectConfig left = new ReflectConfig();
+        ReflectConfig right = new ReflectConfig();
+
+        ReflectConfig reflectConfig = left.mergeWith(right);
+
+        assertThat(reflectConfig, is(Collections.emptySortedSet()));
+    }
+
+    @Test
+    public void mergeByEmptyWithOtherBecomesOther() {
+        ReflectConfig left = new ReflectConfig();
+        ReflectConfig right = new ReflectConfig(
+                new ClassUsage(ArrayList.class, MethodUsage.ofInit(int.class)),
+                new ClassUsage("com.example.App", MethodUsage.of("run")));
+
+        ReflectConfig reflectConfig = left.mergeWith(right);
+
+        assertThat(reflectConfig, is(right));
     }
 }
