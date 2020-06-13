@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 public class JniConfig extends TreeSet<ClassUsage> implements MergeableConfig<JniConfig> {
 
-    JniConfig() {
+    public JniConfig() {
         super();
     }
 

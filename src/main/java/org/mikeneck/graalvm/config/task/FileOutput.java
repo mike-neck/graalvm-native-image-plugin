@@ -15,10 +15,37 @@
  */
 package org.mikeneck.graalvm.config.task;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.util.function.Supplier;
+import org.jetbrains.annotations.NotNull;
 
 public interface FileOutput {
 
     OutputStream newOutputStream() throws IOException;
+
+    @NotNull
+    static FileOutput overriding(@NotNull File file) {
+        return overriding(file.toPath());
+    }
+
+    @NotNull
+    static FileOutput overriding(@NotNull Supplier<Path> directory, @NotNull String fileName) {
+        return () -> Files.newOutputStream(
+                directory.get().resolve(fileName),
+                StandardOpenOption.WRITE,
+                StandardOpenOption.TRUNCATE_EXISTING);
+    }
+
+    @NotNull
+    static FileOutput overriding(@NotNull Path file) {
+        return () -> Files.newOutputStream(
+                file, 
+                StandardOpenOption.WRITE,
+                StandardOpenOption.TRUNCATE_EXISTING);
+    }
 }

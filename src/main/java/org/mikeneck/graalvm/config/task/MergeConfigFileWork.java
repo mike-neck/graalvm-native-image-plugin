@@ -35,7 +35,7 @@ public class MergeConfigFileWork<C extends MergeableConfig<C>> {
     @NotNull
     private final Class<C> klass;
     @NotNull
-    private final Supplier<C> empty;
+    private final Supplier<? extends C> empty;
     @NotNull
     private final List<FileInput> inputFiles;
     @NotNull
@@ -43,7 +43,7 @@ public class MergeConfigFileWork<C extends MergeableConfig<C>> {
 
     public MergeConfigFileWork(
             @NotNull Class<C> klass,
-            @NotNull Supplier<C> empty,
+            @NotNull Supplier<? extends C> empty,
             @NotNull List<FileInput> inputFiles, 
             @NotNull FileOutput outputFile) {
         this(new ObjectMapper(), klass, empty, inputFiles, outputFile);
@@ -52,7 +52,7 @@ public class MergeConfigFileWork<C extends MergeableConfig<C>> {
     MergeConfigFileWork(
             @NotNull ObjectMapper objectMapper,
             @NotNull Class<C> klass,
-            @NotNull Supplier<C> empty,
+            @NotNull Supplier<? extends C> empty,
             @NotNull List<FileInput> inputFiles, 
             @NotNull FileOutput outputFile) {
         this.objectMapper = objectMapper;

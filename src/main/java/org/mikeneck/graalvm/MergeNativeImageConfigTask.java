@@ -16,7 +16,11 @@
 package org.mikeneck.graalvm;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.List;
 import org.gradle.api.Action;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
@@ -28,8 +32,16 @@ import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
 import org.jetbrains.annotations.NotNull;
+import org.mikeneck.graalvm.config.JniConfig;
+import org.mikeneck.graalvm.config.MergeableConfig;
+import org.mikeneck.graalvm.config.ProxyConfig;
+import org.mikeneck.graalvm.config.ReflectConfig;
+import org.mikeneck.graalvm.config.ResourceConfig;
 import org.mikeneck.graalvm.config.task.ConfigFileConfiguration;
 import org.mikeneck.graalvm.config.task.ConfigFileProvider;
+import org.mikeneck.graalvm.config.task.FileInput;
+import org.mikeneck.graalvm.config.task.FileOutput;
+import org.mikeneck.graalvm.config.task.MergeConfigFileWork;
 
 public class MergeNativeImageConfigTask extends DefaultTask {
 
@@ -56,8 +68,51 @@ public class MergeNativeImageConfigTask extends DefaultTask {
     }
 
     @TaskAction
-    public void merge() {
-        // TODO run merging works
+    public void merge() throws IOException {
+        Path destinationDir = this.destinationDir.getAsFile().get().toPath();
+
+        if (!Files.exists(destinationDir)) {
+            Files.createDirectories(destinationDir);
+        }
+        for (MergeConfigFileWork<? extends MergeableConfig<? extends MergeableConfig<?>>> work : createWorks(destinationDir)) {
+            work.run();
+        }
+    }
+
+    @NotNull
+    List<MergeConfigFileWork<? extends MergeableConfig<? extends MergeableConfig<?>>>> createWorks(Path destinationDir) {
+        return Arrays.asList(jniConfigs.map(files ->
+                            new MergeConfigFileWork<>(
+                                    JniConfig.class,
+                                    JniConfig::new,
+                                    FileInput.of(files),
+                                    FileOutput.overriding(
+                                            destinationDir.resolve(JNI_CONFIG_JSON))))
+                            .get(),
+                    proxyConfigs.map(files ->
+                            new MergeConfigFileWork<>(
+                                    ProxyConfig.class,
+                                    ProxyConfig::new,
+                                    FileInput.of(files),
+                                    FileOutput.overriding(
+                                            destinationDir.resolve(PROXY_CONFIG_JSON))))
+                            .get(),
+                    reflectConfigs.map(files ->
+                            new MergeConfigFileWork<>(
+                                    ReflectConfig.class,
+                                    ReflectConfig::new,
+                                    FileInput.of(files),
+                                    FileOutput.overriding(
+                                            destinationDir.resolve(PROXY_CONFIG_JSON))))
+                            .get(),
+                    resourceConfigs.map(files ->
+                            new MergeConfigFileWork<>(
+                                    ResourceConfig.class,
+                                    ResourceConfig::new,
+                                    FileInput.of(files),
+                                    FileOutput.overriding(
+                                            destinationDir.resolve(PROXY_CONFIG_JSON))))
+                            .get());
     }
 
     public void destinationDir(String destinationDir) {
@@ -99,7 +154,8 @@ public class MergeNativeImageConfigTask extends DefaultTask {
         resourceConfigs.add(ConfigFileProvider.fromDirectoryResolving(directory, RESOURCE_CONFIG_JSON));
     }
 
-    public void fromDirectories(Provider<File>... directories) {
+    @SafeVarargs
+    public final void fromDirectories(Provider<File>... directories) {
         for (Provider<File> directory : directories) {
             fromDirectory(directory);
         }
