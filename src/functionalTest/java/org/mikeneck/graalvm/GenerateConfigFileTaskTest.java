@@ -27,6 +27,7 @@ import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class GenerateConfigFileTaskTest {
 
@@ -39,7 +40,7 @@ public class GenerateConfigFileTaskTest {
         GradleRunner runner = GradleRunner.create();
         runner.forwardOutput();
         runner.withPluginClasspath();
-        runner.withArguments("clean","generateNativeImageConfig", "--stacktrace");
+        runner.withArguments("clean","generateNativeImageConfig", "--stacktrace", "--warning-mode", "all");
         runner.withProjectDir(projectDir.toFile());
         BuildResult result = runner.build();
 
@@ -47,9 +48,16 @@ public class GenerateConfigFileTaskTest {
                 .map(BuildTask::getPath)
                 .collect(Collectors.toList());
         assertThat(succeededTasks, hasItems(":compileJava", ":classes", ":generateNativeImageConfig"));
-        Files.exists(projectDir.resolve("build/tmp/native-image-config/out-0"));
-        Files.exists(projectDir.resolve("build/tmp/native-image-config/out-1"));
-        Files.exists(projectDir.resolve("build/tmp/native-image-config/out-2"));
-        Files.exists(projectDir.resolve("build/tmp/native-image-config/out-3"));
+        assertTrue(Files.exists(projectDir.resolve("build/tmp/native-image-config/out-0")));
+        assertTrue(Files.exists(projectDir.resolve("build/tmp/native-image-config/out-1")));
+        assertTrue(Files.exists(projectDir.resolve("build/tmp/native-image-config/out-2")));
+        assertTrue(Files.exists(projectDir.resolve("build/tmp/native-image-config/out-3")));
+        assertTrue(Files.exists(projectDir.resolve("build/tmp/native-image-config/out-4")));
+        assertTrue(Files.exists(projectDir.resolve("build/tmp/native-image-config/out-5")));
+        assertTrue(Files.exists(projectDir.resolve("build/tmp/native-image-config/out-6")));
+        assertTrue(Files.exists(projectDir.resolve("build/native-image-config/jni-config.json")));
+        assertTrue(Files.exists(projectDir.resolve("build/native-image-config/proxy-config.json")));
+        assertTrue(Files.exists(projectDir.resolve("build/native-image-config/reflect-config.json")));
+        assertTrue(Files.exists(projectDir.resolve("build/native-image-config/resource-config.json")));
     }
 }

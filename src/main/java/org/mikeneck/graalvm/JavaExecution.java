@@ -15,8 +15,6 @@
  */
 package org.mikeneck.graalvm;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -30,14 +28,14 @@ public interface JavaExecution {
 
     void arguments(Iterable<String> args);
 
-    void stdIn(InputStream input);
+    void stdIn(byte[] input);
 
     default void stdIn(String utf8StringInput) {
         stdIn(StandardCharsets.UTF_8, utf8StringInput);
     }
 
     default void stdIn(Charset charset, String input) {
-        stdIn(new ByteArrayInputStream(input.getBytes(charset)));
+        stdIn(input.getBytes(charset));
     }
 
     void environment(Map<String, String> env);

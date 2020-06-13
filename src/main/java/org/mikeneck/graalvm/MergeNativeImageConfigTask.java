@@ -21,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
+import javax.inject.Inject;
 import org.gradle.api.Action;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
@@ -57,6 +58,7 @@ public class MergeNativeImageConfigTask extends DefaultTask {
     private final ListProperty<File> reflectConfigs;
     private final ListProperty<File> resourceConfigs;
 
+    @Inject
     @SuppressWarnings("UnstableApiUsage")
     public MergeNativeImageConfigTask(@NotNull Project project) {
         ObjectFactory objects = project.getObjects();
@@ -156,6 +158,10 @@ public class MergeNativeImageConfigTask extends DefaultTask {
 
     @SafeVarargs
     public final void fromDirectories(Provider<File>... directories) {
+        fromDirectories(Arrays.asList(directories));
+    }
+
+    public final void fromDirectories(List<Provider<File>> directories) {
         for (Provider<File> directory : directories) {
             fromDirectory(directory);
         }

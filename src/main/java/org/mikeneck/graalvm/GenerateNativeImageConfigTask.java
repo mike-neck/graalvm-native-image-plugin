@@ -17,7 +17,6 @@ package org.mikeneck.graalvm;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -35,6 +34,7 @@ import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Internal;
+import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.process.ExecResult;
@@ -52,10 +52,6 @@ public class GenerateNativeImageConfigTask extends DefaultTask {
 
     @OutputDirectory
     @NotNull
-    private final DirectoryProperty outputDirectory;
-
-    @OutputDirectory
-    @NotNull
     private final DirectoryProperty temporaryDirectory;
 
     private final List<JavaExecutionImpl> javaExecutions;
@@ -66,13 +62,11 @@ public class GenerateNativeImageConfigTask extends DefaultTask {
         ObjectFactory objectFactory = project.getObjects();
         this.extension = objectFactory.property(NativeImageExtension.class);
         this.exitOnApplicationError = objectFactory.property(Boolean.class);
-        this.outputDirectory = objectFactory.directoryProperty();
         this.temporaryDirectory = objectFactory.directoryProperty();
         this.javaExecutions = new ArrayList<>();
 
         this.exitOnApplicationError.set(true);
         File buildDir = project.getBuildDir();
-        this.outputDirectory.set(buildDir.toPath().resolve("native-image-config").toFile());
         this.temporaryDirectory.set(buildDir.toPath().resolve("tmp/native-image-config").toFile());
     }
 
@@ -134,16 +128,9 @@ public class GenerateNativeImageConfigTask extends DefaultTask {
         this.extension.set(extension);
     }
 
-    /**
-     * getter of output directory
-     * @return output directory
-     * @deprecated this is intended to be used by Gradle.
-     */
-    @Deprecated
-    @SuppressWarnings("unused")
-    @Nullable
-    public File getOutputDirectory() {
-        return outputDirectory.getAsFile().getOrNull();
+    @Nested
+    public List<JavaExecutionImpl> getJavaExecutions() {
+        return javaExecutions;
     }
 
     /**
@@ -181,13 +168,15 @@ public class GenerateNativeImageConfigTask extends DefaultTask {
         DirectoryProperty outputDirectory = objectFactory.directoryProperty();
         Provider<Directory> directoryProvider = temporaryDirectory.map(it -> it.dir("out-" + index));
         outputDirectory.set(directoryProvider);
+        Property<byte[]> stdIn = objectFactory.property(byte[].class);
+        stdIn.set(new byte[0]);
         return new JavaExecutionImpl(
                 index,
                 project,
                 mainClass(),
                 graalVmHome(),
                 outputDirectory,
-                objectFactory.property(InputStream.class));
+                stdIn);
     }
 
     @SuppressWarnings("UnstableApiUsage")

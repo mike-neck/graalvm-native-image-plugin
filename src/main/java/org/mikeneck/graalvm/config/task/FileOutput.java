@@ -46,6 +46,7 @@ public interface FileOutput {
         return () -> Files.newOutputStream(
                 file, 
                 StandardOpenOption.WRITE,
+                StandardOpenOption.CREATE,
                 StandardOpenOption.TRUNCATE_EXISTING);
     }
 }

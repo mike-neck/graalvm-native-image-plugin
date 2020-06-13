@@ -30,6 +30,10 @@ import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
+import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.InputFiles;
+import org.gradle.api.tasks.Internal;
+import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.process.JavaExecSpec;
@@ -37,13 +41,25 @@ import org.jetbrains.annotations.NotNull;
 
 public class JavaExecutionImpl implements JavaExecution, Action<JavaExecSpec> {
 
+    @Input
     final int index;
-    private final Project project;
+    @InputFiles
+    final Provider<FileCollection> classes;
+    @InputFiles
+    final Provider<FileCollection> resources;
+    @InputFiles
+    final Provider<FileCollection> dependencies;
+    @Internal
     private final Provider<String> mainClass;
+    @Internal
     private final Supplier<GraalVmHome> graalVmHome;
+    @OutputDirectory
     final DirectoryProperty outputDirectory;
-    private final Property<InputStream> inputStream;
+    @Input
+    private final Property<byte[]> inputStream;
+    @Input
     final List<String> arguments;
+    @Input
     final Map<String, String> env;
 
     JavaExecutionImpl(
@@ -52,9 +68,11 @@ public class JavaExecutionImpl implements JavaExecution, Action<JavaExecSpec> {
             Provider<String> mainClass,
             Supplier<GraalVmHome> graalVmHome,
             DirectoryProperty outputDirectory,
-            Property<InputStream> inputStream) {
+            Property<byte[]> inputStream) {
         this.index = index;
-        this.project = project;
+        this.classes = classes(project);
+        this.resources = resources(project);
+        this.dependencies = dependencies(project);
         this.mainClass = mainClass;
         this.graalVmHome = graalVmHome;
         this.outputDirectory = outputDirectory;
@@ -71,7 +89,7 @@ public class JavaExecutionImpl implements JavaExecution, Action<JavaExecSpec> {
     }
 
     @Override
-    public void stdIn(InputStream input) {
+    public void stdIn(byte[] input) {
         inputStream.set(input);
     }
 
@@ -90,9 +108,9 @@ public class JavaExecutionImpl implements JavaExecution, Action<JavaExecSpec> {
         javaExecSpec.setExecutable(javaExecutable);
         javaExecSpec.setMain(mainClass.get());
         javaExecSpec.classpath(
-                classes(),
-                resources(),
-                dependencies()
+                classes,
+                resources,
+                dependencies
         );
         javaExecSpec.environment(env);
         Path outputDir = outputDirectory.getAsFile().get().toPath();
@@ -100,28 +118,69 @@ public class JavaExecutionImpl implements JavaExecution, Action<JavaExecSpec> {
         javaExecSpec.setStandardInput(inputStream());
     }
 
-    private FileCollection classes() {
-        SourceSetContainer sourceSets = project.getExtensions().getByType(SourceSetContainer.class);
-        SourceSet mainSourceSet = sourceSets.getByName("main");
-        return mainSourceSet.getOutput().getClassesDirs();
+    private static Provider<FileCollection> classes(Project project) {
+        return project.provider(() -> {
+            SourceSetContainer sourceSets = project.getExtensions().getByType(SourceSetContainer.class);
+            SourceSet mainSourceSet = sourceSets.getByName("main");
+            return mainSourceSet.getOutput().getClassesDirs();
+        });
     }
 
-    private FileCollection resources() {
-        SourceSetContainer sourceSets = project.getExtensions().getByType(SourceSetContainer.class);
-        SourceSet mainSourceSet = sourceSets.getByName("main");
-        File resourcesDir = mainSourceSet.getOutput().getResourcesDir();
-        return project.files(resourcesDir);
+    private static Provider<FileCollection> resources(Project project) {
+        return project.provider(() -> {
+            SourceSetContainer sourceSets = project.getExtensions().getByType(SourceSetContainer.class);
+            SourceSet mainSourceSet = sourceSets.getByName("main");
+            File resourcesDir = mainSourceSet.getOutput().getResourcesDir();
+            return project.files(resourcesDir);
+        });
     }
 
-    private FileCollection dependencies() {
-        return project.getConfigurations()
+    private static Provider<FileCollection> dependencies(Project project) {
+        return project.provider(() -> project.getConfigurations()
                 .getByName("runtimeClasspath")
-                .getAsFileTree();
+                .getAsFileTree());
     }
 
     private InputStream inputStream() {
         ByteArrayInputStream defaultInputStream = new ByteArrayInputStream(new byte[0]);
-        return inputStream.getOrElse(defaultInputStream);
+        return inputStream
+                .map(ByteArrayInputStream::new)
+                .getOrElse(defaultInputStream);
+    }
+
+    @Deprecated
+    public int getIndex() {
+        return index;
+    }
+
+    @Deprecated
+    public Provider<String> getMainClass() {
+        return mainClass;
+    }
+
+    @Deprecated
+    public Supplier<GraalVmHome> getGraalVmHome() {
+        return graalVmHome;
+    }
+
+    @Deprecated
+    public DirectoryProperty getOutputDirectory() {
+        return outputDirectory;
+    }
+
+    @Deprecated
+    public Property<byte[]> getInputStream() {
+        return inputStream;
+    }
+
+    @Deprecated
+    public List<String> getArguments() {
+        return arguments;
+    }
+
+    @Deprecated
+    public Map<String, String> getEnv() {
+        return env;
     }
 
     @SuppressWarnings("StringBufferReplaceableByString")

@@ -18,16 +18,16 @@ nativeImage {
   arguments('--no-fallback')
 }
 
-generateNativeImageConfig {
+nativeImageConfigFiles {
   runApplication {
-    def stream = new ByteArrayInputStream("""
+    def stream = """
     |total: 2
     |contents:
     |  - name: foo
     |    size: 1024
     |  - name: bar/Baz
     |    size: 2203
-    |""".stripMargin().getBytes('UTF-8'))
+    |""".stripMargin()
     stdIn(stream)
   }
   runApplication {

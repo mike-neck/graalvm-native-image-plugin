@@ -3,8 +3,12 @@
  */
 package org.mikeneck.graalvm;
 
+import java.io.File;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.TaskContainer;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,14 +34,36 @@ public class GraalvmNativeImagePlugin implements Plugin<Project> {
             task.dependsOn(installNativeImageTask);
         });
 
-        GenerateNativeImageConfigTask generateNativeImageConfig =
+        GenerateNativeImageConfigTask nativeImageConfigFiles =
                 taskContainer.create(
-                        "generateNativeImageConfig",
+                        "nativeImageConfigFiles",
                         GenerateNativeImageConfigTask.class,
                         project);
-        generateNativeImageConfig.dependsOn("classes");
-        generateNativeImageConfig.setDescription("Generates native image config json files.");
-        generateNativeImageConfig.setGroup("graalvm");
-        generateNativeImageConfig.setNativeImageExtension(nativeImageExtension);
+        nativeImageConfigFiles.dependsOn("classes");
+        nativeImageConfigFiles.setDescription("Generates native image config json files via test run.");
+        nativeImageConfigFiles.setGroup("graalvm");
+        nativeImageConfigFiles.setNativeImageExtension(nativeImageExtension);
+
+        MergeNativeImageConfigTask mergeNativeImageConfig = 
+                taskContainer.create(
+                        "mergeNativeImageConfig",
+                        MergeNativeImageConfigTask.class,
+                        project);
+        mergeNativeImageConfig.destinationDir(project.getBuildDir().toPath().resolve("native-image-config"));
+        List<Provider<File>> configDirs = nativeImageConfigFiles
+                .getJavaExecutions()
+                .stream()
+                .map(exec -> exec.outputDirectory.getAsFile())
+                .collect(Collectors.toList());
+        mergeNativeImageConfig.fromDirectories(configDirs);
+        mergeNativeImageConfig.setGroup("graalvm");
+        mergeNativeImageConfig.setDescription("Merge native image config json files into one file.");
+        mergeNativeImageConfig.dependsOn(nativeImageConfigFiles);
+
+        taskContainer.create("generateNativeImageConfig", task -> {
+            task.setGroup("graalvm");
+            task.setDescription("Generates native image config json files.");
+            task.dependsOn(nativeImageConfigFiles, mergeNativeImageConfig);
+        });
     }
 }
