@@ -23,8 +23,6 @@ import org.jetbrains.annotations.NotNull;
 
 public interface NativeImageArguments {
 
-    boolean supports(@NotNull OperatingSystem os);
-
     default List<String> getArguments() {
         List<String> args = new ArrayList<>();
         args.add("-cp");
@@ -36,13 +34,18 @@ public interface NativeImageArguments {
         return Collections.unmodifiableList(args);
     }
 
+    @NotNull
     String classpath();
 
+    @NotNull
     String outputPath();
 
+    @NotNull
     Optional<String> executableName();
 
+    @NotNull
     List<String> additionalArguments();
 
+    @NotNull
     String mainClass();
 }

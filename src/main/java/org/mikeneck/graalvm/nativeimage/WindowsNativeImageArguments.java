@@ -30,30 +30,30 @@ class WindowsNativeImageArguments implements NativeImageArguments {
         this.delegate = delegate;
     }
 
-    @Override
-    public boolean supports(@NotNull OperatingSystem os) {
-        return os == OperatingSystem.WINDOWS;
-    }
-
+    @NotNull
     private String wrapValue(String value) {
         return String.format("%s%s%s", DOUBLE_QUOT, value, DOUBLE_QUOT);
     }
 
+    @NotNull
     @Override
     public String classpath() {
         return wrapValue(delegate.classpath());
     }
 
+    @NotNull
     @Override
     public String outputPath() {
         return wrapValue(delegate.outputPath());
     }
 
+    @NotNull
     @Override
     public Optional<String> executableName() {
         return delegate.executableName().map(this::wrapValue);
     }
 
+    @NotNull
     @Override
     public List<String> additionalArguments() {
         return delegate.additionalArguments()
@@ -62,6 +62,7 @@ class WindowsNativeImageArguments implements NativeImageArguments {
                 .collect(Collectors.toList());
     }
 
+    @NotNull
     @Override
     public String mainClass() {
         return wrapValue(delegate.mainClass());

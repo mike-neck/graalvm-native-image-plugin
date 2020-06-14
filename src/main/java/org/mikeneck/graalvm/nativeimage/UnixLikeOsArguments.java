@@ -17,13 +17,11 @@ package org.mikeneck.graalvm.nativeimage;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Provider;
@@ -35,11 +33,6 @@ import org.jetbrains.annotations.NotNull;
 
 class UnixLikeOsArguments implements NativeImageArguments {
 
-    private static final Collection<OperatingSystem> SUPPORTING_OS =
-            Arrays.asList(OperatingSystem.LINUX, OperatingSystem.MACOSX);
-
-    @NotNull
-    private final Project project;
     @NotNull
     private final Provider<Configuration> runtimeClasspath;
     @NotNull
@@ -54,25 +47,18 @@ class UnixLikeOsArguments implements NativeImageArguments {
     private final ListProperty<String> additionalArguments;
 
     UnixLikeOsArguments(
-            @NotNull Project project,
             @NotNull Provider<Configuration> runtimeClasspath,
             @NotNull Provider<String> mainClass,
             @NotNull Provider<File> jarFile,
             @NotNull Provider<File> outputDirectory,
             @NotNull Provider<String> executableName,
             @NotNull ListProperty<String> additionalArguments) {
-        this.project = project;
         this.runtimeClasspath = runtimeClasspath;
         this.mainClass = mainClass;
         this.jarFile = jarFile;
         this.outputDirectory = outputDirectory;
         this.executableName = executableName;
         this.additionalArguments = additionalArguments;
-    }
-
-    @Override
-    public boolean supports(@NotNull OperatingSystem os) {
-        return SUPPORTING_OS.contains(os);
     }
 
     @NotNull
@@ -112,9 +98,8 @@ class UnixLikeOsArguments implements NativeImageArguments {
         return additionalArguments.isPresent()? additionalArguments.get(): Collections.emptyList();
     }
 
-    @NotNull
     @Override
-    public String mainClass() {
+    public @NotNull String mainClass() {
         return mainClass.get();
     }
 

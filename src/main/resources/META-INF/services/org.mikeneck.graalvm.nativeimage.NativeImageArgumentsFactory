@@ -1,0 +1,2 @@
+org.mikeneck.graalvm.nativeimage.UnixLikeOsArgumentsFactory
+org.mikeneck.graalvm.nativeimage.WindowsNativeImageArgumentsFactory
