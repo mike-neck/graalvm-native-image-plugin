@@ -3,11 +3,10 @@
  */
 package org.mikeneck.graalvm;
 
-import java.io.File;
-import java.util.List;
 import java.util.stream.Collectors;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.file.FileCollection;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.TaskContainer;
 import org.jetbrains.annotations.NotNull;
@@ -50,11 +49,12 @@ public class GraalvmNativeImagePlugin implements Plugin<Project> {
                         MergeNativeImageConfigTask.class,
                         project);
         mergeNativeImageConfig.destinationDir(project.getBuildDir().toPath().resolve("native-image-config"));
-        List<Provider<File>> configDirs = nativeImageConfigFiles
+        Provider<FileCollection> configDirs = project.provider(() -> nativeImageConfigFiles
                 .getJavaExecutions()
                 .stream()
-                .map(exec -> exec.outputDirectory.getAsFile())
-                .collect(Collectors.toList());
+                .map(exec -> exec.outputDirectory)
+                .collect(Collectors.toList()))
+                .map(project::files);
         mergeNativeImageConfig.fromDirectories(configDirs);
         mergeNativeImageConfig.setGroup("graalvm");
         mergeNativeImageConfig.setDescription("Merge native image config json files into one file.");

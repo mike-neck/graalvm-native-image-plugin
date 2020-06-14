@@ -15,34 +15,35 @@
  */
 package org.mikeneck.graalvm.config.task;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.function.Supplier;
-import org.jetbrains.annotations.NotNull;
 
-public interface FileOutput {
+class FileOutputImpl implements FileOutput {
 
-    OutputStream newOutputStream() throws IOException;
+    private final Path file;
 
-    @NotNull
-    static FileOutput to(@NotNull File file) {
-        return to(file.toPath());
+    FileOutputImpl(Path file) {
+        this.file = file;
     }
 
-    @NotNull
-    static FileOutput to(@NotNull Supplier<Path> directory, @NotNull String fileName) {
-        return () -> Files.newOutputStream(
-                directory.get().resolve(fileName),
+    @Override
+    public OutputStream newOutputStream() throws IOException {
+        return Files.newOutputStream(
+                file,
                 StandardOpenOption.WRITE,
+                StandardOpenOption.CREATE,
                 StandardOpenOption.TRUNCATE_EXISTING);
     }
 
-    @NotNull
-    static FileOutput to(@NotNull Path file) {
-        return new FileOutputImpl(file);
+    @Override
+    public String toString() {
+        @SuppressWarnings("StringBufferReplaceableByString") 
+        final StringBuilder sb = new StringBuilder("FileOutputImpl{");
+        sb.append(file);
+        sb.append('}');
+        return sb.toString();
     }
 }

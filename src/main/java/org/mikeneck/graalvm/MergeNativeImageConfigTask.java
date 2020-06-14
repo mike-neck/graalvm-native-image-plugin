@@ -26,6 +26,7 @@ import org.gradle.api.Action;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
 import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.file.FileCollection;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Provider;
@@ -39,7 +40,7 @@ import org.mikeneck.graalvm.config.ProxyConfig;
 import org.mikeneck.graalvm.config.ReflectConfig;
 import org.mikeneck.graalvm.config.ResourceConfig;
 import org.mikeneck.graalvm.config.task.ConfigFileConfiguration;
-import org.mikeneck.graalvm.config.task.ConfigFileProvider;
+import org.mikeneck.graalvm.config.task.ConfigFileProviders;
 import org.mikeneck.graalvm.config.task.FileInput;
 import org.mikeneck.graalvm.config.task.FileOutput;
 import org.mikeneck.graalvm.config.task.MergeConfigFileWork;
@@ -77,6 +78,7 @@ public class MergeNativeImageConfigTask extends DefaultTask {
             Files.createDirectories(destinationDir);
         }
         for (MergeConfigFileWork<? extends MergeableConfig<? extends MergeableConfig<?>>> work : createWorks(destinationDir)) {
+            getLogger().info("work of {}", work);
             work.run();
         }
     }
@@ -87,33 +89,29 @@ public class MergeNativeImageConfigTask extends DefaultTask {
                             new MergeConfigFileWork<>(
                                     JniConfig.class,
                                     JniConfig::new,
-                                    FileInput.of(files),
-                                    FileOutput.overriding(
-                                            destinationDir.resolve(JNI_CONFIG_JSON))))
+                                    FileInput.from("jniConfig", files),
+                                    FileOutput.to(destinationDir.resolve(JNI_CONFIG_JSON))))
                             .get(),
                     proxyConfigs.map(files ->
                             new MergeConfigFileWork<>(
                                     ProxyConfig.class,
                                     ProxyConfig::new,
-                                    FileInput.of(files),
-                                    FileOutput.overriding(
-                                            destinationDir.resolve(PROXY_CONFIG_JSON))))
+                                    FileInput.from("proxyConfig", files),
+                                    FileOutput.to(destinationDir.resolve(PROXY_CONFIG_JSON))))
                             .get(),
                     reflectConfigs.map(files ->
                             new MergeConfigFileWork<>(
                                     ReflectConfig.class,
                                     ReflectConfig::new,
-                                    FileInput.of(files),
-                                    FileOutput.overriding(
-                                            destinationDir.resolve(PROXY_CONFIG_JSON))))
+                                    FileInput.from("reflectConfig", files),
+                                    FileOutput.to(destinationDir.resolve(REFLECT_CONFIG_JSON))))
                             .get(),
                     resourceConfigs.map(files ->
                             new MergeConfigFileWork<>(
                                     ResourceConfig.class,
                                     ResourceConfig::new,
-                                    FileInput.of(files),
-                                    FileOutput.overriding(
-                                            destinationDir.resolve(PROXY_CONFIG_JSON))))
+                                    FileInput.from("resourceConfig", files),
+                                    FileOutput.to(destinationDir.resolve(RESOURCE_CONFIG_JSON))))
                             .get());
     }
 
@@ -130,49 +128,12 @@ public class MergeNativeImageConfigTask extends DefaultTask {
         this.destinationDir.fileProvider(OutputDirectoryProvider.ofPath(destinationDir));
     }
 
-    public void fromDirectories(File... directories) {
-        for (File directory : directories) {
-            fromDirectory(directory);
-        }
-    }
-
-    public void fromDirectory(File directory) {
-        jniConfigs.add(ConfigFileProvider.fromDirectoryResolving(directory, JNI_CONFIG_JSON));
-        proxyConfigs.add(ConfigFileProvider.fromDirectoryResolving(directory, PROXY_CONFIG_JSON));
-        reflectConfigs.add(ConfigFileProvider.fromDirectoryResolving(directory, REFLECT_CONFIG_JSON));
-        resourceConfigs.add(ConfigFileProvider.fromDirectoryResolving(directory, RESOURCE_CONFIG_JSON));
-    }
-
-    public void fromDirectories(Path... directories) {
-        for (Path directory : directories) {
-            fromDirectory(directory);
-        }
-    }
-
-    public void fromDirectory(Path directory) {
-        jniConfigs.add(ConfigFileProvider.fromDirectoryResolving(directory, JNI_CONFIG_JSON));
-        proxyConfigs.add(ConfigFileProvider.fromDirectoryResolving(directory, PROXY_CONFIG_JSON));
-        reflectConfigs.add(ConfigFileProvider.fromDirectoryResolving(directory, REFLECT_CONFIG_JSON));
-        resourceConfigs.add(ConfigFileProvider.fromDirectoryResolving(directory, RESOURCE_CONFIG_JSON));
-    }
-
-    @SafeVarargs
-    public final void fromDirectories(Provider<File>... directories) {
-        fromDirectories(Arrays.asList(directories));
-    }
-
-    public final void fromDirectories(List<Provider<File>> directories) {
-        for (Provider<File> directory : directories) {
-            fromDirectory(directory);
-        }
-    }
-
     @SuppressWarnings("UnstableApiUsage")
-    public void fromDirectory(Provider<File> directory) {
-        jniConfigs.add(directory.flatMap(dir -> ConfigFileProvider.fromDirectoryResolving(dir, JNI_CONFIG_JSON)));
-        proxyConfigs.add(directory.flatMap(dir -> ConfigFileProvider.fromDirectoryResolving(dir, PROXY_CONFIG_JSON)));
-        reflectConfigs.add(directory.flatMap(dir -> ConfigFileProvider.fromDirectoryResolving(dir, REFLECT_CONFIG_JSON)));
-        resourceConfigs.add(directory.flatMap(dir -> ConfigFileProvider.fromDirectoryResolving(dir, RESOURCE_CONFIG_JSON)));
+    public void fromDirectories(Provider<FileCollection> directories) {
+        this.jniConfigs.addAll(directories.flatMap(files -> ConfigFileProviders.resolving(files, JNI_CONFIG_JSON)));
+        this.proxyConfigs.addAll(directories.flatMap(files -> ConfigFileProviders.resolving(files, PROXY_CONFIG_JSON)));
+        this.reflectConfigs.addAll(directories.flatMap(files -> ConfigFileProviders.resolving(files, REFLECT_CONFIG_JSON)));
+        this.resourceConfigs.addAll(directories.flatMap(files -> ConfigFileProviders.resolving(files, RESOURCE_CONFIG_JSON)));
     }
 
     public void configFiles(Action<ConfigFileConfiguration> action) {

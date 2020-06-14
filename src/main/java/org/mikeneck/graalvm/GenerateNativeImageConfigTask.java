@@ -27,8 +27,6 @@ import javax.inject.Inject;
 import org.gradle.api.Action;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
-import org.gradle.api.file.Directory;
-import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.Property;
@@ -39,7 +37,6 @@ import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.process.ExecResult;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class GenerateNativeImageConfigTask extends DefaultTask {
 
@@ -52,22 +49,20 @@ public class GenerateNativeImageConfigTask extends DefaultTask {
 
     @OutputDirectory
     @NotNull
-    private final DirectoryProperty temporaryDirectory;
+    private final File temporaryDirectory;
 
     private final List<JavaExecutionImpl> javaExecutions;
 
-    @SuppressWarnings("UnstableApiUsage")
     @Inject
     public GenerateNativeImageConfigTask(Project project) {
         ObjectFactory objectFactory = project.getObjects();
         this.extension = objectFactory.property(NativeImageExtension.class);
         this.exitOnApplicationError = objectFactory.property(Boolean.class);
-        this.temporaryDirectory = objectFactory.directoryProperty();
         this.javaExecutions = new ArrayList<>();
 
         this.exitOnApplicationError.set(true);
         File buildDir = project.getBuildDir();
-        this.temporaryDirectory.set(buildDir.toPath().resolve("tmp/native-image-config").toFile());
+        this.temporaryDirectory = buildDir.toPath().resolve("tmp/native-image-config").toFile();
     }
 
     @TaskAction
@@ -79,11 +74,11 @@ public class GenerateNativeImageConfigTask extends DefaultTask {
             javaExecutions.add(newJavaExecution(0));
         }
 
-        Path temporaryDirectory = this.temporaryDirectory.get().getAsFile().toPath();
+        Path temporaryDirectory = this.temporaryDirectory.toPath();
         createDirectory(temporaryDirectory);
 
         for (JavaExecutionImpl javaExecution : javaExecutions) {
-            Path outputDirectory = javaExecution.outputDirectory.get().getAsFile().toPath();
+            Path outputDirectory = javaExecution.outputDirectory.toPath();
             createDirectory(outputDirectory);
 
             logger.debug("execution java: {}", javaExecution);
@@ -139,10 +134,9 @@ public class GenerateNativeImageConfigTask extends DefaultTask {
      * @deprecated this is intended to be used by Gradle.
      */
     @Deprecated
-    @SuppressWarnings("unused")
-    @Nullable
+    @NotNull
     public File getTemporaryDirectory() {
-        return temporaryDirectory.getAsFile().getOrNull();
+        return temporaryDirectory;
     }
 
     Supplier<GraalVmHome> graalVmHome() {
@@ -160,14 +154,11 @@ public class GenerateNativeImageConfigTask extends DefaultTask {
         javaExecutions.add(javaExecution);
     }
 
-    @SuppressWarnings("UnstableApiUsage")
     @NotNull
     private JavaExecutionImpl newJavaExecution(int index) {
         Project project = getProject();
         ObjectFactory objectFactory = project.getObjects();
-        DirectoryProperty outputDirectory = objectFactory.directoryProperty();
-        Provider<Directory> directoryProvider = temporaryDirectory.map(it -> it.dir("out-" + index));
-        outputDirectory.set(directoryProvider);
+        File outputDirectory = temporaryDirectory.toPath().resolve("out-" + index).toFile();
         Property<byte[]> stdIn = objectFactory.property(byte[].class);
         stdIn.set(new byte[0]);
         return new JavaExecutionImpl(

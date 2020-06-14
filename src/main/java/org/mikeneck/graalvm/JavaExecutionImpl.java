@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.function.Supplier;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
-import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
@@ -54,7 +53,7 @@ public class JavaExecutionImpl implements JavaExecution, Action<JavaExecSpec> {
     @Internal
     private final Supplier<GraalVmHome> graalVmHome;
     @OutputDirectory
-    final DirectoryProperty outputDirectory;
+    final File outputDirectory;
     @Input
     private final Property<byte[]> inputStream;
     @Input
@@ -67,7 +66,7 @@ public class JavaExecutionImpl implements JavaExecution, Action<JavaExecSpec> {
             Project project,
             Provider<String> mainClass,
             Supplier<GraalVmHome> graalVmHome,
-            DirectoryProperty outputDirectory,
+            File outputDirectory,
             Property<byte[]> inputStream) {
         this.index = index;
         this.classes = classes(project);
@@ -113,7 +112,7 @@ public class JavaExecutionImpl implements JavaExecution, Action<JavaExecSpec> {
                 dependencies
         );
         javaExecSpec.environment(env);
-        Path outputDir = outputDirectory.getAsFile().get().toPath();
+        Path outputDir = outputDirectory.toPath();
         javaExecSpec.jvmArgs(String.format("-agentlib:native-image-agent=config-output-dir=%s", outputDir));
         javaExecSpec.setStandardInput(inputStream());
     }
@@ -164,7 +163,7 @@ public class JavaExecutionImpl implements JavaExecution, Action<JavaExecSpec> {
     }
 
     @Deprecated
-    public DirectoryProperty getOutputDirectory() {
+    public File getOutputDirectory() {
         return outputDirectory;
     }
 

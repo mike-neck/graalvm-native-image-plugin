@@ -27,8 +27,12 @@ import java.util.List;
 import java.util.function.Supplier;
 import org.jetbrains.annotations.NotNull;
 import org.mikeneck.graalvm.config.MergeableConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MergeConfigFileWork<C extends MergeableConfig<C>> {
+
+    private static final Logger logger = LoggerFactory.getLogger(MergeConfigFileWork.class);
 
     @NotNull
     private final ObjectMapper objectMapper;
@@ -49,7 +53,7 @@ public class MergeConfigFileWork<C extends MergeableConfig<C>> {
         this(new ObjectMapper(), klass, empty, inputFiles, outputFile);
     }
 
-    MergeConfigFileWork(
+    public MergeConfigFileWork(
             @NotNull ObjectMapper objectMapper,
             @NotNull Class<C> klass,
             @NotNull Supplier<? extends C> empty,
@@ -65,6 +69,7 @@ public class MergeConfigFileWork<C extends MergeableConfig<C>> {
     public void run() throws IOException {
         List<C> entries = readAllFromInputFiles();
         C merged = merge(entries);
+        logger.info("merged config file: {}", merged);
         writeToOutput(merged);
     }
 
@@ -85,9 +90,18 @@ public class MergeConfigFileWork<C extends MergeableConfig<C>> {
     }
 
     void writeToOutput(C merged) throws IOException {
+        logger.info("writing json to {}", outputFile);
         try (OutputStream outputStream = outputFile.newOutputStream();
              Writer writer = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
-            objectMapper.writer().writeValue(writer, merged);
+            objectMapper.writeValue(writer, merged);
         }
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("MergeConfigFileWork{");
+        sb.append("klass=").append(klass);
+        sb.append('}');
+        return sb.toString();
     }
 }

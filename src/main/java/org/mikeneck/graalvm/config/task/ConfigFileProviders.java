@@ -16,33 +16,27 @@
 package org.mikeneck.graalvm.config.task;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
-import java.util.function.Supplier;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.stream.Collectors;
+import org.gradle.api.file.FileCollection;
+import org.gradle.api.internal.provider.DefaultProvider;
 import org.jetbrains.annotations.NotNull;
 
-public interface FileOutput {
+public class ConfigFileProviders extends DefaultProvider<List<File>> {
 
-    OutputStream newOutputStream() throws IOException;
-
-    @NotNull
-    static FileOutput to(@NotNull File file) {
-        return to(file.toPath());
+    ConfigFileProviders(Callable<? extends List<File>> value) {
+        super(value);
     }
 
     @NotNull
-    static FileOutput to(@NotNull Supplier<Path> directory, @NotNull String fileName) {
-        return () -> Files.newOutputStream(
-                directory.get().resolve(fileName),
-                StandardOpenOption.WRITE,
-                StandardOpenOption.TRUNCATE_EXISTING);
-    }
-
-    @NotNull
-    static FileOutput to(@NotNull Path file) {
-        return new FileOutputImpl(file);
+    public static ConfigFileProviders resolving(@NotNull FileCollection files, @NotNull String fileName) {
+        return new ConfigFileProviders(() -> files.getFiles()
+                .stream()
+                .map(File::toPath)
+                .map(path -> path.resolve(fileName))
+                .map(Path::toFile)
+                .collect(Collectors.toList()));
     }
 }

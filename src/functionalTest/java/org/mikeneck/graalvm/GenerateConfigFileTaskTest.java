@@ -40,7 +40,7 @@ public class GenerateConfigFileTaskTest {
         GradleRunner runner = GradleRunner.create();
         runner.forwardOutput();
         runner.withPluginClasspath();
-        runner.withArguments("clean","generateNativeImageConfig", "--stacktrace", "--warning-mode", "all");
+        runner.withArguments("clean","generateNativeImageConfig", "--stacktrace", "--info", "--warning-mode", "all");
         runner.withProjectDir(projectDir.toFile());
         BuildResult result = runner.build();
 

@@ -19,30 +19,33 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.LoggerFactory;
 
 public interface FileInput {
 
     Reader newReader(Charset charset) throws IOException;
 
     @NotNull
-    static List<FileInput> of(@NotNull List<File> files) {
-        return files.stream()
-                .map(FileInput::of)
+    static List<FileInput> from(@NotNull String resourceGroupName, @NotNull Iterable<File> files) {
+        LoggerFactory.getLogger(FileInput.class).info("input files: {}", files);
+        return StreamSupport
+                .stream(files.spliterator(), false)
+                .map(file -> FileInput.from(resourceGroupName, file))
                 .collect(Collectors.toList());
     }
 
     @NotNull
-    static FileInput of(@NotNull File file) {
-        return of(file.toPath());
+    static FileInput from(@NotNull String resourceGroupName, @NotNull File file) {
+        return from(resourceGroupName, file.toPath());
     }
 
     @NotNull
-    static FileInput of(@NotNull Path file) {
-        return charset -> Files.newBufferedReader(file, charset);
+    static FileInput from(@NotNull String resourceGroupName, @NotNull Path file) {
+        return new FileInputImpl(resourceGroupName, file);
     }
 }
