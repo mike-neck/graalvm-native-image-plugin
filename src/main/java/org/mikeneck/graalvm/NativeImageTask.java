@@ -20,27 +20,94 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import javax.inject.Inject;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.InvalidUserDataException;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
+import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.Directory;
+import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.file.FileCollection;
+import org.gradle.api.file.ProjectLayout;
+import org.gradle.api.file.RegularFile;
+import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
+import org.gradle.api.provider.ProviderFactory;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
+import org.gradle.api.tasks.TaskOutputs;
+import org.gradle.api.tasks.bundling.Jar;
+import org.jetbrains.annotations.NotNull;
 
 public class NativeImageTask extends DefaultTask {
 
-    @Internal
-    private final Property<NativeImageExtension> extension;
+    public static final String DEFAULT_OUTPUT_DIRECTORY_NAME = "native-image";
 
-    public NativeImageTask() {
-        this.extension = getProject().getObjects().property(NativeImageExtension.class);
+    @Internal
+    private Property<NativeImageExtension> extension;
+
+    @NotNull
+    @Input
+    private final Provider<String> graalVmHome;
+
+    @NotNull
+    @Internal
+    private final Provider<Jar> jarTask;
+
+    @NotNull
+    @Input
+    private final Provider<String> mainClass;
+
+    @NotNull
+    @Input
+    private final Provider<String> executableName;
+
+    @NotNull
+    @Input
+    private final Provider<Configuration> runtimeClasspath;
+
+    @NotNull
+    @Input
+    private final ListProperty<String> additionalArguments;
+
+    @NotNull
+    @OutputDirectory
+    private final DirectoryProperty outputDirectory;
+
+    
+
+    @SuppressWarnings("UnstableApiUsage")
+    @Inject
+    public NativeImageTask(
+            @NotNull Project project,
+            @NotNull Provider<String> graalVmHome) {
+        ObjectFactory objectFactory = project.getObjects();
+        ProviderFactory providerFactory = project.getProviders();
+        ProjectLayout projectLayout = project.getLayout();
+        this.graalVmHome = graalVmHome;
+        this.jarTask = 
+                project.provider(() -> 
+                        project.getTasks()
+                                .withType(Jar.class)
+                                .findByName("jar"));
+        this.mainClass = objectFactory.property(String.class);
+        this.executableName = objectFactory.property(String.class);
+        this.runtimeClasspath = 
+                project.provider(() -> 
+                        project.getConfigurations()
+                                .getByName("runtimeClasspath"));
+        this.additionalArguments = objectFactory.listProperty(String.class);
+        this.outputDirectory =
+                objectFactory.directoryProperty()
+                .convention(projectLayout.getBuildDirectory().dir(DEFAULT_OUTPUT_DIRECTORY_NAME));
+        
     }
 
     void setExtension(NativeImageExtension extension) {
@@ -108,14 +175,15 @@ public class NativeImageTask extends DefaultTask {
     }
 
     @InputFile
-    public File getJarFile() {
-        NativeImageExtension nativeImageExtension = extension.get();
-        return nativeImageExtension.jarFile();
+    public Provider<File> getJarFile() {
+        return jarTask
+                .map(Task::getOutputs)
+                .map(TaskOutputs::getFiles)
+                .map(FileCollection::getSingleFile);
     }
 
     @OutputFile
-    public File getOutputExecutable() {
-        NativeImageExtension nativeImageExtension = extension.get();
-        return outputDirectoryPath().resolve(nativeImageExtension.executableName()).toFile();
+    public Provider<RegularFile> getOutputExecutable() {
+        return outputDirectory.file(executableName);
     }
 }
