@@ -143,12 +143,12 @@ public class GenerateNativeImageConfigTask extends DefaultTask {
         return () -> extension.get().graalVmHome();
     }
 
-    public void runApplicationWithoutArguments() {
+    public void byRunningApplicationWithoutArguments() {
         JavaExecutionImpl javaExecution = newJavaExecution(javaExecutions.size());
         javaExecutions.add(javaExecution);
     }
 
-    public void runApplication(Action<JavaExecution> argumentsConfiguration) {
+    public void byRunningApplication(Action<JavaExecution> argumentsConfiguration) {
         JavaExecutionImpl javaExecution = newJavaExecution(javaExecutions.size());
         argumentsConfiguration.execute(javaExecution);
         javaExecutions.add(javaExecution);

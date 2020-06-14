@@ -55,6 +55,7 @@ public class GenerateConfigFileTaskTest {
         assertTrue(Files.exists(projectDir.resolve("build/tmp/native-image-config/out-4")));
         assertTrue(Files.exists(projectDir.resolve("build/tmp/native-image-config/out-5")));
         assertTrue(Files.exists(projectDir.resolve("build/tmp/native-image-config/out-6")));
+        assertTrue(Files.exists(projectDir.resolve("build/tmp/native-image-config/out-7")));
         assertTrue(Files.exists(projectDir.resolve("build/native-image-config/jni-config.json")));
         assertTrue(Files.exists(projectDir.resolve("build/native-image-config/proxy-config.json")));
         assertTrue(Files.exists(projectDir.resolve("build/native-image-config/reflect-config.json")));

@@ -19,7 +19,7 @@ nativeImage {
 }
 
 nativeImageConfigFiles {
-  runApplication {
+  byRunningApplication {
     def stream = """
     |total: 2
     |contents:
@@ -30,7 +30,7 @@ nativeImageConfigFiles {
     |""".stripMargin()
     stdIn(stream)
   }
-  runApplication {
+  byRunningApplication {
     arguments('-p')
     stdIn("""
     |total: 2
@@ -41,7 +41,7 @@ nativeImageConfigFiles {
     |    size: 2203
     |""".stripMargin())
   }
-  runApplication {
+  byRunningApplication {
     stdIn("""
     |total: 2
     | contents:
@@ -51,7 +51,7 @@ nativeImageConfigFiles {
     |    size: 2203
     |""".stripMargin())
   }
-  runApplication {
+  byRunningApplication {
     arguments('-x')
     stdIn("""
     |total: 2
@@ -62,7 +62,7 @@ nativeImageConfigFiles {
     |    size: 2203
     |""".stripMargin())
   }
-  runApplication {
+  byRunningApplication {
     arguments('-p')
     environment(PRINTER_TYPE: 'proxy')
     stdIn("""
@@ -74,7 +74,7 @@ nativeImageConfigFiles {
     |    size: 2203
     |""".stripMargin())
   }
-  runApplication {
+  byRunningApplication {
     arguments('-x')
     environment(PRINTER_TYPE: 'proxy')
     stdIn("""
@@ -86,7 +86,8 @@ nativeImageConfigFiles {
     |    size: 2203
     |""".stripMargin())
   }
-  runApplication {
+  byRunningApplication {
     arguments('-h')
   }
+  byRunningApplicationWithoutArguments()
 }

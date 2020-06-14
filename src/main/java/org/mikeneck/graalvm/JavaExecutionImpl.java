@@ -153,6 +153,21 @@ public class JavaExecutionImpl implements JavaExecution, Action<JavaExecSpec> {
     }
 
     @Deprecated
+    public Provider<FileCollection> getClasses() {
+        return classes;
+    }
+
+    @Deprecated
+    public Provider<FileCollection> getResources() {
+        return resources;
+    }
+
+    @Deprecated
+    public Provider<FileCollection> getDependencies() {
+        return dependencies;
+    }
+
+    @Deprecated
     public Provider<String> getMainClass() {
         return mainClass;
     }
