@@ -23,14 +23,21 @@ import java.util.List;
 import java.util.Optional;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.InvalidUserDataException;
+import org.gradle.api.Project;
+import org.gradle.api.file.Directory;
+import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
+import org.gradle.api.provider.Provider;
+import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFile;
+import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
 
 public class NativeImageTask extends DefaultTask {
 
+    @Internal
     private final Property<NativeImageExtension> extension;
 
     public NativeImageTask() {
@@ -67,6 +74,10 @@ public class NativeImageTask extends DefaultTask {
     }
 
     @OutputDirectory
+    public Provider<Directory> getOutputDirectory() {
+        return extension.get().outputDirectory;
+    }
+
     public File outputDirectory() {
         return outputDirectoryPath().toFile();
     }
@@ -85,15 +96,24 @@ public class NativeImageTask extends DefaultTask {
     }
 
     private List<String> arguments() {
-        NativeImageArguments arguments = NativeImageArguments.create(getProject(), extension.get());
-        List<String> args = new ArrayList<>();
-        args.add("-cp");
-        args.add(arguments.classpath());
-        args.add(arguments.outputPath());
-        arguments.executableName().ifPresent(args::add);
-        args.addAll(arguments.additionalArguments());
-        args.add(arguments.mainClass());
-        return Collections.unmodifiableList(args);
+        return getArguments().getOrElse(Collections.emptyList());
+    }
+
+    @Input
+    public ListProperty<String> getArguments() {
+        Project project = getProject();
+        Provider<List<String>> provider = extension.map(ext -> NativeImageArguments.create(project, ext))
+                .map(arguments -> {
+                    List<String> args = new ArrayList<>();
+                    args.add("-cp");
+                    args.add(arguments.classpath());
+                    args.add(arguments.outputPath());
+                    arguments.executableName().ifPresent(args::add);
+                    args.addAll(arguments.additionalArguments());
+                    args.add(arguments.mainClass());
+                    return Collections.unmodifiableList(args);
+                });
+        return project.getObjects().listProperty(String.class).convention(provider);
     }
 
     @InputFile
