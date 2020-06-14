@@ -17,7 +17,6 @@ package org.mikeneck.graalvm;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -102,17 +101,9 @@ public class NativeImageTask extends DefaultTask {
     @Input
     public ListProperty<String> getArguments() {
         Project project = getProject();
-        Provider<List<String>> provider = extension.map(ext -> NativeImageArguments.create(project, ext))
-                .map(arguments -> {
-                    List<String> args = new ArrayList<>();
-                    args.add("-cp");
-                    args.add(arguments.classpath());
-                    args.add(arguments.outputPath());
-                    arguments.executableName().ifPresent(args::add);
-                    args.addAll(arguments.additionalArguments());
-                    args.add(arguments.mainClass());
-                    return Collections.unmodifiableList(args);
-                });
+        Provider<List<String>> provider = extension
+                .map(ext -> NativeImageArguments.create(project, ext))
+                .map(NativeImageArguments::getArguments);
         return project.getObjects().listProperty(String.class).convention(provider);
     }
 

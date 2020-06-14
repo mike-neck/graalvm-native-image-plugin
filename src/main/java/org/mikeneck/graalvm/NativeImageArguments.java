@@ -24,8 +24,21 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.gradle.api.Project;
+import org.jetbrains.annotations.NotNull;
 
 public interface NativeImageArguments {
+
+    @NotNull
+    default List<String> getArguments() {
+        List<String> args = new ArrayList<>();
+        args.add("-cp");
+        args.add(this.classpath());
+        args.add(this.outputPath());
+        this.executableName().ifPresent(args::add);
+        args.addAll(this.additionalArguments());
+        args.add(this.mainClass());
+        return Collections.unmodifiableList(args);
+    }
 
     String classpath();
 
