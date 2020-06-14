@@ -15,6 +15,8 @@
  */
 package org.mikeneck.graalvm.nativeimage;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
@@ -22,6 +24,17 @@ import org.jetbrains.annotations.NotNull;
 public interface NativeImageArguments {
 
     boolean supports(@NotNull OperatingSystem os);
+
+    default List<String> getArguments() {
+        List<String> args = new ArrayList<>();
+        args.add("-cp");
+        args.add(classpath());
+        args.add(outputPath());
+        executableName().ifPresent(args::add);
+        args.addAll(additionalArguments());
+        args.add(mainClass());
+        return Collections.unmodifiableList(args);
+    }
 
     String classpath();
 
