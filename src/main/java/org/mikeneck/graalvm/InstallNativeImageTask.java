@@ -20,27 +20,22 @@ import java.util.Optional;
 import javax.inject.Inject;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.InvalidUserDataException;
-import org.gradle.api.Project;
-import org.gradle.api.provider.Property;
+import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.StopExecutionException;
 import org.gradle.api.tasks.TaskAction;
 
 public class InstallNativeImageTask extends DefaultTask {
 
-    private final Property<NativeImageExtension> extension;
+    private final Provider<GraalVmHome> graalVmHome;
 
     @Inject
-    public InstallNativeImageTask(Project project) {
-        this.extension = project.getObjects().property(NativeImageExtension.class);
-    }
-
-    void setExtension(NativeImageExtension extension) {
-        this.extension.set(extension);
+    public InstallNativeImageTask(Provider<GraalVmHome> graalVmHome) {
+        this.graalVmHome = graalVmHome;
     }
 
     @TaskAction
     public void installNativeImage() {
-        GraalVmHome graalVmHome = graalVmHome();
+        GraalVmHome graalVmHome = this.graalVmHome.get();
         if (graalVmHome.notFound()) {
             getLogger().info("GRAALVM_HOME[{}] not found", graalVmHome);
             throw new InvalidUserDataException(String.format("graalVM not found at %s", graalVmHome));
@@ -62,15 +57,11 @@ public class InstallNativeImageTask extends DefaultTask {
         });
     }
 
-    private GraalVmHome graalVmHome() {
-        return extension.get().graalVmHome();
-    }
-
     Optional<Path> graalVmUpdaterCommand() {
-        return graalVmHome().graalVmUpdater();
+        return graalVmHome.get().graalVmUpdater();
     }
 
     Optional<Path> nativeImageCommand() {
-        return graalVmHome().nativeImage();
+        return graalVmHome.get().nativeImage();
     }
 }

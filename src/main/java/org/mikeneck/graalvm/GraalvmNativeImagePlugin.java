@@ -3,6 +3,7 @@
  */
 package org.mikeneck.graalvm;
 
+import java.nio.file.Paths;
 import java.util.stream.Collectors;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -19,19 +20,22 @@ public class GraalvmNativeImagePlugin implements Plugin<Project> {
 
         TaskContainer taskContainer = project.getTasks();
 
+        Provider<GraalVmHome> graalVmHome = project
+                .provider(() -> System.getProperty("java.home"))
+                .map(Paths::get)
+                .map(GraalVmHome::new);
+
         InstallNativeImageTask installNativeImageTask = taskContainer.create(
-                "installNativeImage", InstallNativeImageTask.class, project);
-        installNativeImageTask.setExtension(nativeImageExtension);
+                "installNativeImage", InstallNativeImageTask.class, graalVmHome);
         installNativeImageTask.setDescription("Installs native-image command by graalVm Updater command");
         installNativeImageTask.setGroup("graalvm");
 
-        taskContainer.create("nativeImage", NativeImageTask.class, task -> {
-            task.setExtension(nativeImageExtension);
-            task.dependsOn("jar");
-            task.setDescription("Creates native executable");
-            task.setGroup("graalvm");
-            task.dependsOn(installNativeImageTask);
-        });
+        NativeImageTask nativeImageTask = taskContainer.create(
+                "nativeImage", NativeImageTask.class, project, graalVmHome);
+        nativeImageTask.dependsOn("jar");
+        nativeImageTask.setDescription("Creates native executable");
+        nativeImageTask.setGroup("graalvm");
+        nativeImageTask.dependsOn(installNativeImageTask);
 
         GenerateNativeImageConfigTask nativeImageConfigFiles =
                 taskContainer.create(
@@ -41,7 +45,6 @@ public class GraalvmNativeImagePlugin implements Plugin<Project> {
         nativeImageConfigFiles.dependsOn("classes");
         nativeImageConfigFiles.setDescription("Generates native image config json files via test run.");
         nativeImageConfigFiles.setGroup("graalvm");
-        nativeImageConfigFiles.setNativeImageExtension(nativeImageExtension);
 
         MergeNativeImageConfigTask mergeNativeImageConfig = 
                 taskContainer.create(

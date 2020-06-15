@@ -31,11 +31,8 @@ import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.file.RegularFile;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.ListProperty;
-import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.InputFile;
-import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.OutputFile;
@@ -49,32 +46,13 @@ public class NativeImageTask extends DefaultTask {
 
     public static final String DEFAULT_OUTPUT_DIRECTORY_NAME = "native-image";
 
-    @Internal
-    private Property<NativeImageExtension> extension;
-
     @NotNull
-    @Input
-    private final Provider<String> graalVmHome;
-
-    @NotNull
-    @Internal
-    private final Provider<File> jarFile;
-
-    @NotNull
-    @Input
-    private final Provider<String> mainClass;
+    @Nested
+    private final Provider<GraalVmHome> graalVmHome;
 
     @NotNull
     @Input
     private final Provider<String> executableName;
-
-    @NotNull
-    @Input
-    private final Provider<Configuration> runtimeClasspath;
-
-    @NotNull
-    @Input
-    private final ListProperty<String> additionalArguments;
 
     @NotNull
     @OutputDirectory
@@ -88,42 +66,37 @@ public class NativeImageTask extends DefaultTask {
     @Inject
     public NativeImageTask(
             @NotNull Project project,
-            @NotNull Provider<String> graalVmHome) {
+            @NotNull Provider<GraalVmHome> graalVmHome) {
         ObjectFactory objectFactory = project.getObjects();
         ProjectLayout projectLayout = project.getLayout();
         this.graalVmHome = graalVmHome;
-        this.jarFile = 
-                project.provider(() -> 
-                        project.getTasks()
-                                .withType(Jar.class)
-                                .findByName("jar"))
+        Provider<File> jarFile = project.provider(() ->
+                project.getTasks()
+                        .withType(Jar.class)
+                        .findByName("jar"))
                 .flatMap(jar ->
                         project.provider(() ->
                                 jar.getOutputs()
                                         .getFiles()
                                         .getSingleFile()));
-        this.mainClass = objectFactory.property(String.class);
+        Provider<String> mainClass = objectFactory.property(String.class);
         this.executableName = objectFactory.property(String.class);
-        this.runtimeClasspath = 
+        Provider<Configuration>  runtimeClasspath = 
                 project.provider(() -> 
                         project.getConfigurations()
                                 .getByName("runtimeClasspath"));
-        this.additionalArguments = objectFactory.listProperty(String.class);
+        @NotNull ListProperty<String> additionalArguments = objectFactory.listProperty(String.class);
         this.outputDirectory =
                 objectFactory.directoryProperty()
                 .convention(projectLayout.getBuildDirectory().dir(DEFAULT_OUTPUT_DIRECTORY_NAME));
         NativeImageArgumentsFactory nativeImageArgumentsFactory = NativeImageArgumentsFactory.getInstance();
         this.nativeImageArguments = nativeImageArgumentsFactory.create(
-                this.runtimeClasspath,
-                this.mainClass,
-                this.jarFile,
+                runtimeClasspath,
+                mainClass,
+                jarFile,
                 this.outputDirectory.map(Directory::getAsFile),
-                this.executableName,
-                this.additionalArguments);
-    }
-
-    void setExtension(NativeImageExtension extension) {
-        this.extension.set(extension);
+                executableName,
+                additionalArguments);
     }
 
     @TaskAction
@@ -148,12 +121,7 @@ public class NativeImageTask extends DefaultTask {
     }
 
     private GraalVmHome graalVmHome() {
-        return extension.get().graalVmHome();
-    }
-
-    @OutputDirectory
-    public Provider<Directory> getOutputDirectory() {
-        return extension.get().outputDirectory;
+        return graalVmHome.get();
     }
 
     public File outputDirectory() {
@@ -161,7 +129,7 @@ public class NativeImageTask extends DefaultTask {
     }
 
     private Path outputDirectoryPath() {
-        return extension.get().outputDirectory.getAsFile().map(File::toPath).get();
+        return outputDirectory.map(Directory::getAsFile).map(File::toPath).get();
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -184,12 +152,6 @@ public class NativeImageTask extends DefaultTask {
         ListProperty<String> listProperty = objects.listProperty(String.class);
         listProperty.set(project.provider(nativeImageArguments::getArguments));
         return listProperty;
-    }
-
-    @NotNull
-    @InputFile
-    public Provider<File> getJarFile() {
-        return jarFile;
     }
 
     @NotNull

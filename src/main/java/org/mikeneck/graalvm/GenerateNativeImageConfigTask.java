@@ -119,10 +119,6 @@ public class GenerateNativeImageConfigTask extends DefaultTask {
         this.exitOnApplicationError.set(false);
     }
 
-    void setNativeImageExtension(@NotNull NativeImageExtension extension) {
-        this.extension.set(extension);
-    }
-
     @Nested
     public List<JavaExecutionImpl> getJavaExecutions() {
         return javaExecutions;
