@@ -24,27 +24,26 @@ import javax.inject.Inject;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.InvalidUserDataException;
 import org.gradle.api.Project;
-import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
-import org.gradle.api.file.FileCollection;
 import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.file.RegularFile;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
-import org.gradle.api.provider.ProviderFactory;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.Internal;
+import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
-import org.gradle.api.tasks.TaskOutputs;
 import org.gradle.api.tasks.bundling.Jar;
 import org.jetbrains.annotations.NotNull;
+import org.mikeneck.graalvm.nativeimage.NativeImageArguments;
+import org.mikeneck.graalvm.nativeimage.NativeImageArgumentsFactory;
 
 public class NativeImageTask extends DefaultTask {
 
@@ -59,7 +58,7 @@ public class NativeImageTask extends DefaultTask {
 
     @NotNull
     @Internal
-    private final Provider<Jar> jarTask;
+    private final Provider<File> jarFile;
 
     @NotNull
     @Input
@@ -81,7 +80,9 @@ public class NativeImageTask extends DefaultTask {
     @OutputDirectory
     private final DirectoryProperty outputDirectory;
 
-    
+    @NotNull
+    @Nested
+    private final NativeImageArguments nativeImageArguments;
 
     @SuppressWarnings("UnstableApiUsage")
     @Inject
@@ -89,14 +90,18 @@ public class NativeImageTask extends DefaultTask {
             @NotNull Project project,
             @NotNull Provider<String> graalVmHome) {
         ObjectFactory objectFactory = project.getObjects();
-        ProviderFactory providerFactory = project.getProviders();
         ProjectLayout projectLayout = project.getLayout();
         this.graalVmHome = graalVmHome;
-        this.jarTask = 
+        this.jarFile = 
                 project.provider(() -> 
                         project.getTasks()
                                 .withType(Jar.class)
-                                .findByName("jar"));
+                                .findByName("jar"))
+                .flatMap(jar ->
+                        project.provider(() ->
+                                jar.getOutputs()
+                                        .getFiles()
+                                        .getSingleFile()));
         this.mainClass = objectFactory.property(String.class);
         this.executableName = objectFactory.property(String.class);
         this.runtimeClasspath = 
@@ -107,7 +112,14 @@ public class NativeImageTask extends DefaultTask {
         this.outputDirectory =
                 objectFactory.directoryProperty()
                 .convention(projectLayout.getBuildDirectory().dir(DEFAULT_OUTPUT_DIRECTORY_NAME));
-        
+        NativeImageArgumentsFactory nativeImageArgumentsFactory = NativeImageArgumentsFactory.getInstance();
+        this.nativeImageArguments = nativeImageArgumentsFactory.create(
+                this.runtimeClasspath,
+                this.mainClass,
+                this.jarFile,
+                this.outputDirectory.map(Directory::getAsFile),
+                this.executableName,
+                this.additionalArguments);
     }
 
     void setExtension(NativeImageExtension extension) {
@@ -168,20 +180,19 @@ public class NativeImageTask extends DefaultTask {
     @Input
     public ListProperty<String> getArguments() {
         Project project = getProject();
-        Provider<List<String>> provider = extension
-                .map(ext -> NativeImageArguments.create(project, ext))
-                .map(NativeImageArguments::getArguments);
-        return project.getObjects().listProperty(String.class).convention(provider);
+        ObjectFactory objects = project.getObjects();
+        ListProperty<String> listProperty = objects.listProperty(String.class);
+        listProperty.set(project.provider(nativeImageArguments::getArguments));
+        return listProperty;
     }
 
+    @NotNull
     @InputFile
     public Provider<File> getJarFile() {
-        return jarTask
-                .map(Task::getOutputs)
-                .map(TaskOutputs::getFiles)
-                .map(FileCollection::getSingleFile);
+        return jarFile;
     }
 
+    @NotNull
     @OutputFile
     public Provider<RegularFile> getOutputExecutable() {
         return outputDirectory.file(executableName);

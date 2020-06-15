@@ -18,6 +18,7 @@ package org.mikeneck.graalvm.nativeimage;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.gradle.api.tasks.Nested;
 import org.jetbrains.annotations.NotNull;
 
 class WindowsNativeImageArguments implements NativeImageArguments {
@@ -66,5 +67,11 @@ class WindowsNativeImageArguments implements NativeImageArguments {
     @Override
     public String mainClass() {
         return wrapValue(delegate.mainClass());
+    }
+
+    @NotNull
+    @Nested
+    public NativeImageArguments getDelegate() {
+        return delegate;
     }
 }
