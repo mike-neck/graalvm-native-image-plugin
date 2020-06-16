@@ -19,6 +19,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.file.Directory;
+import org.gradle.api.file.RegularFile;
+import org.gradle.api.provider.Provider;
 import org.jetbrains.annotations.NotNull;
 
 public interface NativeImageArguments {
@@ -48,4 +52,16 @@ public interface NativeImageArguments {
 
     @NotNull
     String mainClass();
+
+    void setRuntimeClasspath(@NotNull Provider<Configuration> runtimeClasspath);
+
+    void setMainClass(@NotNull Provider<String> mainClass);
+
+    void setJarFile(@NotNull Provider<RegularFile> jarFile);
+
+    void setOutputDirectory(@NotNull Provider<Directory> outputDirectory);
+
+    void setExecutableName(@NotNull Provider<String> executableName);
+
+    void addArguments(@NotNull Provider<Iterable<String>> arguments);
 }

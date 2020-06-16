@@ -8,22 +8,28 @@ import java.util.stream.Collectors;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.file.FileCollection;
+import org.gradle.api.model.ObjectFactory;
+import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.TaskContainer;
 import org.jetbrains.annotations.NotNull;
 
 public class GraalvmNativeImagePlugin implements Plugin<Project> {
 
+    @SuppressWarnings("UnstableApiUsage")
     public void apply(@NotNull Project project) {
         NativeImageExtension nativeImageExtension = new NativeImageExtension(project);
         project.getExtensions().add("nativeImage", nativeImageExtension);
 
         TaskContainer taskContainer = project.getTasks();
 
-        Provider<GraalVmHome> graalVmHome = project
-                .provider(() -> System.getProperty("java.home"))
-                .map(Paths::get)
-                .map(GraalVmHome::new);
+        ObjectFactory objectFactory = project.getObjects();
+        Property<GraalVmHome> graalVmHome = objectFactory
+                .property(GraalVmHome.class)
+                .convention(
+                        project.provider(() -> System.getProperty("java.home"))
+                                .map(Paths::get)
+                                .map(GraalVmHome::new));
 
         InstallNativeImageTask installNativeImageTask = taskContainer.create(
                 "installNativeImage", InstallNativeImageTask.class, graalVmHome);

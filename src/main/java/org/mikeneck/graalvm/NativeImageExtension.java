@@ -33,7 +33,7 @@ import org.gradle.api.provider.Property;
 import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings({"WeakerAccess", "UnstableApiUsage"})
-public class NativeImageExtension {
+public class NativeImageExtension implements NativeImageConfig {
 
     public static final String DEFAULT_OUTPUT_DIRECTORY_NAME = "native-image";
 
@@ -89,38 +89,47 @@ public class NativeImageExtension {
         return new GraalVmHome(path);
     }
 
+    @Override
     public void setGraalVmHome(String graalVmHome) {
         this.graalVmHome.set(graalVmHome);
     }
 
+    @Override
     public void setJarTask(Task jarTask) {
         this.jarTask.set(jarTask);
     }
 
+    @Override
     public void setMainClass(String mainClass) {
         this.mainClass.set(mainClass);
     }
 
+    @Override
     public void setExecutableName(String name) {
         this.executableName.set(name);
     }
 
+    @Override
     public void setRuntimeClasspath(Configuration configuration) {
         this.runtimeClasspath.set(configuration);
     }
 
+    @Override
     public void setOutputDirectory(File directory) {
         outputDirectory.fileProvider(OutputDirectoryProvider.ofFile(directory));
     }
 
+    @Override
     public void setOutputDirectory(Path directory) {
         outputDirectory.fileProvider(OutputDirectoryProvider.ofPath(directory));
     }
 
+    @Override
     public void setOutputDirectory(String directory) {
         outputDirectory.dir(directory);
     }
 
+    @Override
     public void arguments(String... arguments) {
         List<String> list = Arrays.stream(arguments)
                 .filter(Objects::nonNull)

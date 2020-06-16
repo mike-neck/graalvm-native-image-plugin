@@ -18,6 +18,10 @@ package org.mikeneck.graalvm.nativeimage;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.file.Directory;
+import org.gradle.api.file.RegularFile;
+import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Nested;
 import org.jetbrains.annotations.NotNull;
 
@@ -67,6 +71,36 @@ class WindowsNativeImageArguments implements NativeImageArguments {
     @Override
     public String mainClass() {
         return wrapValue(delegate.mainClass());
+    }
+
+    @Override
+    public void setRuntimeClasspath(@NotNull Provider<Configuration> runtimeClasspath) {
+        delegate.setRuntimeClasspath(runtimeClasspath);
+    }
+
+    @Override
+    public void setMainClass(@NotNull Provider<String> mainClass) {
+        delegate.setMainClass(mainClass);
+    }
+
+    @Override
+    public void setJarFile(@NotNull Provider<RegularFile> jarFile) {
+        delegate.setJarFile(jarFile);
+    }
+
+    @Override
+    public void setOutputDirectory(@NotNull Provider<Directory> outputDirectory) {
+        delegate.setOutputDirectory(outputDirectory);
+    }
+
+    @Override
+    public void setExecutableName(@NotNull Provider<String> executableName) {
+        delegate.setExecutableName(executableName);
+    }
+
+    @Override
+    public void addArguments(@NotNull Provider<Iterable<String>> arguments) {
+        delegate.addArguments(arguments);
     }
 
     @NotNull

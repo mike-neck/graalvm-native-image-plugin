@@ -23,7 +23,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.file.Directory;
+import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.file.RegularFile;
+import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.ListProperty;
+import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFile;
@@ -34,24 +39,24 @@ import org.jetbrains.annotations.NotNull;
 class UnixLikeOsArguments implements NativeImageArguments {
 
     @NotNull
-    private final Provider<Configuration> runtimeClasspath;
+    private final Property<Configuration> runtimeClasspath;
     @NotNull
-    private final Provider<String> mainClass;
+    private final Property<String> mainClass;
     @NotNull
-    private final Provider<File> jarFile;
+    private final RegularFileProperty jarFile;
     @NotNull
-    private final Provider<File> outputDirectory;
+    private final DirectoryProperty outputDirectory;
     @NotNull
-    private final Provider<String> executableName;
+    private final Property<String> executableName;
     @NotNull
     private final ListProperty<String> additionalArguments;
 
     UnixLikeOsArguments(
-            @NotNull Provider<Configuration> runtimeClasspath,
-            @NotNull Provider<String> mainClass,
-            @NotNull Provider<File> jarFile,
-            @NotNull Provider<File> outputDirectory,
-            @NotNull Provider<String> executableName,
+            @NotNull Property<Configuration> runtimeClasspath,
+            @NotNull Property<String> mainClass,
+            @NotNull RegularFileProperty jarFile,
+            @NotNull DirectoryProperty outputDirectory,
+            @NotNull Property<String> executableName,
             @NotNull ListProperty<String> additionalArguments) {
         this.runtimeClasspath = runtimeClasspath;
         this.mainClass = mainClass;
@@ -65,7 +70,7 @@ class UnixLikeOsArguments implements NativeImageArguments {
     @Override
     public String classpath() {
         List<File> paths = new ArrayList<>(runtimeClasspath());
-        paths.add(jarFile.get());
+        paths.add(jarFile.getAsFile().get());
         return paths.stream()
                 .map(File::getAbsolutePath)
                 .collect(Collectors.joining(File.pathSeparator));
@@ -80,7 +85,12 @@ class UnixLikeOsArguments implements NativeImageArguments {
     @NotNull
     @Override
     public String outputPath() {
-        return String.format("-H:Path=%s", outputDirectory.map(File::getAbsolutePath).get());
+        return String.format(
+                "-H:Path=%s", 
+                outputDirectory
+                        .getAsFile()
+                        .map(File::getAbsolutePath)
+                        .get());
     }
 
     @NotNull
@@ -109,22 +119,42 @@ class UnixLikeOsArguments implements NativeImageArguments {
         return runtimeClasspath;
     }
 
+    @Override
+    public void setRuntimeClasspath(@NotNull Provider<Configuration> runtimeClasspath) {
+        this.runtimeClasspath.set(runtimeClasspath);
+    }
+
     @NotNull
     @Input
     public Provider<String> getMainClass() {
         return mainClass;
     }
 
+    @Override
+    public void setMainClass(@NotNull Provider<String> mainClass) {
+        this.mainClass.set(mainClass);
+    }
+
     @NotNull
     @InputFile
-    public Provider<File> getJarFile() {
+    public RegularFileProperty getJarFile() {
         return jarFile;
+    }
+
+    @Override
+    public void setJarFile(@NotNull Provider<RegularFile> jarFile) {
+        this.jarFile.set(jarFile);
     }
 
     @NotNull
     @OutputDirectory
-    public Provider<File> getOutputDirectory() {
+    public DirectoryProperty getOutputDirectory() {
         return outputDirectory;
+    }
+
+    @Override
+    public void setOutputDirectory(@NotNull Provider<Directory> outputDirectory) {
+        this.outputDirectory.set(outputDirectory);
     }
 
     @NotNull
@@ -133,9 +163,19 @@ class UnixLikeOsArguments implements NativeImageArguments {
         return executableName;
     }
 
+    @Override
+    public void setExecutableName(@NotNull Provider<String> executableName) {
+        this.executableName.set(executableName);
+    }
+
     @NotNull
     @Input
     public ListProperty<String> getAdditionalArguments() {
         return additionalArguments;
+    }
+
+    @Override
+    public void addArguments(@NotNull Provider<Iterable<String>> arguments) {
+        this.additionalArguments.addAll(arguments);
     }
 }

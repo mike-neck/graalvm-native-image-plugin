@@ -15,11 +15,12 @@
  */
 package org.mikeneck.graalvm.nativeimage;
 
-import java.io.File;
 import java.util.ServiceLoader;
 import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.ListProperty;
-import org.gradle.api.provider.Provider;
+import org.gradle.api.provider.Property;
 import org.jetbrains.annotations.NotNull;
 
 public interface NativeImageArgumentsFactory {
@@ -41,10 +42,10 @@ public interface NativeImageArgumentsFactory {
 
     @NotNull
     NativeImageArguments create(
-            @NotNull Provider<Configuration> runtimeClasspath,
-            @NotNull Provider<String> mainClass,
-            @NotNull Provider<File> jarFile,
-            @NotNull Provider<File> outputDirectory,
-            @NotNull Provider<String> executableName,
+            @NotNull Property<Configuration> runtimeClasspath,
+            @NotNull Property<String> mainClass,
+            @NotNull RegularFileProperty jarFile,
+            @NotNull DirectoryProperty outputDirectory,
+            @NotNull Property<String> executableName,
             @NotNull ListProperty<String> additionalArguments);
 }
