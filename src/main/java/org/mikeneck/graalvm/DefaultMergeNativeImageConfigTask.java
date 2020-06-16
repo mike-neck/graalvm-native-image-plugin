@@ -47,7 +47,7 @@ import org.mikeneck.graalvm.config.task.FileInput;
 import org.mikeneck.graalvm.config.task.FileOutput;
 import org.mikeneck.graalvm.config.task.MergeConfigFileWork;
 
-public class MergeNativeImageConfigTask extends DefaultTask {
+public class DefaultMergeNativeImageConfigTask extends DefaultTask {
 
     private static final String JNI_CONFIG_JSON = "jni-config.json";
     private static final String PROXY_CONFIG_JSON = "proxy-config.json";
@@ -63,7 +63,7 @@ public class MergeNativeImageConfigTask extends DefaultTask {
 
     @Inject
     @SuppressWarnings("UnstableApiUsage")
-    public MergeNativeImageConfigTask(@NotNull Project project) {
+    public DefaultMergeNativeImageConfigTask(@NotNull Project project) {
         ObjectFactory objects = project.getObjects();
         this.destinationDir = objects.directoryProperty();
         this.jniConfigs = objects.listProperty(File.class);
@@ -145,7 +145,7 @@ public class MergeNativeImageConfigTask extends DefaultTask {
 
     private class Configuration implements ConfigFileConfiguration {
 
-        final MergeNativeImageConfigTask thisObject = MergeNativeImageConfigTask.this;
+        final DefaultMergeNativeImageConfigTask thisObject = DefaultMergeNativeImageConfigTask.this;
 
         @NotNull
         @Override

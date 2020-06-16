@@ -3,13 +3,14 @@
  */
 package org.mikeneck.graalvm;
 
+import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.testfixtures.ProjectBuilder;
-import org.gradle.api.Project;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 /**
  * A simple unit test for the 'org.mikeneck.graalvm.greeting' plugin.
@@ -34,6 +35,6 @@ public class GraalvmNativeImagePluginTest {
 
         Task nativeImageTask = project.getTasks().getByName("nativeImage");
         assertNotNull(nativeImageTask);
-        assertThat(nativeImageTask, instanceOf(NativeImageTask.class));
+        assertThat(nativeImageTask, instanceOf(DefaultNativeImageTask.class));
     }
 }

@@ -24,12 +24,12 @@ import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.StopExecutionException;
 import org.gradle.api.tasks.TaskAction;
 
-public class InstallNativeImageTask extends DefaultTask {
+public class DefaultInstallNativeImageTask extends DefaultTask {
 
     private final Provider<GraalVmHome> graalVmHome;
 
     @Inject
-    public InstallNativeImageTask(Provider<GraalVmHome> graalVmHome) {
+    public DefaultInstallNativeImageTask(Provider<GraalVmHome> graalVmHome) {
         this.graalVmHome = graalVmHome;
     }
 

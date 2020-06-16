@@ -34,31 +34,31 @@ public class GraalvmNativeImagePlugin implements Plugin<Project> {
                                 .map(Paths::get)
                                 .map(GraalVmHome::new));
 
-        InstallNativeImageTask installNativeImageTask = taskContainer.create(
-                "installNativeImage", InstallNativeImageTask.class, graalVmHome);
+        DefaultInstallNativeImageTask installNativeImageTask = taskContainer.create(
+                "installNativeImage", DefaultInstallNativeImageTask.class, graalVmHome);
         installNativeImageTask.setDescription("Installs native-image command by graalVm Updater command");
         installNativeImageTask.setGroup("graalvm");
 
-        NativeImageTask nativeImageTask = taskContainer.create(
-                "nativeImage", NativeImageTask.class, project, graalVmHome);
+        DefaultNativeImageTask nativeImageTask = taskContainer.create(
+                "nativeImage", DefaultNativeImageTask.class, project, graalVmHome);
         nativeImageTask.dependsOn("jar");
         nativeImageTask.setDescription("Creates native executable");
         nativeImageTask.setGroup("graalvm");
         nativeImageTask.dependsOn(installNativeImageTask);
 
-        GenerateNativeImageConfigTask nativeImageConfigFiles =
+        DefaultGenerateNativeImageConfigTask nativeImageConfigFiles =
                 taskContainer.create(
                         "nativeImageConfigFiles",
-                        GenerateNativeImageConfigTask.class,
+                        DefaultGenerateNativeImageConfigTask.class,
                         project);
         nativeImageConfigFiles.dependsOn("classes");
         nativeImageConfigFiles.setDescription("Generates native image config json files via test run.");
         nativeImageConfigFiles.setGroup("graalvm");
 
-        MergeNativeImageConfigTask mergeNativeImageConfig = 
+        DefaultMergeNativeImageConfigTask mergeNativeImageConfig = 
                 taskContainer.create(
                         "mergeNativeImageConfig",
-                        MergeNativeImageConfigTask.class,
+                        DefaultMergeNativeImageConfigTask.class,
                         project);
         mergeNativeImageConfig.destinationDir(project.getBuildDir().toPath().resolve("native-image-config"));
         Provider<FileCollection> configDirs = project.provider(() -> nativeImageConfigFiles

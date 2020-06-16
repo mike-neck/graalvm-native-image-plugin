@@ -47,7 +47,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mikeneck.graalvm.nativeimage.NativeImageArguments;
 import org.mikeneck.graalvm.nativeimage.NativeImageArgumentsFactory;
 
-public class NativeImageTask extends DefaultTask implements NativeImageConfig {
+public class DefaultNativeImageTask extends DefaultTask implements NativeImageConfig {
 
     public static final String DEFAULT_OUTPUT_DIRECTORY_NAME = "native-image";
 
@@ -69,7 +69,7 @@ public class NativeImageTask extends DefaultTask implements NativeImageConfig {
 
     @SuppressWarnings("UnstableApiUsage")
     @Inject
-    public NativeImageTask(
+    public DefaultNativeImageTask(
             @NotNull Project project,
             @NotNull Property<GraalVmHome> graalVmHome) {
         ObjectFactory objectFactory = project.getObjects();

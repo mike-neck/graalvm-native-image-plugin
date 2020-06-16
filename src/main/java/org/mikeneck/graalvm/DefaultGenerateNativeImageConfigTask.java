@@ -39,7 +39,7 @@ import org.gradle.api.tasks.TaskAction;
 import org.gradle.process.ExecResult;
 import org.jetbrains.annotations.NotNull;
 
-public class GenerateNativeImageConfigTask extends DefaultTask {
+public class DefaultGenerateNativeImageConfigTask extends DefaultTask {
 
     @NotNull
     @Nested
@@ -60,7 +60,7 @@ public class GenerateNativeImageConfigTask extends DefaultTask {
     private final List<JavaExecutionImpl> javaExecutions;
 
     @Inject
-    public GenerateNativeImageConfigTask(Project project) {
+    public DefaultGenerateNativeImageConfigTask(Project project) {
         ObjectFactory objectFactory = project.getObjects();
         this.graalVmHome = objectFactory.property(GraalVmHome.class);
         this.exitOnApplicationError = objectFactory.property(Boolean.class);
