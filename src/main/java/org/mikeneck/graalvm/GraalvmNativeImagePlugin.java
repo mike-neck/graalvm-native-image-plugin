@@ -11,6 +11,7 @@ import org.gradle.api.file.FileCollection;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
+import org.gradle.api.provider.ProviderFactory;
 import org.gradle.api.tasks.TaskContainer;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,10 +25,12 @@ public class GraalvmNativeImagePlugin implements Plugin<Project> {
         TaskContainer taskContainer = project.getTasks();
 
         ObjectFactory objectFactory = project.getObjects();
+        ProviderFactory providerFactory = project.getProviders();
         Property<GraalVmHome> graalVmHome = objectFactory
                 .property(GraalVmHome.class)
                 .convention(
-                        project.provider(() -> System.getProperty("java.home"))
+                        providerFactory
+                                .environmentVariable("JAVA_HOME")
                                 .map(Paths::get)
                                 .map(GraalVmHome::new));
 
