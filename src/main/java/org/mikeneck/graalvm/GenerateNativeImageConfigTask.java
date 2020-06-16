@@ -128,6 +128,11 @@ public class GenerateNativeImageConfigTask extends DefaultTask {
         graalVmHome.set(project.provider(() -> new GraalVmHome(path)));
     }
 
+    @NotNull
+    public Property<GraalVmHome> getGraalVmHome() {
+        return graalVmHome;
+    }
+
     public void setExitOnApplicationError(boolean exitOnApplicationError) {
         this.exitOnApplicationError.set(exitOnApplicationError);
     }
@@ -141,7 +146,6 @@ public class GenerateNativeImageConfigTask extends DefaultTask {
     }
 
     @NotNull
-    @Input
     public Provider<String> getMainClass() {
         return mainClass;
     }
