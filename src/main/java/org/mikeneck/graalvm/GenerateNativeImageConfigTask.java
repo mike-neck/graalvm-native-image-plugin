@@ -31,6 +31,7 @@ import org.gradle.api.logging.Logger;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
+import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.OutputDirectory;
@@ -41,11 +42,16 @@ import org.jetbrains.annotations.NotNull;
 public class GenerateNativeImageConfigTask extends DefaultTask {
 
     @NotNull
-    private final Property<NativeImageExtension> extension;
+    @Nested
+    private final Property<GraalVmHome> graalVmHome;
 
     @Internal
     @NotNull
     private final Property<Boolean> exitOnApplicationError;
+
+    @NotNull
+    @Input
+    private final Property<String> mainClass;
 
     @OutputDirectory
     @NotNull
@@ -56,8 +62,9 @@ public class GenerateNativeImageConfigTask extends DefaultTask {
     @Inject
     public GenerateNativeImageConfigTask(Project project) {
         ObjectFactory objectFactory = project.getObjects();
-        this.extension = objectFactory.property(NativeImageExtension.class);
+        this.graalVmHome = objectFactory.property(GraalVmHome.class);
         this.exitOnApplicationError = objectFactory.property(Boolean.class);
+        this.mainClass = objectFactory.property(String.class);
         this.javaExecutions = new ArrayList<>();
 
         this.exitOnApplicationError.set(true);
@@ -107,12 +114,36 @@ public class GenerateNativeImageConfigTask extends DefaultTask {
         }
     }
 
+    public void setGraalVmHome(String path) {
+        Project project = getProject();
+        setGraalVmHome(project.file(path));
+    }
+
+    public void setGraalVmHome(File path) {
+        setGraalVmHome(path.toPath());
+    }
+
+    public void setGraalVmHome(Path path) {
+        Project project = getProject();
+        graalVmHome.set(project.provider(() -> new GraalVmHome(path)));
+    }
+
     public void setExitOnApplicationError(boolean exitOnApplicationError) {
         this.exitOnApplicationError.set(exitOnApplicationError);
     }
 
     public boolean getExitOnApplicationError() {
         return this.exitOnApplicationError.getOrElse(true);
+    }
+
+    public void setMainClass(String mainClass) {
+        this.mainClass.set(mainClass);
+    }
+
+    @NotNull
+    @Input
+    public Provider<String> getMainClass() {
+        return mainClass;
     }
 
     public void resumeOnApplicationError() {
@@ -136,7 +167,7 @@ public class GenerateNativeImageConfigTask extends DefaultTask {
     }
 
     Supplier<GraalVmHome> graalVmHome() {
-        return () -> extension.get().graalVmHome();
+        return graalVmHome::get;
     }
 
     public void byRunningApplicationWithoutArguments() {
@@ -166,9 +197,8 @@ public class GenerateNativeImageConfigTask extends DefaultTask {
                 stdIn);
     }
 
-    @SuppressWarnings("UnstableApiUsage")
     private Provider<String> mainClass() {
-        return extension.flatMap(ext -> ext.mainClass);
+        return this.mainClass;
     }
 
 }
