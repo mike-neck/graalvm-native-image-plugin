@@ -17,30 +17,52 @@ package org.mikeneck.graalvm;
 
 import java.io.File;
 import java.nio.file.Path;
+import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.Directory;
+import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.provider.Provider;
 
-public interface NativeImageConfig {
+public interface NativeImageTask extends Task, NativeImageConfig {
 
+    @Override
     void setGraalVmHome(String graalVmHome);
 
+    @Override
     void setJarTask(Task jarTask);
 
+    @Override
     void setMainClass(String mainClass);
 
+    @Override
     void setExecutableName(String name);
 
+    @Override
     void setRuntimeClasspath(Configuration configuration);
 
-    void setOutputDirectory(File directory);
+    @Override
+    default void setOutputDirectory(File directory) {
+        Project project = getProject();
+        ProjectLayout projectLayout = project.getLayout();
+        Provider<Directory> dir = projectLayout.dir(project.provider(() -> directory));
+        setOutputDirectory(dir);
+    }
 
-    void setOutputDirectory(Path directory);
+    @Override
+    default void setOutputDirectory(Path directory) {
+        setOutputDirectory(directory.toFile());
+    }
 
-    void setOutputDirectory(String directory);
+    @Override
+    default void setOutputDirectory(String directory) {
+        File dir = getProject().file(directory);
+        setOutputDirectory(dir);
+    }
 
+    @Override
     void setOutputDirectory(Provider<Directory> directory);
 
+    @Override
     void arguments(String... arguments);
 }

@@ -47,7 +47,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mikeneck.graalvm.nativeimage.NativeImageArguments;
 import org.mikeneck.graalvm.nativeimage.NativeImageArgumentsFactory;
 
-public class DefaultNativeImageTask extends DefaultTask implements NativeImageConfig {
+public class DefaultNativeImageTask extends DefaultTask implements NativeImageTask {
 
     public static final String DEFAULT_OUTPUT_DIRECTORY_NAME = "native-image";
 
@@ -206,21 +206,8 @@ public class DefaultNativeImageTask extends DefaultTask implements NativeImageCo
     }
 
     @Override
-    public void setOutputDirectory(File directory) {
-        Project project = getProject();
-        ProjectLayout layout = project.getLayout();
-        nativeImageArguments.setOutputDirectory(layout.dir(project.provider(() -> directory)));
-    }
-
-    @Override
-    public void setOutputDirectory(Path directory) {
-        setOutputDirectory(directory.toFile());
-    }
-
-    @Override
-    public void setOutputDirectory(String directory) {
-        Project project = getProject();
-        setOutputDirectory(project.file(directory));
+    public void setOutputDirectory(Provider<Directory> directory) {
+        nativeImageArguments.setOutputDirectory(directory);
     }
 
     @Override
