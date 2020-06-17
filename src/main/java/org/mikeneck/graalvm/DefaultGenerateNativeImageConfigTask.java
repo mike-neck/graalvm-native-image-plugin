@@ -39,7 +39,7 @@ import org.gradle.api.tasks.TaskAction;
 import org.gradle.process.ExecResult;
 import org.jetbrains.annotations.NotNull;
 
-public class DefaultGenerateNativeImageConfigTask extends DefaultTask {
+public class DefaultGenerateNativeImageConfigTask extends DefaultTask implements GenerateNativeImageConfigTask {
 
     @NotNull
     @Nested
@@ -60,13 +60,17 @@ public class DefaultGenerateNativeImageConfigTask extends DefaultTask {
     private final List<JavaExecutionImpl> javaExecutions;
 
     @Inject
-    public DefaultGenerateNativeImageConfigTask(Project project) {
+    public DefaultGenerateNativeImageConfigTask(
+            @NotNull Project project,
+            @NotNull Property<GraalVmHome> graalVmHome,
+            @NotNull Property<String> mainClass) {
         ObjectFactory objectFactory = project.getObjects();
         this.graalVmHome = objectFactory.property(GraalVmHome.class);
         this.exitOnApplicationError = objectFactory.property(Boolean.class);
-        this.mainClass = objectFactory.property(String.class);
+        this.mainClass = mainClass;
         this.javaExecutions = new ArrayList<>();
 
+        this.graalVmHome.set(graalVmHome);
         this.exitOnApplicationError.set(true);
         File buildDir = project.getBuildDir();
         this.temporaryDirectory = buildDir.toPath().resolve("tmp/native-image-config").toFile();
@@ -114,37 +118,40 @@ public class DefaultGenerateNativeImageConfigTask extends DefaultTask {
         }
     }
 
-    public void setGraalVmHome(String path) {
-        Project project = getProject();
-        setGraalVmHome(project.file(path));
-    }
-
-    public void setGraalVmHome(File path) {
-        setGraalVmHome(path.toPath());
-    }
-
-    public void setGraalVmHome(Path path) {
+    @Override
+    public void setGraalVmHome(@NotNull Path path) {
         Project project = getProject();
         graalVmHome.set(project.provider(() -> new GraalVmHome(path)));
     }
 
+    @Override
+    public void setGraalVmHome(@NotNull Provider<GraalVmHome> graalVmHome) {
+        this.graalVmHome.set(graalVmHome);
+    }
+
+    @Override
+    @Nested
     @NotNull
     public Property<GraalVmHome> getGraalVmHome() {
         return graalVmHome;
     }
 
+    @Override
     public void setExitOnApplicationError(boolean exitOnApplicationError) {
         this.exitOnApplicationError.set(exitOnApplicationError);
     }
 
+    @Override
     public boolean getExitOnApplicationError() {
         return this.exitOnApplicationError.getOrElse(true);
     }
 
-    public void setMainClass(String mainClass) {
-        this.mainClass.set(mainClass);
+    private Provider<String> mainClass() {
+        return this.mainClass;
     }
 
+    @Override
+    @Input
     @NotNull
     public Provider<String> getMainClass() {
         return mainClass;
@@ -154,6 +161,8 @@ public class DefaultGenerateNativeImageConfigTask extends DefaultTask {
         this.exitOnApplicationError.set(false);
     }
 
+    @Override
+    @NotNull
     @Nested
     public List<JavaExecutionImpl> getJavaExecutions() {
         return javaExecutions;
@@ -164,7 +173,9 @@ public class DefaultGenerateNativeImageConfigTask extends DefaultTask {
      * @return output directory
      * @deprecated this is intended to be used by Gradle.
      */
+    @Override
     @Deprecated
+    @OutputDirectory
     @NotNull
     public File getTemporaryDirectory() {
         return temporaryDirectory;
@@ -200,9 +211,4 @@ public class DefaultGenerateNativeImageConfigTask extends DefaultTask {
                 outputDirectory,
                 stdIn);
     }
-
-    private Provider<String> mainClass() {
-        return this.mainClass;
-    }
-
 }

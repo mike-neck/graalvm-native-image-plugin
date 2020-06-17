@@ -40,25 +40,15 @@ import org.jetbrains.annotations.NotNull;
 
 public class JavaExecutionImpl implements JavaExecution, Action<JavaExecSpec> {
 
-    @Input
     final int index;
-    @InputFiles
     final Provider<FileCollection> classes;
-    @InputFiles
     final Provider<FileCollection> resources;
-    @InputFiles
     final Provider<FileCollection> dependencies;
-    @Internal
     private final Provider<String> mainClass;
-    @Internal
     private final Supplier<GraalVmHome> graalVmHome;
-    @OutputDirectory
     final File outputDirectory;
-    @Input
     private final Property<byte[]> inputStream;
-    @Input
     final List<String> arguments;
-    @Input
     final Map<String, String> env;
 
     JavaExecutionImpl(
@@ -147,51 +137,61 @@ public class JavaExecutionImpl implements JavaExecution, Action<JavaExecSpec> {
                 .getOrElse(defaultInputStream);
     }
 
+    @Internal
     @Deprecated
     public int getIndex() {
         return index;
     }
 
+    @InputFiles
     @Deprecated
     public Provider<FileCollection> getClasses() {
         return classes;
     }
 
+    @InputFiles
     @Deprecated
     public Provider<FileCollection> getResources() {
         return resources;
     }
 
+    @InputFiles
     @Deprecated
     public Provider<FileCollection> getDependencies() {
         return dependencies;
     }
 
+    @Input
     @Deprecated
     public Provider<String> getMainClass() {
         return mainClass;
     }
 
+    @Input
     @Deprecated
     public Supplier<GraalVmHome> getGraalVmHome() {
         return graalVmHome;
     }
 
+    @OutputDirectory
     @Deprecated
     public File getOutputDirectory() {
         return outputDirectory;
     }
 
+    @Input
     @Deprecated
     public Property<byte[]> getInputStream() {
         return inputStream;
     }
 
+    @Input
     @Deprecated
     public List<String> getArguments() {
         return arguments;
     }
 
+    @Input
     @Deprecated
     public Map<String, String> getEnv() {
         return env;
