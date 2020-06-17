@@ -47,18 +47,23 @@ import org.mikeneck.graalvm.config.task.FileInput;
 import org.mikeneck.graalvm.config.task.FileOutput;
 import org.mikeneck.graalvm.config.task.MergeConfigFileWork;
 
-public class DefaultMergeNativeImageConfigTask extends DefaultTask {
+public class DefaultMergeNativeImageConfigTask extends DefaultTask implements MergeNativeImageConfigTask {
 
     private static final String JNI_CONFIG_JSON = "jni-config.json";
     private static final String PROXY_CONFIG_JSON = "proxy-config.json";
     private static final String REFLECT_CONFIG_JSON = "reflect-config.json";
     private static final String RESOURCE_CONFIG_JSON = "resource-config.json";
 
+    @NotNull
     private final DirectoryProperty destinationDir;
 
+    @NotNull
     private final ListProperty<File> jniConfigs;
+    @NotNull
     private final ListProperty<File> proxyConfigs;
+    @NotNull
     private final ListProperty<File> reflectConfigs;
+    @NotNull
     private final ListProperty<File> resourceConfigs;
 
     @Inject
@@ -117,28 +122,33 @@ public class DefaultMergeNativeImageConfigTask extends DefaultTask {
                             .get());
     }
 
-    public void destinationDir(String destinationDir) {
+    @Override
+    public void destinationDir(@NotNull String destinationDir) {
         File dir = getProject().file(destinationDir);
         destinationDir(dir);
     }
 
-    public void destinationDir(File destinationDir) {
+    @Override
+    public void destinationDir(@NotNull File destinationDir) {
         this.destinationDir.fileProvider(OutputDirectoryProvider.ofFile(destinationDir));
     }
 
-    public void destinationDir(Path destinationDir) {
+    @Override
+    public void destinationDir(@NotNull Path destinationDir) {
         this.destinationDir.fileProvider(OutputDirectoryProvider.ofPath(destinationDir));
     }
 
+    @Override
     @SuppressWarnings("UnstableApiUsage")
-    public void fromDirectories(Provider<FileCollection> directories) {
+    public void fromDirectories(@NotNull Provider<FileCollection> directories) {
         this.jniConfigs.addAll(directories.flatMap(files -> ConfigFileProviders.resolving(files, JNI_CONFIG_JSON)));
         this.proxyConfigs.addAll(directories.flatMap(files -> ConfigFileProviders.resolving(files, PROXY_CONFIG_JSON)));
         this.reflectConfigs.addAll(directories.flatMap(files -> ConfigFileProviders.resolving(files, REFLECT_CONFIG_JSON)));
         this.resourceConfigs.addAll(directories.flatMap(files -> ConfigFileProviders.resolving(files, RESOURCE_CONFIG_JSON)));
     }
 
-    public void configFiles(Action<ConfigFileConfiguration> action) {
+    @Override
+    public void configFiles(@NotNull Action<ConfigFileConfiguration> action) {
         Configuration config = new Configuration();
         action.execute(config);
     }
@@ -174,48 +184,57 @@ public class DefaultMergeNativeImageConfigTask extends DefaultTask {
         }
     }
 
+    @Override
     @OutputDirectory
-    public DirectoryProperty getDestinationDir() {
+    public @NotNull DirectoryProperty getDestinationDir() {
         return destinationDir;
     }
 
+    @Override
     @OutputFile
-    public Provider<RegularFile> getJniConfigJson() {
+    public @NotNull Provider<RegularFile> getJniConfigJson() {
         return destinationDir.map(directory -> directory.file(JNI_CONFIG_JSON));
     }
 
+    @Override
     @OutputFile
-    public Provider<RegularFile> getProxyConfigJson() {
+    public @NotNull Provider<RegularFile> getProxyConfigJson() {
         return destinationDir.map(directory -> directory.file(PROXY_CONFIG_JSON));
     }
 
+    @Override
     @OutputFile
-    public Provider<RegularFile> getReflectConfigJson() {
+    public @NotNull Provider<RegularFile> getReflectConfigJson() {
         return destinationDir.map(directory -> directory.file(REFLECT_CONFIG_JSON));
     }
 
+    @Override
     @OutputFile
-    public Provider<RegularFile> getResourceConfigJson() {
+    public @NotNull Provider<RegularFile> getResourceConfigJson() {
         return destinationDir.map(directory -> directory.file(RESOURCE_CONFIG_JSON));
     }
 
+    @Override
     @InputFiles
-    public ListProperty<File> getJniConfigs() {
+    public @NotNull ListProperty<File> getJniConfigs() {
         return jniConfigs;
     }
 
+    @Override
     @InputFiles
-    public ListProperty<File> getProxyConfigs() {
+    public @NotNull ListProperty<File> getProxyConfigs() {
         return proxyConfigs;
     }
 
+    @Override
     @InputFiles
-    public ListProperty<File> getReflectConfigs() {
+    public @NotNull ListProperty<File> getReflectConfigs() {
         return reflectConfigs;
     }
 
+    @Override
     @InputFiles
-    public ListProperty<File> getResourceConfigs() {
+    public @NotNull ListProperty<File> getResourceConfigs() {
         return resourceConfigs;
     }
 }
