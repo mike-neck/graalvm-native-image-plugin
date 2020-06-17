@@ -15,22 +15,29 @@
  */
 package org.mikeneck.graalvm;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 import javax.inject.Inject;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.InvalidUserDataException;
 import org.gradle.api.provider.Provider;
+import org.gradle.api.tasks.InputFile;
+import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.StopExecutionException;
 import org.gradle.api.tasks.TaskAction;
 
-public class DefaultInstallNativeImageTask extends DefaultTask {
+public class DefaultInstallNativeImageTask extends DefaultTask implements InstallNativeImageTask {
 
     private final Provider<GraalVmHome> graalVmHome;
 
     @Inject
     public DefaultInstallNativeImageTask(Provider<GraalVmHome> graalVmHome) {
         this.graalVmHome = graalVmHome;
+        getOutputs().upToDateWhen(task -> 
+                nativeImageCommand()
+                        .filter(Files::exists)
+                        .isPresent());
     }
 
     @TaskAction
@@ -55,6 +62,20 @@ public class DefaultInstallNativeImageTask extends DefaultTask {
             execSpec.setExecutable(graalVmUpdaterCommand);
             execSpec.args("install", "native-image");
         });
+    }
+
+    @Override
+    @InputFile
+    public Provider<Path> getGraalVmUpdaterCommand() {
+        return graalVmHome.map(GraalVmHome::graalVmUpdater)
+                .map(op -> op.orElseThrow(() -> new IllegalArgumentException("nativeImage.graalVmHome not set")));
+    }
+
+    @Override
+    @OutputFile
+    public Provider<Path> getNativeImageCommand() {
+        return graalVmHome.map(GraalVmHome::nativeImage)
+                .map(op -> op.orElseThrow(() -> new IllegalArgumentException("nativeImage.graalVmHome not set")));
     }
 
     Optional<Path> graalVmUpdaterCommand() {
