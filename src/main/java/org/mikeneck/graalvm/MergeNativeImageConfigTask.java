@@ -18,6 +18,7 @@ package org.mikeneck.graalvm;
 import java.io.File;
 import java.nio.file.Path;
 import org.gradle.api.Action;
+import org.gradle.api.Task;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.file.RegularFile;
@@ -29,7 +30,7 @@ import org.gradle.api.tasks.OutputFile;
 import org.jetbrains.annotations.NotNull;
 import org.mikeneck.graalvm.config.task.ConfigFileConfiguration;
 
-public interface MergeNativeImageConfigTask {
+public interface MergeNativeImageConfigTask extends Task {
 
     void destinationDir(@NotNull String destinationDir);
 

@@ -94,10 +94,10 @@ public class NativeImageTaskFactory {
         return installNativeImage;
     }
 
-    GenerateNativeImageConfigTask generateNativeImageConfigTask(@NotNull Action<GenerateNativeImageConfigTask> config) {
+    GenerateNativeImageConfigTask nativeImageConfigFilesTask(@NotNull Action<GenerateNativeImageConfigTask> config) {
         GenerateNativeImageConfigTask generateNativeImageConfigTask = project.getTasks()
                 .create(
-                        "generateNativeImageConfigTask",
+                        "nativeImageConfigFiles",
                         DefaultGenerateNativeImageConfigTask.class,
                         project,
                         graalVmHome,
@@ -110,7 +110,7 @@ public class NativeImageTaskFactory {
     MergeNativeImageConfigTask mergeNativeImageConfigTask(@NotNull Action<MergeNativeImageConfigTask> config) {
         DefaultMergeNativeImageConfigTask mergeNativeImageConfigTask = project.getTasks()
                 .create(
-                        "mergeNativeImageConfigTask",
+                        "mergeNativeImageConfig",
                         DefaultMergeNativeImageConfigTask.class,
                         project);
         config.execute(mergeNativeImageConfigTask);

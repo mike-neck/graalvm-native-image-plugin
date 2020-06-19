@@ -174,7 +174,6 @@ public class JavaExecutionImpl implements JavaExecution, Action<JavaExecSpec> {
     }
 
     @OutputDirectory
-    @Deprecated
     public File getOutputDirectory() {
         return outputDirectory;
     }

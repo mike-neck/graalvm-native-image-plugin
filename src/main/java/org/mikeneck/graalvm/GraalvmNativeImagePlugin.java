@@ -3,15 +3,13 @@
  */
 package org.mikeneck.graalvm;
 
-import java.nio.file.Paths;
+import java.io.File;
+import java.util.List;
 import java.util.stream.Collectors;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.file.FileCollection;
-import org.gradle.api.model.ObjectFactory;
-import org.gradle.api.provider.Property;
-import org.gradle.api.provider.Provider;
-import org.gradle.api.provider.ProviderFactory;
+import org.gradle.api.Task;
+import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.tasks.TaskContainer;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,63 +17,48 @@ public class GraalvmNativeImagePlugin implements Plugin<Project> {
 
     @SuppressWarnings("UnstableApiUsage")
     public void apply(@NotNull Project project) {
-        NativeImageExtension nativeImageExtension = new NativeImageExtension(project);
-        project.getExtensions().add("nativeImage", nativeImageExtension);
+        NativeImageTaskFactory taskFactory = new NativeImageTaskFactory(project);
+
+        InstallNativeImageTask installNativeImageTask = taskFactory.installNativeImageTask(task -> {
+            task.setGroup("graalvm");
+            task.setDescription("Installs native-image command by graalVm Updater command");
+        });
+
+        GenerateNativeImageConfigTask nativeImageConfigFiles = taskFactory.nativeImageConfigFilesTask(task -> {
+            task.setGroup("graalvm");
+            task.setDescription("Generates native image config json files via test run.");
+        });
+
+        MergeNativeImageConfigTask mergeNativeImageConfigTask = taskFactory.mergeNativeImageConfigTask(task -> {
+            task.setGroup("graalvm");
+            task.setDescription("Merge generated native-image-config json files into one file.");
+            task.fromDirectories(project.provider(() -> {
+                List<File> directories = nativeImageConfigFiles.getJavaExecutions()
+                        .stream()
+                        .map(JavaExecutionImpl::getOutputDirectory)
+                        .collect(Collectors.toList());
+                ConfigurableFileCollection collection = project.getObjects().fileCollection();
+                collection.setFrom(directories);
+                return collection;
+            }));
+        });
 
         TaskContainer taskContainer = project.getTasks();
-
-        ObjectFactory objectFactory = project.getObjects();
-        ProviderFactory providerFactory = project.getProviders();
-        Property<GraalVmHome> graalVmHome = objectFactory
-                .property(GraalVmHome.class)
-                .convention(
-                        providerFactory
-                                .environmentVariable("JAVA_HOME")
-                                .map(Paths::get)
-                                .map(GraalVmHome::new));
-
-        DefaultInstallNativeImageTask installNativeImageTask = taskContainer.create(
-                "installNativeImage", DefaultInstallNativeImageTask.class, graalVmHome);
-        installNativeImageTask.setDescription("Installs native-image command by graalVm Updater command");
-        installNativeImageTask.setGroup("graalvm");
-
-        DefaultNativeImageTask nativeImageTask = taskContainer.create(
-                "nativeImage", DefaultNativeImageTask.class, project, graalVmHome);
-        nativeImageTask.dependsOn("jar");
-        nativeImageTask.setDescription("Creates native executable");
-        nativeImageTask.setGroup("graalvm");
-        nativeImageTask.dependsOn(installNativeImageTask);
-
-        DefaultGenerateNativeImageConfigTask nativeImageConfigFiles =
-                taskContainer.create(
-                        "nativeImageConfigFiles",
-                        DefaultGenerateNativeImageConfigTask.class,
-                        project);
-        nativeImageConfigFiles.dependsOn("classes");
-        nativeImageConfigFiles.setDescription("Generates native image config json files via test run.");
-        nativeImageConfigFiles.setGroup("graalvm");
-
-        DefaultMergeNativeImageConfigTask mergeNativeImageConfig = 
-                taskContainer.create(
-                        "mergeNativeImageConfig",
-                        DefaultMergeNativeImageConfigTask.class,
-                        project);
-        mergeNativeImageConfig.destinationDir(project.getBuildDir().toPath().resolve("native-image-config"));
-        Provider<FileCollection> configDirs = project.provider(() -> nativeImageConfigFiles
-                .getJavaExecutions()
-                .stream()
-                .map(exec -> exec.outputDirectory)
-                .collect(Collectors.toList()))
-                .map(project::files);
-        mergeNativeImageConfig.fromDirectories(configDirs);
-        mergeNativeImageConfig.setGroup("graalvm");
-        mergeNativeImageConfig.setDescription("Merge native image config json files into one file.");
-        mergeNativeImageConfig.dependsOn(nativeImageConfigFiles);
-
-        taskContainer.create("generateNativeImageConfig", task -> {
+        Task generateNativeImageConfig = taskContainer.create("generateNativeImageConfig", task -> {
             task.setGroup("graalvm");
             task.setDescription("Generates native image config json files.");
-            task.dependsOn(nativeImageConfigFiles, mergeNativeImageConfig);
+            task.dependsOn(nativeImageConfigFiles, mergeNativeImageConfigTask);
+
+            // user may want opt-in for this task.
+            task.setEnabled(false);
+            nativeImageConfigFiles.setEnabled(false);
+            mergeNativeImageConfigTask.setEnabled(false);
+        });
+
+        taskFactory.nativeImageTask(task -> {
+            task.setGroup("graalvm");
+            task.setDescription("Creates native executable");
+            task.dependsOn(installNativeImageTask, generateNativeImageConfig);
         });
     }
 }
