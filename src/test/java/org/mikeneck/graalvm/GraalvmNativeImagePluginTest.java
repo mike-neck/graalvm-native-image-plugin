@@ -17,16 +17,6 @@ import static org.junit.Assert.assertThat;
  */
 public class GraalvmNativeImagePluginTest {
 
-    @Test public void pluginRegistersExtension() {
-        Project project = ProjectBuilder.builder().build();
-        project.getPlugins().apply("java");
-
-        project.getPlugins().apply("org.mikeneck.graalvm-native-image");
-
-        Object extension = project.getExtensions().getByName("nativeImage");
-        assertThat(extension, instanceOf(NativeImageExtension.class));
-    }
-
     @Test public void pluginRegistersNativeImageTask() {
         Project project = ProjectBuilder.builder().build();
         project.getPlugins().apply("java");
