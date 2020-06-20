@@ -155,29 +155,23 @@ public class DefaultMergeNativeImageConfigTask extends DefaultTask implements Me
 
         final DefaultMergeNativeImageConfigTask thisObject = DefaultMergeNativeImageConfigTask.this;
 
-        @NotNull
         @Override
-        public Provider<File> provider(File file) {
-            return getProject().provider(() -> file);
-        }
-
-        @Override
-        public void addJniConfig(Provider<File> jniConfig) {
+        public void addJniConfig(File jniConfig) {
             thisObject.jniConfigs.add(jniConfig);
         }
 
         @Override
-        public void addProxyConfig(Provider<File> proxyConfig) {
+        public void addProxyConfig(File proxyConfig) {
             thisObject.proxyConfigs.add(proxyConfig);
         }
 
         @Override
-        public void addReflectConfig(Provider<File> reflectConfig) {
+        public void addReflectConfig(File reflectConfig) {
             thisObject.reflectConfigs.add(reflectConfig);
         }
 
         @Override
-        public void addResourceConfig(Provider<File> resourceConfig) {
+        public void addResourceConfig(File resourceConfig) {
             thisObject.resourceConfigs.add(resourceConfig);
         }
     }

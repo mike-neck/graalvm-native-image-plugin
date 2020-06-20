@@ -16,35 +16,14 @@
 package org.mikeneck.graalvm.config.task;
 
 import java.io.File;
-import org.gradle.api.provider.Provider;
-import org.jetbrains.annotations.NotNull;
 
 public interface ConfigFileConfiguration {
 
-    @NotNull
-    Provider<File> provider(File file);
+    void addJniConfig(File jniConfig);
 
-    default void addJniConfig(File jniConfig) {
-        addJniConfig(provider(jniConfig));
-    }
+    void addProxyConfig(File proxyConfig);
 
-    default void addProxyConfig(File proxyConfig) {
-        addProxyConfig(provider(proxyConfig));
-    }
+    void addReflectConfig(File reflectConfig);
 
-    default void addReflectConfig(File reflectConfig) {
-        addReflectConfig(provider(reflectConfig));
-    }
-
-    default void addResourceConfig(File resourceConfig) {
-        addResourceConfig(provider(resourceConfig));
-    }
-
-    void addJniConfig(Provider<File> jniConfig);
-
-    void addProxyConfig(Provider<File> proxyConfig);
-
-    void addReflectConfig(Provider<File> reflectConfig);
-
-    void addResourceConfig(Provider<File> resourceConfig);
+    void addResourceConfig(File resourceConfig);
 }
