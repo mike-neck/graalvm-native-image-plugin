@@ -17,16 +17,16 @@ package org.mikeneck.graalvm;
 
 import java.io.File;
 import java.nio.file.Path;
-import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.Directory;
 import org.gradle.api.provider.Provider;
+import org.gradle.api.tasks.bundling.Jar;
 
 public interface NativeImageConfig {
 
     void setGraalVmHome(String graalVmHome);
 
-    void setJarTask(Task jarTask);
+    void setJarTask(Jar jarTask);
 
     void setMainClass(String mainClass);
 

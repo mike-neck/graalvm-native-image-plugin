@@ -26,7 +26,6 @@ import javax.inject.Inject;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.InvalidUserDataException;
 import org.gradle.api.Project;
-import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.Directory;
@@ -42,6 +41,7 @@ import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
+import org.gradle.api.tasks.bundling.Jar;
 import org.jetbrains.annotations.NotNull;
 import org.mikeneck.graalvm.nativeimage.NativeImageArguments;
 import org.mikeneck.graalvm.nativeimage.NativeImageArgumentsFactory;
@@ -168,12 +168,8 @@ public class DefaultNativeImageTask extends DefaultTask implements NativeImageTa
     }
 
     @Override
-    public void setJarTask(Task jarTask) {
-        Project project = getProject();
-        Provider<File> jarFile = 
-                project.provider(() ->
-                        jarTask.getOutputs().getFiles().getSingleFile());
-        nativeImageArguments.addJarFile(jarFile);
+    public void setJarTask(Jar jarTask) {
+        nativeImageArguments.addJarFile(jarTask);
     }
 
     @Override
