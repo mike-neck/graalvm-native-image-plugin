@@ -71,6 +71,7 @@ public class DefaultInstallNativeImageTask extends DefaultTask implements Instal
     @Override
     @InputFile
     public Provider<Path> getGraalVmUpdaterCommand() {
+        getLogger().info("fetching gu command: {}/graalvm home: {}", graalVmHome.map(GraalVmHome::graalVmUpdater).getOrNull(), graalVmHome.getOrNull());
         return graalVmHome.map(GraalVmHome::graalVmUpdater)
                 .map(op -> op.orElseThrow(() -> new IllegalArgumentException("nativeImage.graalVmHome not set")));
     }
@@ -78,6 +79,7 @@ public class DefaultInstallNativeImageTask extends DefaultTask implements Instal
     @Override
     @OutputFile
     public Provider<Path> getNativeImageCommand() {
+        getLogger().info("fetching native-image command: {}/graalvm home: {}", graalVmHome.map(GraalVmHome::nativeImage).getOrNull(), graalVmHome.getOrNull());
         return graalVmHome.map(GraalVmHome::nativeImage)
                 .map(op -> op.orElseThrow(() -> new IllegalArgumentException("nativeImage.graalVmHome not set")));
     }
