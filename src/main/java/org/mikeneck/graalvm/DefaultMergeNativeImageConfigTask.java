@@ -48,14 +48,8 @@ import org.mikeneck.graalvm.config.task.MergeConfigFileWork;
 
 public class DefaultMergeNativeImageConfigTask extends DefaultTask implements MergeNativeImageConfigTask {
 
-    private static final String JNI_CONFIG_JSON = "jni-config.json";
-    private static final String PROXY_CONFIG_JSON = "proxy-config.json";
-    private static final String REFLECT_CONFIG_JSON = "reflect-config.json";
-    private static final String RESOURCE_CONFIG_JSON = "resource-config.json";
-
     @NotNull
     private final DirectoryProperty destinationDir;
-
     @NotNull
     private final ListProperty<File> jniConfigs;
     @NotNull
