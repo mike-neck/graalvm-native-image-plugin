@@ -15,17 +15,12 @@
  */
 package org.mikeneck.graalvm;
 
-import java.nio.file.Path;
 import org.gradle.api.Task;
 import org.gradle.api.provider.Provider;
-import org.gradle.api.tasks.InputFile;
-import org.gradle.api.tasks.OutputFile;
+import org.gradle.api.tasks.Internal;
 
 public interface InstallNativeImageTask extends Task {
 
-    @InputFile
-    Provider<Path> getGraalVmUpdaterCommand();
-
-    @OutputFile
-    Provider<Path> getNativeImageCommand();
+    @Internal
+    Provider<GraalVmHome> getGraalVmHome();
 }

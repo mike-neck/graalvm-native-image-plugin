@@ -22,8 +22,6 @@ import javax.inject.Inject;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.InvalidUserDataException;
 import org.gradle.api.provider.Provider;
-import org.gradle.api.tasks.InputFile;
-import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.StopExecutionException;
 import org.gradle.api.tasks.TaskAction;
 import org.slf4j.Logger;
@@ -69,19 +67,8 @@ public class DefaultInstallNativeImageTask extends DefaultTask implements Instal
     }
 
     @Override
-    @InputFile
-    public Provider<Path> getGraalVmUpdaterCommand() {
-        getLogger().info("fetching gu command: {}/graalvm home: {}", graalVmHome.map(GraalVmHome::graalVmUpdater).getOrNull(), graalVmHome.getOrNull());
-        return graalVmHome.map(GraalVmHome::graalVmUpdater)
-                .map(op -> op.orElseThrow(() -> new IllegalArgumentException("nativeImage.graalVmHome not set")));
-    }
-
-    @Override
-    @OutputFile
-    public Provider<Path> getNativeImageCommand() {
-        getLogger().info("fetching native-image command: {}/graalvm home: {}", graalVmHome.map(GraalVmHome::nativeImage).getOrNull(), graalVmHome.getOrNull());
-        return graalVmHome.map(GraalVmHome::nativeImage)
-                .map(op -> op.orElseThrow(() -> new IllegalArgumentException("nativeImage.graalVmHome not set")));
+    public Provider<GraalVmHome> getGraalVmHome() {
+        return graalVmHome;
     }
 
     Optional<Path> graalVmUpdaterCommand() {
