@@ -38,6 +38,8 @@ public class NativeImageTaskFactory {
     private final Property<Configuration> runtimeClasspath;
     @NotNull
     private final ConfigurableFileCollection jarFile;
+    @NotNull
+    private final Property<String> mainClass;
 
     @SuppressWarnings("UnstableApiUsage")
     NativeImageTaskFactory(@NotNull Project project) {
@@ -65,6 +67,7 @@ public class NativeImageTaskFactory {
                 .getByName("jar")
                 .getOutputs()
                 .getFiles()));
+        this.mainClass = objectFactory.property(String.class);
     }
 
     NativeImageTask nativeImageTask(@NotNull Action<NativeImageTask> config) {
@@ -72,7 +75,9 @@ public class NativeImageTaskFactory {
                 .create(
                         "nativeImage",
                         DefaultNativeImageTask.class,
+                        project,
                         graalVmHome,
+                        mainClass,
                         runtimeClasspath,
                         jarFile);
         ProjectLayout projectLayout = project.getLayout();
@@ -101,6 +106,7 @@ public class NativeImageTaskFactory {
                         DefaultGenerateNativeImageConfigTask.class,
                         project,
                         graalVmHome,
+                        mainClass,
                         runtimeClasspath,
                         jarFile);
         config.execute(generateNativeImageConfigTask);

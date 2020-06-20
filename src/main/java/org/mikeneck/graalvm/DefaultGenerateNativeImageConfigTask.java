@@ -27,6 +27,8 @@ import javax.inject.Inject;
 import org.gradle.api.Action;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
+import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.Property;
@@ -59,14 +61,24 @@ public class DefaultGenerateNativeImageConfigTask extends DefaultTask implements
 
     private final List<JavaExecutionImpl> javaExecutions;
 
+    @NotNull
+    private final Property<Configuration> runtimeClasspath;
+
+    @NotNull
+    private final ConfigurableFileCollection jarFile;
+
     @Inject
     public DefaultGenerateNativeImageConfigTask(
             @NotNull Project project,
             @NotNull Property<GraalVmHome> graalVmHome,
-            @NotNull Property<String> mainClass) {
+            @NotNull Property<String> mainClass,
+            @NotNull Property<Configuration> runtimeClasspath,
+            @NotNull ConfigurableFileCollection jarFile) {
         ObjectFactory objectFactory = project.getObjects();
         this.graalVmHome = objectFactory.property(GraalVmHome.class);
         this.exitOnApplicationError = objectFactory.property(Boolean.class);
+        this.runtimeClasspath = runtimeClasspath;
+        this.jarFile = jarFile;
         this.mainClass = mainClass;
         this.javaExecutions = new ArrayList<>();
 
@@ -205,8 +217,8 @@ public class DefaultGenerateNativeImageConfigTask extends DefaultTask implements
         stdIn.set(new byte[0]);
         return new JavaExecutionImpl(
                 index,
-                project,
-                mainClass(),
+                jarFile,
+                runtimeClasspath, mainClass(),
                 graalVmHome(),
                 outputDirectory,
                 stdIn);

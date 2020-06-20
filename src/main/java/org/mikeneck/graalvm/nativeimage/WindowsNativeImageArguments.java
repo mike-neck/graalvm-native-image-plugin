@@ -15,12 +15,12 @@
  */
 package org.mikeneck.graalvm.nativeimage;
 
+import java.io.File;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.Directory;
-import org.gradle.api.file.RegularFile;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Nested;
 import org.jetbrains.annotations.NotNull;
@@ -84,8 +84,13 @@ class WindowsNativeImageArguments implements NativeImageArguments {
     }
 
     @Override
-    public void setJarFile(@NotNull Provider<RegularFile> jarFile) {
-        delegate.setJarFile(jarFile);
+    public void addJarFile(@NotNull File jarFile) {
+        delegate.addJarFile(jarFile);
+    }
+
+    @Override
+    public void addJarFile(@NotNull Provider<File> jarFile) {
+        delegate.addJarFile(jarFile);
     }
 
     @Override

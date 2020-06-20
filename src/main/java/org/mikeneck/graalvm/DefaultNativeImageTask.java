@@ -28,11 +28,11 @@ import org.gradle.api.InvalidUserDataException;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.file.RegularFile;
-import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
@@ -42,7 +42,6 @@ import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
-import org.gradle.api.tasks.bundling.Jar;
 import org.jetbrains.annotations.NotNull;
 import org.mikeneck.graalvm.nativeimage.NativeImageArguments;
 import org.mikeneck.graalvm.nativeimage.NativeImageArgumentsFactory;
@@ -71,30 +70,14 @@ public class DefaultNativeImageTask extends DefaultTask implements NativeImageTa
     @Inject
     public DefaultNativeImageTask(
             @NotNull Project project,
-            @NotNull Property<GraalVmHome> graalVmHome) {
+            @NotNull Property<GraalVmHome> graalVmHome,
+            @NotNull Property<String> mainClass,
+            @NotNull Property<Configuration> runtimeClasspath,
+            @NotNull ConfigurableFileCollection jarFile) {
         ObjectFactory objectFactory = project.getObjects();
         ProjectLayout projectLayout = project.getLayout();
         this.graalVmHome = graalVmHome;
-        RegularFileProperty jarFile =
-                objectFactory.fileProperty()
-                .fileProvider(
-                project.provider(() ->
-                project.getTasks()
-                        .withType(Jar.class)
-                        .findByName("jar"))
-                .flatMap(jar ->
-                        project.provider(() ->
-                                jar.getOutputs()
-                                        .getFiles()
-                                        .getSingleFile())));
-        Property<String> mainClass = objectFactory.property(String.class);
         this.executableName = objectFactory.property(String.class);
-        Property<Configuration>  runtimeClasspath = 
-                objectFactory.property(Configuration.class)
-                .convention(
-                        project.provider(() -> 
-                                project.getConfigurations()
-                                        .getByName("runtimeClasspath")));
         @NotNull ListProperty<String> additionalArguments = objectFactory.listProperty(String.class);
         this.outputDirectory =
                 objectFactory.directoryProperty()
@@ -180,12 +163,10 @@ public class DefaultNativeImageTask extends DefaultTask implements NativeImageTa
     @Override
     public void setJarTask(Task jarTask) {
         Project project = getProject();
-        ProjectLayout projectLayout = project.getLayout();
-        Provider<File> jar = 
+        Provider<File> jarFile = 
                 project.provider(() ->
                         jarTask.getOutputs().getFiles().getSingleFile());
-        Provider<RegularFile> jarFile = projectLayout.file(jar);
-        nativeImageArguments.setJarFile(jarFile);
+        nativeImageArguments.addJarFile(jarFile);
     }
 
     @Override

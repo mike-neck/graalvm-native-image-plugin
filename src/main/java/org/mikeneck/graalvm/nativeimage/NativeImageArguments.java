@@ -15,13 +15,13 @@
  */
 package org.mikeneck.graalvm.nativeimage;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.Directory;
-import org.gradle.api.file.RegularFile;
 import org.gradle.api.provider.Provider;
 import org.jetbrains.annotations.NotNull;
 
@@ -57,7 +57,9 @@ public interface NativeImageArguments {
 
     void setMainClass(@NotNull Provider<String> mainClass);
 
-    void setJarFile(@NotNull Provider<RegularFile> jarFile);
+    void addJarFile(@NotNull File jarFile);
+
+    void addJarFile(@NotNull Provider<File> jarFile);
 
     void setOutputDirectory(@NotNull Provider<Directory> outputDirectory);
 

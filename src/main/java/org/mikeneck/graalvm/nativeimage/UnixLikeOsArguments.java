@@ -23,15 +23,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
-import org.gradle.api.file.RegularFile;
-import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.OutputDirectory;
 import org.jetbrains.annotations.NotNull;
@@ -43,7 +41,7 @@ class UnixLikeOsArguments implements NativeImageArguments {
     @NotNull
     private final Property<String> mainClass;
     @NotNull
-    private final RegularFileProperty jarFile;
+    private final ConfigurableFileCollection jarFile;
     @NotNull
     private final DirectoryProperty outputDirectory;
     @NotNull
@@ -54,7 +52,7 @@ class UnixLikeOsArguments implements NativeImageArguments {
     UnixLikeOsArguments(
             @NotNull Property<Configuration> runtimeClasspath,
             @NotNull Property<String> mainClass,
-            @NotNull RegularFileProperty jarFile,
+            @NotNull ConfigurableFileCollection jarFile,
             @NotNull DirectoryProperty outputDirectory,
             @NotNull Property<String> executableName,
             @NotNull ListProperty<String> additionalArguments) {
@@ -70,7 +68,7 @@ class UnixLikeOsArguments implements NativeImageArguments {
     @Override
     public String classpath() {
         List<File> paths = new ArrayList<>(runtimeClasspath());
-        paths.add(jarFile.getAsFile().get());
+        jarFile.forEach(paths::add);
         return paths.stream()
                 .map(File::getAbsolutePath)
                 .collect(Collectors.joining(File.pathSeparator));
@@ -135,15 +133,19 @@ class UnixLikeOsArguments implements NativeImageArguments {
         this.mainClass.set(mainClass);
     }
 
-    @NotNull
-    @InputFile
-    public RegularFileProperty getJarFile() {
+    @InputFiles
+    public @NotNull ConfigurableFileCollection getJarFiles() {
         return jarFile;
     }
 
     @Override
-    public void setJarFile(@NotNull Provider<RegularFile> jarFile) {
-        this.jarFile.set(jarFile);
+    public void addJarFile(@NotNull File jarFile) {
+        this.jarFile.from(jarFile);
+    }
+
+    @Override
+    public void addJarFile(@NotNull Provider<File> jarFile) {
+        this.jarFile.from(jarFile);
     }
 
     @NotNull

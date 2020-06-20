@@ -25,25 +25,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 import org.gradle.api.Action;
-import org.gradle.api.Project;
-import org.gradle.api.file.FileCollection;
+import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.OutputDirectory;
-import org.gradle.api.tasks.SourceSet;
-import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.process.JavaExecSpec;
 import org.jetbrains.annotations.NotNull;
 
 public class JavaExecutionImpl implements JavaExecution, Action<JavaExecSpec> {
 
     final int index;
-    final Provider<FileCollection> classes;
-    final Provider<FileCollection> resources;
-    final Provider<FileCollection> dependencies;
+    private final ConfigurableFileCollection jarFile;
+    private final Provider<Configuration> runtimeClasspath;
     private final Provider<String> mainClass;
     private final Supplier<GraalVmHome> graalVmHome;
     final File outputDirectory;
@@ -53,15 +50,15 @@ public class JavaExecutionImpl implements JavaExecution, Action<JavaExecSpec> {
 
     JavaExecutionImpl(
             int index,
-            Project project,
-            Provider<String> mainClass,
-            Supplier<GraalVmHome> graalVmHome,
-            File outputDirectory,
-            Property<byte[]> inputStream) {
+            @NotNull ConfigurableFileCollection jarFile,
+            @NotNull Provider<Configuration> runtimeClasspath, 
+            @NotNull Provider<String> mainClass,
+            @NotNull Supplier<GraalVmHome> graalVmHome,
+            @NotNull File outputDirectory,
+            @NotNull Property<byte[]> inputStream) {
         this.index = index;
-        this.classes = classes(project);
-        this.resources = resources(project);
-        this.dependencies = dependencies(project);
+        this.jarFile = jarFile;
+        this.runtimeClasspath = runtimeClasspath;
         this.mainClass = mainClass;
         this.graalVmHome = graalVmHome;
         this.outputDirectory = outputDirectory;
@@ -96,38 +93,11 @@ public class JavaExecutionImpl implements JavaExecution, Action<JavaExecSpec> {
         Path javaExecutable = graalVmHome.get().javaExecutable().orElseThrow(() -> new IllegalStateException("GraalVM Java not found"));
         javaExecSpec.setExecutable(javaExecutable);
         javaExecSpec.setMain(mainClass.get());
-        javaExecSpec.classpath(
-                classes,
-                resources,
-                dependencies
-        );
+        javaExecSpec.classpath(jarFile, runtimeClasspath.get());
         javaExecSpec.environment(env);
         Path outputDir = outputDirectory.toPath();
         javaExecSpec.jvmArgs(String.format("-agentlib:native-image-agent=config-output-dir=%s", outputDir));
         javaExecSpec.setStandardInput(inputStream());
-    }
-
-    private static Provider<FileCollection> classes(Project project) {
-        return project.provider(() -> {
-            SourceSetContainer sourceSets = project.getExtensions().getByType(SourceSetContainer.class);
-            SourceSet mainSourceSet = sourceSets.getByName("main");
-            return mainSourceSet.getOutput().getClassesDirs();
-        });
-    }
-
-    private static Provider<FileCollection> resources(Project project) {
-        return project.provider(() -> {
-            SourceSetContainer sourceSets = project.getExtensions().getByType(SourceSetContainer.class);
-            SourceSet mainSourceSet = sourceSets.getByName("main");
-            File resourcesDir = mainSourceSet.getOutput().getResourcesDir();
-            return project.files(resourcesDir);
-        });
-    }
-
-    private static Provider<FileCollection> dependencies(Project project) {
-        return project.provider(() -> project.getConfigurations()
-                .getByName("runtimeClasspath")
-                .getAsFileTree());
     }
 
     private InputStream inputStream() {
@@ -145,20 +115,14 @@ public class JavaExecutionImpl implements JavaExecution, Action<JavaExecSpec> {
 
     @InputFiles
     @Deprecated
-    public Provider<FileCollection> getClasses() {
-        return classes;
+    public ConfigurableFileCollection getJarFile() {
+        return jarFile;
     }
 
     @InputFiles
     @Deprecated
-    public Provider<FileCollection> getResources() {
-        return resources;
-    }
-
-    @InputFiles
-    @Deprecated
-    public Provider<FileCollection> getDependencies() {
-        return dependencies;
+    public Provider<Configuration> getRuntimeClasspath() {
+        return runtimeClasspath;
     }
 
     @Input
