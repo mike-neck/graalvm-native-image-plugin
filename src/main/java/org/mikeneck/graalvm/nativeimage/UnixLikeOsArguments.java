@@ -32,6 +32,7 @@ import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.OutputDirectory;
+import org.gradle.api.tasks.bundling.Jar;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.LoggerFactory;
 
@@ -149,6 +150,12 @@ class UnixLikeOsArguments implements NativeImageArguments {
     @Override
     public void addJarFile(@NotNull Provider<File> jarFile) {
         this.jarFile.from(jarFile);
+    }
+
+    @Override
+    public void addJarFile(@NotNull Jar jar) {
+        jarFile.builtBy(jar);
+        jarFile.from(jar);
     }
 
     @NotNull

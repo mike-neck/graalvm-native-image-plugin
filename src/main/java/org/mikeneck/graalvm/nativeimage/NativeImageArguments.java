@@ -23,6 +23,7 @@ import java.util.Optional;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.Directory;
 import org.gradle.api.provider.Provider;
+import org.gradle.api.tasks.bundling.Jar;
 import org.jetbrains.annotations.NotNull;
 
 public interface NativeImageArguments {
@@ -60,6 +61,8 @@ public interface NativeImageArguments {
     void addJarFile(@NotNull File jarFile);
 
     void addJarFile(@NotNull Provider<File> jarFile);
+
+    void addJarFile(@NotNull Jar jar);
 
     void setOutputDirectory(@NotNull Provider<Directory> outputDirectory);
 

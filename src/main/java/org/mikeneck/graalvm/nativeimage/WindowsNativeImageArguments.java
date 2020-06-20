@@ -23,6 +23,7 @@ import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.Directory;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Nested;
+import org.gradle.api.tasks.bundling.Jar;
 import org.jetbrains.annotations.NotNull;
 
 class WindowsNativeImageArguments implements NativeImageArguments {
@@ -91,6 +92,11 @@ class WindowsNativeImageArguments implements NativeImageArguments {
     @Override
     public void addJarFile(@NotNull Provider<File> jarFile) {
         delegate.addJarFile(jarFile);
+    }
+
+    @Override
+    public void addJarFile(@NotNull Jar jar) {
+        delegate.addJarFile(jar);
     }
 
     @Override
