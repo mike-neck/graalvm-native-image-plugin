@@ -17,6 +17,7 @@ package org.mikeneck.graalvm;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.gradle.testkit.runner.BuildResult;
@@ -25,7 +26,7 @@ import org.gradle.testkit.runner.GradleRunner;
 import org.gradle.testkit.runner.TaskOutcome;
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -47,7 +48,15 @@ public class GenerateConfigFileTaskTest {
         List<String> succeededTasks = result.tasks(TaskOutcome.SUCCESS).stream()
                 .map(BuildTask::getPath)
                 .collect(Collectors.toList());
-        assertThat(succeededTasks, hasItems(":compileJava", ":classes", ":generateNativeImageConfig"));
+        System.out.println(succeededTasks);
+        assertThat(succeededTasks, is(Arrays.asList(
+                ":clean",
+                ":compileJava",
+                ":processResources",
+                ":classes",
+                ":jar",
+                ":generateNativeImageConfig",
+                ":mergeNativeImageConfig")));
         assertTrue(Files.exists(projectDir.resolve("build/tmp/native-image-config/out-0")));
         assertTrue(Files.exists(projectDir.resolve("build/tmp/native-image-config/out-1")));
         assertTrue(Files.exists(projectDir.resolve("build/tmp/native-image-config/out-2")));

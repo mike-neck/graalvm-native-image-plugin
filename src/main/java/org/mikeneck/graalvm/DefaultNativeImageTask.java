@@ -147,6 +147,13 @@ public class DefaultNativeImageTask extends DefaultTask implements NativeImageTa
         return listProperty;
     }
 
+    @Override
+    @NotNull
+    @Nested
+    public NativeImageArguments getNativeImageArguments() {
+        return nativeImageArguments;
+    }
+
     @NotNull
     @OutputFile
     public Provider<RegularFile> getOutputExecutable() {

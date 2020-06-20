@@ -23,8 +23,15 @@ import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.provider.Provider;
+import org.gradle.api.tasks.Nested;
+import org.jetbrains.annotations.NotNull;
+import org.mikeneck.graalvm.nativeimage.NativeImageArguments;
 
 public interface NativeImageTask extends Task, NativeImageConfig {
+
+    @NotNull
+    @Nested
+    NativeImageArguments getNativeImageArguments();
 
     @Override
     void setGraalVmHome(String graalVmHome);

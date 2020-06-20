@@ -21,12 +21,14 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 import javax.inject.Inject;
 import org.gradle.api.Action;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.logging.Logger;
@@ -44,18 +46,14 @@ import org.jetbrains.annotations.NotNull;
 public class DefaultGenerateNativeImageConfigTask extends DefaultTask implements GenerateNativeImageConfigTask {
 
     @NotNull
-    @Nested
     private final Property<GraalVmHome> graalVmHome;
 
-    @Internal
     @NotNull
     private final Property<Boolean> exitOnApplicationError;
 
     @NotNull
-    @Input
     private final Property<String> mainClass;
 
-    @OutputDirectory
     @NotNull
     private final File temporaryDirectory;
 
@@ -66,6 +64,9 @@ public class DefaultGenerateNativeImageConfigTask extends DefaultTask implements
 
     @NotNull
     private final ConfigurableFileCollection jarFile;
+
+    @NotNull
+    private final List<Task> sharingEnabled;
 
     @Inject
     public DefaultGenerateNativeImageConfigTask(
@@ -81,6 +82,7 @@ public class DefaultGenerateNativeImageConfigTask extends DefaultTask implements
         this.jarFile = jarFile;
         this.mainClass = mainClass;
         this.javaExecutions = new ArrayList<>();
+        this.sharingEnabled = new ArrayList<>();
 
         this.graalVmHome.set(graalVmHome);
         this.exitOnApplicationError.set(true);
@@ -131,6 +133,17 @@ public class DefaultGenerateNativeImageConfigTask extends DefaultTask implements
     }
 
     @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        sharingEnabled.forEach(task -> task.setEnabled(enabled));
+    }
+
+    @Override
+    public void shareEnabledStateWith(Task... tasks) {
+        sharingEnabled.addAll(Arrays.asList(tasks));
+    }
+
+    @Override
     public void setGraalVmHome(@NotNull Path path) {
         Project project = getProject();
         graalVmHome.set(project.provider(() -> new GraalVmHome(path)));
@@ -142,7 +155,7 @@ public class DefaultGenerateNativeImageConfigTask extends DefaultTask implements
     }
 
     @Override
-    @Nested
+    @Internal
     @NotNull
     public Property<GraalVmHome> getGraalVmHome() {
         return graalVmHome;
@@ -154,6 +167,7 @@ public class DefaultGenerateNativeImageConfigTask extends DefaultTask implements
     }
 
     @Override
+    @Internal
     public boolean getExitOnApplicationError() {
         return this.exitOnApplicationError.getOrElse(true);
     }

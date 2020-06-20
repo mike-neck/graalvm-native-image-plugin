@@ -18,7 +18,8 @@ nativeImage {
   arguments('--no-fallback')
 }
 
-nativeImageConfigFiles {
+generateNativeImageConfig {
+  enabled = true
   byRunningApplication {
     def stream = """
     |total: 2

@@ -33,6 +33,7 @@ import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.OutputDirectory;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.LoggerFactory;
 
 class UnixLikeOsArguments implements NativeImageArguments {
 
@@ -135,6 +136,8 @@ class UnixLikeOsArguments implements NativeImageArguments {
 
     @InputFiles
     public @NotNull ConfigurableFileCollection getJarFiles() {
+        LoggerFactory.getLogger(NativeImageArguments.class)
+                .info("jar-file: {}/build: {}", jarFile, jarFile.getBuiltBy());
         return jarFile;
     }
 

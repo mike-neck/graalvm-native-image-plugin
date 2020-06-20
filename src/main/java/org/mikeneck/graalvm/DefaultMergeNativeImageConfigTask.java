@@ -25,15 +25,14 @@ import javax.inject.Inject;
 import org.gradle.api.Action;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
+import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileCollection;
-import org.gradle.api.file.RegularFile;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.OutputDirectory;
-import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
 import org.jetbrains.annotations.NotNull;
 import org.mikeneck.graalvm.config.JniConfig;
@@ -139,6 +138,11 @@ public class DefaultMergeNativeImageConfigTask extends DefaultTask implements Me
     }
 
     @Override
+    public void destinationDir(@NotNull Provider<Directory> destinationDir) {
+        this.destinationDir.fileProvider(destinationDir.map(Directory::getAsFile));
+    }
+
+    @Override
     @SuppressWarnings("UnstableApiUsage")
     public void fromDirectories(@NotNull Provider<FileCollection> directories) {
         this.jniConfigs.addAll(directories.flatMap(files -> ConfigFileProviders.resolving(files, JNI_CONFIG_JSON)));
@@ -188,30 +192,6 @@ public class DefaultMergeNativeImageConfigTask extends DefaultTask implements Me
     @OutputDirectory
     public @NotNull DirectoryProperty getDestinationDir() {
         return destinationDir;
-    }
-
-    @Override
-    @OutputFile
-    public @NotNull Provider<RegularFile> getJniConfigJson() {
-        return destinationDir.map(directory -> directory.file(JNI_CONFIG_JSON));
-    }
-
-    @Override
-    @OutputFile
-    public @NotNull Provider<RegularFile> getProxyConfigJson() {
-        return destinationDir.map(directory -> directory.file(PROXY_CONFIG_JSON));
-    }
-
-    @Override
-    @OutputFile
-    public @NotNull Provider<RegularFile> getReflectConfigJson() {
-        return destinationDir.map(directory -> directory.file(REFLECT_CONFIG_JSON));
-    }
-
-    @Override
-    @OutputFile
-    public @NotNull Provider<RegularFile> getResourceConfigJson() {
-        return destinationDir.map(directory -> directory.file(RESOURCE_CONFIG_JSON));
     }
 
     @Override

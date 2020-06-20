@@ -131,7 +131,7 @@ public class JavaExecutionImpl implements JavaExecution, Action<JavaExecSpec> {
         return mainClass;
     }
 
-    @Input
+    @Internal
     @Deprecated
     public Supplier<GraalVmHome> getGraalVmHome() {
         return graalVmHome;

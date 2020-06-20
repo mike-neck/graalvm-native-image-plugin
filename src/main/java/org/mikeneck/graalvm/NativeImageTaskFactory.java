@@ -102,7 +102,7 @@ public class NativeImageTaskFactory {
     GenerateNativeImageConfigTask nativeImageConfigFilesTask(@NotNull Action<GenerateNativeImageConfigTask> config) {
         GenerateNativeImageConfigTask generateNativeImageConfigTask = project.getTasks()
                 .create(
-                        "nativeImageConfigFiles",
+                        "generateNativeImageConfig",
                         DefaultGenerateNativeImageConfigTask.class,
                         project,
                         graalVmHome,

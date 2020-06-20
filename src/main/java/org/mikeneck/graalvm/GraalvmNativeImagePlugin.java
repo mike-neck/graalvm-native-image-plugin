@@ -8,9 +8,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.Task;
 import org.gradle.api.file.ConfigurableFileCollection;
-import org.gradle.api.tasks.TaskContainer;
+import org.gradle.api.file.ProjectLayout;
 import org.jetbrains.annotations.NotNull;
 
 public class GraalvmNativeImagePlugin implements Plugin<Project> {
@@ -41,24 +40,18 @@ public class GraalvmNativeImagePlugin implements Plugin<Project> {
                 collection.setFrom(directories);
                 return collection;
             }));
+            ProjectLayout layout = project.getLayout();
+            task.destinationDir(layout.getBuildDirectory().dir("native-image-config"));
+            nativeImageConfigFiles.finalizedBy(task);
         });
 
-        TaskContainer taskContainer = project.getTasks();
-        Task generateNativeImageConfig = taskContainer.create("generateNativeImageConfig", task -> {
-            task.setGroup("graalvm");
-            task.setDescription("Generates native image config json files.");
-            task.dependsOn(nativeImageConfigFiles, mergeNativeImageConfigTask);
-
-            // user may want opt-in for this task.
-            task.setEnabled(false);
-            nativeImageConfigFiles.setEnabled(false);
-            mergeNativeImageConfigTask.setEnabled(false);
-        });
+        nativeImageConfigFiles.shareEnabledStateWith(mergeNativeImageConfigTask);
+        nativeImageConfigFiles.setEnabled(false);
 
         taskFactory.nativeImageTask(task -> {
             task.setGroup("graalvm");
             task.setDescription("Creates native executable");
-            task.dependsOn(installNativeImageTask, generateNativeImageConfig);
+            task.dependsOn(installNativeImageTask, nativeImageConfigFiles);
         });
     }
 }

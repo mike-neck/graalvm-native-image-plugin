@@ -19,14 +19,13 @@ import java.io.File;
 import java.nio.file.Path;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
+import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileCollection;
-import org.gradle.api.file.RegularFile;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.OutputDirectory;
-import org.gradle.api.tasks.OutputFile;
 import org.jetbrains.annotations.NotNull;
 import org.mikeneck.graalvm.config.task.ConfigFileConfiguration;
 
@@ -38,6 +37,8 @@ public interface MergeNativeImageConfigTask extends Task {
 
     void destinationDir(@NotNull Path destinationDir);
 
+    void destinationDir(@NotNull Provider<Directory> destinationDir);
+
     void fromDirectories(@NotNull Provider<FileCollection> directories);
 
     void configFiles(@NotNull Action<ConfigFileConfiguration> action);
@@ -45,22 +46,6 @@ public interface MergeNativeImageConfigTask extends Task {
     @NotNull 
     @OutputDirectory
     DirectoryProperty getDestinationDir();
-
-    @NotNull
-    @OutputFile
-    Provider<RegularFile> getJniConfigJson();
-
-    @NotNull
-    @OutputFile
-    Provider<RegularFile> getProxyConfigJson();
-
-    @NotNull
-    @OutputFile
-    Provider<RegularFile> getReflectConfigJson();
-
-    @NotNull
-    @OutputFile
-    Provider<RegularFile> getResourceConfigJson();
 
     @NotNull
     @InputFiles

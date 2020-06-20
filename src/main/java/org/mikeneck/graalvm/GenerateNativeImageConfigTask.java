@@ -19,15 +19,15 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 import org.gradle.api.Project;
-import org.gradle.api.Task;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.OutputDirectory;
 import org.jetbrains.annotations.NotNull;
 
-public interface GenerateNativeImageConfigTask extends Task {
+public interface GenerateNativeImageConfigTask extends ShareEnabledState {
 
     default void setGraalVmHome(@NotNull String path) {
         setGraalVmHome(getProject().file(path));
@@ -46,9 +46,10 @@ public interface GenerateNativeImageConfigTask extends Task {
 
     void setExitOnApplicationError(boolean exitOnApplicationError);
 
-    @Nested
+    @Internal
     @NotNull Property<GraalVmHome> getGraalVmHome();
 
+    @Internal
     boolean getExitOnApplicationError();
 
     @Input
