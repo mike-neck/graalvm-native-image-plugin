@@ -43,6 +43,17 @@ public class FunctionalTestContext {
         }
     }
 
+    private static void createBuildDir(Path projectDir) {
+        Path buildDir = projectDir.resolve("build");
+        try {
+            if (!Files.exists(buildDir)) {
+                Files.createDirectories(buildDir);
+            }
+        } catch (IOException e) {
+            rethrow(e);
+        }
+    }
+
     static void writeString(Path file, String string) throws IOException {
         Files.write(file, Collections.singleton(string));
     }
@@ -52,6 +63,7 @@ public class FunctionalTestContext {
                 .whitelistPaths(name)
                 .scan()) {
             createProjectRoot(rootDir);
+            createBuildDir(rootDir);
             scanResult
                     .getAllResources()
                     .forEachInputStream((resource, inputStream) -> {
