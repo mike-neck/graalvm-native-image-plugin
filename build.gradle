@@ -2,6 +2,7 @@ import com.github.jengelman.gradle.plugins.shadow.transformers.ServiceFileTransf
 
 plugins {
     id 'java-gradle-plugin'
+    id "org.jetbrains.kotlin.jvm" version "1.3.21"
     id 'com.gradle.plugin-publish' version '0.11.0'
     id 'com.github.johnrengelman.shadow' version '5.2.0'
 }
@@ -30,6 +31,7 @@ configurations {
 }
 
 dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib"
     compileOnly 'org.jetbrains:annotations:19.0.0'
     jackson 'com.fasterxml.jackson.core:jackson-databind:2.11.0'
     implementation configurations.jackson
