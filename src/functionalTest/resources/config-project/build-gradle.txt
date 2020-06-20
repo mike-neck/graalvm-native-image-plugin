@@ -19,7 +19,6 @@ nativeImage {
 }
 
 nativeImageConfigFiles {
-  mainClass = 'com.example.App'
   byRunningApplication {
     def stream = """
     |total: 2
