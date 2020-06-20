@@ -43,7 +43,7 @@ public class GraalvmNativeImagePluginFunctionalTest {
         GradleRunner runner = GradleRunner.create();
         runner.forwardOutput();
         runner.withPluginClasspath();
-        runner.withArguments("clean","nativeImage");
+        runner.withArguments("clean","nativeImage", "--info");
         runner.withProjectDir(projectDir);
         BuildResult result = runner.build();
 

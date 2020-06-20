@@ -26,6 +26,8 @@ import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.StopExecutionException;
 import org.gradle.api.tasks.TaskAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DefaultInstallNativeImageTask extends DefaultTask implements InstallNativeImageTask {
 
@@ -33,6 +35,8 @@ public class DefaultInstallNativeImageTask extends DefaultTask implements Instal
 
     @Inject
     public DefaultInstallNativeImageTask(Provider<GraalVmHome> graalVmHome) {
+        Logger logger = LoggerFactory.getLogger(InstallNativeImageTask.class);
+        logger.info("installNativeImage is initializing with graal: {}", graalVmHome.getOrNull());
         this.graalVmHome = graalVmHome;
         getOutputs().upToDateWhen(task -> 
                 nativeImageCommand()
