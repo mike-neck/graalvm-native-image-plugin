@@ -36,7 +36,8 @@ public class WindowsNativeImageArgumentsFactory implements NativeImageArgumentsF
             @NotNull ConfigurableFileCollection jarFile,
             @NotNull DirectoryProperty outputDirectory,
             @NotNull Property<String> executableName,
-            @NotNull ListProperty<String> additionalArguments) {
+            @NotNull ListProperty<String> additionalArguments,
+            @NotNull ConfigurationFiles configurationFiles) {
         UnixLikeOsArguments delegate = 
                 new UnixLikeOsArguments(
                         runtimeClasspath,
@@ -44,7 +45,8 @@ public class WindowsNativeImageArgumentsFactory implements NativeImageArgumentsF
                         jarFile,
                         outputDirectory,
                         executableName,
-                        additionalArguments);
+                        additionalArguments,
+                        configurationFiles);
         return new WindowsNativeImageArguments(delegate);
     }
 }

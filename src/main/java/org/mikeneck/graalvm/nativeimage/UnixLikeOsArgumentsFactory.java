@@ -41,13 +41,15 @@ public class UnixLikeOsArgumentsFactory implements NativeImageArgumentsFactory {
             @NotNull ConfigurableFileCollection jarFile,
             @NotNull DirectoryProperty outputDirectory,
             @NotNull Property<String> executableName,
-            @NotNull ListProperty<String> additionalArguments) {
+            @NotNull ListProperty<String> additionalArguments,
+            @NotNull ConfigurationFiles configurationFiles) {
         return new UnixLikeOsArguments(
                 runtimeClasspath, 
                 mainClass, 
                 jarFile, 
                 outputDirectory, 
                 executableName, 
-                additionalArguments);
+                additionalArguments,
+                configurationFiles);
     }
 }

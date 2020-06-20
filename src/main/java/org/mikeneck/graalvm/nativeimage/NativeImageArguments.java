@@ -20,11 +20,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import org.gradle.api.Action;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.Directory;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.bundling.Jar;
 import org.jetbrains.annotations.NotNull;
+import org.mikeneck.graalvm.NativeImageConfigurationFiles;
 
 public interface NativeImageArguments {
 
@@ -69,4 +71,6 @@ public interface NativeImageArguments {
     void setExecutableName(@NotNull Provider<String> executableName);
 
     void addArguments(@NotNull Provider<Iterable<String>> arguments);
+
+    void configureConfigFiles(@NotNull Action<NativeImageConfigurationFiles> configuration);
 }

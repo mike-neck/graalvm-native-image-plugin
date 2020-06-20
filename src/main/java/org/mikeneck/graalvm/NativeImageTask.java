@@ -17,6 +17,7 @@ package org.mikeneck.graalvm;
 
 import java.io.File;
 import java.nio.file.Path;
+import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
@@ -70,6 +71,8 @@ public interface NativeImageTask extends Task, NativeImageConfig {
 
     @Override
     void setOutputDirectory(Provider<Directory> directory);
+
+    void withConfigFiles(@NotNull Action<NativeImageConfigurationFiles> configuration);
 
     @Override
     void arguments(String... arguments);

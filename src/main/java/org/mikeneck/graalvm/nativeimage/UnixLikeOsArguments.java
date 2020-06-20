@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.gradle.api.Action;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.Directory;
@@ -34,6 +35,7 @@ import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.bundling.Jar;
 import org.jetbrains.annotations.NotNull;
+import org.mikeneck.graalvm.NativeImageConfigurationFiles;
 import org.slf4j.LoggerFactory;
 
 class UnixLikeOsArguments implements NativeImageArguments {
@@ -50,6 +52,8 @@ class UnixLikeOsArguments implements NativeImageArguments {
     private final Property<String> executableName;
     @NotNull
     private final ListProperty<String> additionalArguments;
+    @NotNull
+    private final ConfigurationFiles configurationFiles;
 
     UnixLikeOsArguments(
             @NotNull Property<Configuration> runtimeClasspath,
@@ -57,13 +61,15 @@ class UnixLikeOsArguments implements NativeImageArguments {
             @NotNull ConfigurableFileCollection jarFile,
             @NotNull DirectoryProperty outputDirectory,
             @NotNull Property<String> executableName,
-            @NotNull ListProperty<String> additionalArguments) {
+            @NotNull ListProperty<String> additionalArguments,
+            @NotNull ConfigurationFiles configurationFiles) {
         this.runtimeClasspath = runtimeClasspath;
         this.mainClass = mainClass;
         this.jarFile = jarFile;
         this.outputDirectory = outputDirectory;
         this.executableName = executableName;
         this.additionalArguments = additionalArguments;
+        this.configurationFiles = configurationFiles;
     }
 
     @NotNull
@@ -189,5 +195,10 @@ class UnixLikeOsArguments implements NativeImageArguments {
     @Override
     public void addArguments(@NotNull Provider<Iterable<String>> arguments) {
         this.additionalArguments.addAll(arguments);
+    }
+
+    @Override
+    public void configureConfigFiles(@NotNull Action<NativeImageConfigurationFiles> configuration) {
+        configuration.execute(configurationFiles);
     }
 }
