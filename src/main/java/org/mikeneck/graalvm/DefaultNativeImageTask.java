@@ -32,15 +32,13 @@ import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.ProjectLayout;
-import org.gradle.api.file.RegularFile;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Nested;
-import org.gradle.api.tasks.OutputDirectory;
-import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.bundling.Jar;
 import org.jetbrains.annotations.NotNull;
@@ -53,19 +51,9 @@ public class DefaultNativeImageTask extends DefaultTask implements NativeImageTa
     public static final String DEFAULT_OUTPUT_DIRECTORY_NAME = "native-image";
 
     @NotNull
-    @Nested
     private final Property<GraalVmHome> graalVmHome;
 
     @NotNull
-    @Input
-    private final Property<String> executableName;
-
-    @NotNull
-    @OutputDirectory
-    private final DirectoryProperty outputDirectory;
-
-    @NotNull
-    @Nested
     private final NativeImageArguments nativeImageArguments;
 
     @SuppressWarnings("UnstableApiUsage")
@@ -79,17 +67,16 @@ public class DefaultNativeImageTask extends DefaultTask implements NativeImageTa
         ObjectFactory objectFactory = project.getObjects();
         ProjectLayout projectLayout = project.getLayout();
         this.graalVmHome = graalVmHome;
-        this.executableName = objectFactory.property(String.class);
+        @NotNull Property<String> executableName = objectFactory.property(String.class);
         @NotNull ListProperty<String> additionalArguments = objectFactory.listProperty(String.class);
-        this.outputDirectory =
-                objectFactory.directoryProperty()
+        @NotNull DirectoryProperty outputDirectory = objectFactory.directoryProperty()
                 .value(projectLayout.getBuildDirectory().dir(DEFAULT_OUTPUT_DIRECTORY_NAME));
         NativeImageArgumentsFactory nativeImageArgumentsFactory = NativeImageArgumentsFactory.getInstance();
         this.nativeImageArguments = nativeImageArgumentsFactory.create(
                 runtimeClasspath,
                 mainClass,
                 jarFile,
-                this.outputDirectory,
+                outputDirectory,
                 executableName,
                 additionalArguments,
                 new ConfigurationFiles(project));
@@ -120,12 +107,14 @@ public class DefaultNativeImageTask extends DefaultTask implements NativeImageTa
         return graalVmHome.get();
     }
 
-    public File outputDirectory() {
-        return outputDirectoryPath().toFile();
+    @NotNull
+    @Internal
+    public Property<GraalVmHome> getGraalVmHome() {
+        return graalVmHome;
     }
 
-    private Path outputDirectoryPath() {
-        return outputDirectory.map(Directory::getAsFile).map(File::toPath).get();
+    public File outputDirectory() {
+        return nativeImageArguments.getOutputDirectory().getAsFile().get();
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -157,12 +146,6 @@ public class DefaultNativeImageTask extends DefaultTask implements NativeImageTa
         return nativeImageArguments;
     }
 
-    @NotNull
-    @OutputFile
-    public Provider<RegularFile> getOutputExecutable() {
-        return outputDirectory.file(executableName);
-    }
-
     @Override
     public void setGraalVmHome(String graalVmHome) {
         this.graalVmHome.set(
@@ -183,7 +166,7 @@ public class DefaultNativeImageTask extends DefaultTask implements NativeImageTa
 
     @Override
     public void setExecutableName(String name) {
-        this.executableName.set(name);
+        nativeImageArguments.setExecutableName(getProject().provider(() -> name));
     }
 
     @Override

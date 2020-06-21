@@ -16,6 +16,7 @@
 package org.mikeneck.graalvm.nativeimage;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,6 +30,7 @@ import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.InputFiles;
+import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.TaskContainer;
 import org.jetbrains.annotations.NotNull;
 import org.mikeneck.graalvm.MergeNativeImageConfigTask;
@@ -51,8 +53,26 @@ public class ConfigurationFiles implements NativeImageConfigurationFiles {
         this.proxyConfigs = objects.fileCollection();
         this.reflectConfigs = objects.fileCollection();
         this.resourceConfigs = objects.fileCollection();
+
+        
     }
 
+    @SuppressWarnings("DuplicatedCode")
+    @Override
+    public void fromMergeTask(@NotNull MergeNativeImageConfigTask mergeNativeImageConfigTask) {
+        String taskName = mergeNativeImageConfigTask.getName();
+        jniConfigs.builtBy(taskName);
+        proxyConfigs.builtBy(taskName);
+        reflectConfigs.builtBy(taskName);
+        resourceConfigs.builtBy(taskName);
+
+        jniConfigs.from(taskOutputFile(mergeNativeImageConfigTask, MergeNativeImageConfigTask.JNI_CONFIG_JSON));
+        proxyConfigs.from(taskOutputFile(mergeNativeImageConfigTask, MergeNativeImageConfigTask.PROXY_CONFIG_JSON));
+        reflectConfigs.from(taskOutputFile(mergeNativeImageConfigTask, MergeNativeImageConfigTask.REFLECT_CONFIG_JSON));
+        resourceConfigs.from(taskOutputFile(mergeNativeImageConfigTask, MergeNativeImageConfigTask.RESOURCE_CONFIG_JSON));
+    }
+
+    @SuppressWarnings("DuplicatedCode")
     @Override
     public void fromMergeTask(@NotNull String mergeNativeImageConfigTask) {
         jniConfigs.builtBy(mergeNativeImageConfigTask);
@@ -66,12 +86,21 @@ public class ConfigurationFiles implements NativeImageConfigurationFiles {
         resourceConfigs.from(taskOutputFile(mergeNativeImageConfigTask, MergeNativeImageConfigTask.RESOURCE_CONFIG_JSON));
     }
 
+    private Provider<RegularFile> taskOutputFile(MergeNativeImageConfigTask task, String fileName) {
+        return taskOutputFile(project.provider(() -> task), fileName);
+    }
+
     private Provider<RegularFile> taskOutputFile(String taskName, String fileName) {
         TaskContainer tasks = project.getTasks();
-        return tasks.withType(MergeNativeImageConfigTask.class)
-                        .named(taskName)
-                        .map(MergeNativeImageConfigTask::getDestinationDir)
-                        .flatMap(dir -> dir.file(fileName));
+        return taskOutputFile(
+                tasks.withType(MergeNativeImageConfigTask.class).named(taskName),
+                fileName);
+    }
+
+    private Provider<RegularFile> taskOutputFile(Provider<MergeNativeImageConfigTask> taskProvider, String fileName) {
+        return taskProvider
+                .map(MergeNativeImageConfigTask::getDestinationDir)
+                .flatMap(dir -> dir.file(fileName));
     }
 
     @Override
@@ -128,6 +157,8 @@ public class ConfigurationFiles implements NativeImageConfigurationFiles {
         addJniConfig(file);
     }
 
+    @NotNull
+    @Internal
     public List<String> getArguments() {
         List<String> arguments = new ArrayList<>();
         arguments.add(jniConfigArguments());
@@ -156,6 +187,7 @@ public class ConfigurationFiles implements NativeImageConfigurationFiles {
     private static String createArguments(String option, Iterable<File> files) {
         return StreamSupport.stream(files.spliterator(), false)
                 .map(File::toPath)
+                .filter(Files::exists)
                 .map(Path::toString)
                 .collect(Collectors.joining(",", "-H:" + option + "=", ""));
     }

@@ -33,7 +33,7 @@ import static org.junit.Assert.assertTrue;
 public class GenerateConfigFileTaskTest {
 
     @Test
-    public void runMultipleTimes() {
+    public void generateAndMergeNativeImageConfig() {
         FunctionalTestContext context = new FunctionalTestContext("config-project");
         context.setup();
         Path projectDir = context.rootDir;
@@ -69,5 +69,23 @@ public class GenerateConfigFileTaskTest {
         assertTrue(Files.exists(projectDir.resolve("build/native-image-config/proxy-config.json")));
         assertTrue(Files.exists(projectDir.resolve("build/native-image-config/reflect-config.json")));
         assertTrue(Files.exists(projectDir.resolve("build/native-image-config/resource-config.json")));
+    }
+
+    @Test
+    public void buildNativeImageWithConfiguration() {
+        FunctionalTestContext context = new FunctionalTestContext("native-image-with-config");
+        context.setup();
+        Path projectDir = context.rootDir;
+
+        GradleRunner runner = GradleRunner.create();
+        runner.forwardOutput();
+        runner.withPluginClasspath();
+        runner.withArguments("clean","nativeImage", "--stacktrace", "--info", "--warning-mode", "all");
+        runner.withProjectDir(projectDir.toFile());
+        BuildResult result = runner.build();
+
+        assertTrue(Files.exists(projectDir.resolve("build/native-image/test-app")));
+        TaskOutcome nativeImageResult = result.task(":nativeImage").getOutcome();
+        assertThat(nativeImageResult, is(TaskOutcome.SUCCESS));
     }
 }

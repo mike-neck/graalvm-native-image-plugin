@@ -32,6 +32,7 @@ import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFiles;
+import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.bundling.Jar;
 import org.jetbrains.annotations.NotNull;
@@ -109,9 +110,20 @@ class UnixLikeOsArguments implements NativeImageArguments {
     }
 
     @NotNull
+    @Nested
+    public ConfigurationFiles getConfigurationFiles() {
+        return configurationFiles;
+    }
+
+    @NotNull
     @Override
     public List<String> additionalArguments() {
-        return additionalArguments.isPresent()? additionalArguments.get(): Collections.emptyList();
+        List<String> nativeImageConfigOptions = configurationFiles.getArguments();
+        List<String> arguments = new ArrayList<>(nativeImageConfigOptions);
+        if (additionalArguments.isPresent()) {
+            arguments.addAll(additionalArguments.get());
+        }
+        return Collections.unmodifiableList(arguments);
     }
 
     @Override
@@ -164,6 +176,7 @@ class UnixLikeOsArguments implements NativeImageArguments {
         jarFile.from(jar);
     }
 
+    @Override
     @NotNull
     @OutputDirectory
     public DirectoryProperty getOutputDirectory() {

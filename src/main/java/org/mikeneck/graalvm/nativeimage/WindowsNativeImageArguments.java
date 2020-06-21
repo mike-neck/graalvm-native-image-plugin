@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 import org.gradle.api.Action;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.Directory;
+import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.bundling.Jar;
@@ -99,6 +100,11 @@ class WindowsNativeImageArguments implements NativeImageArguments {
     @Override
     public void addJarFile(@NotNull Jar jar) {
         delegate.addJarFile(jar);
+    }
+
+    @Override
+    public @NotNull DirectoryProperty getOutputDirectory() {
+        return delegate.getOutputDirectory();
     }
 
     @Override

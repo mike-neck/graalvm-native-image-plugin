@@ -23,13 +23,17 @@ import java.util.Optional;
 import org.gradle.api.Action;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.Directory;
+import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.provider.Provider;
+import org.gradle.api.tasks.Internal;
+import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.bundling.Jar;
 import org.jetbrains.annotations.NotNull;
 import org.mikeneck.graalvm.NativeImageConfigurationFiles;
 
 public interface NativeImageArguments {
 
+    @Internal
     default List<String> getArguments() {
         List<String> args = new ArrayList<>();
         args.add("-cp");
@@ -65,6 +69,10 @@ public interface NativeImageArguments {
     void addJarFile(@NotNull Provider<File> jarFile);
 
     void addJarFile(@NotNull Jar jar);
+
+    @NotNull
+    @OutputDirectory
+    DirectoryProperty getOutputDirectory();
 
     void setOutputDirectory(@NotNull Provider<Directory> outputDirectory);
 

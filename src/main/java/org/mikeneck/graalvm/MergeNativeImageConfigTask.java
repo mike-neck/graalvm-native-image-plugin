@@ -17,7 +17,9 @@ package org.mikeneck.graalvm;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.function.Function;
 import org.gradle.api.Action;
+import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
@@ -30,6 +32,9 @@ import org.jetbrains.annotations.NotNull;
 import org.mikeneck.graalvm.config.task.ConfigFileConfiguration;
 
 public interface MergeNativeImageConfigTask extends Task {
+
+    Function<Project, Provider<Directory>> DEFAULT_DESTINATION_DIR =
+            project -> project.getLayout().getBuildDirectory().dir("native-image-config");
 
     String JNI_CONFIG_JSON = "jni-config.json";
     String PROXY_CONFIG_JSON = "proxy-config.json";

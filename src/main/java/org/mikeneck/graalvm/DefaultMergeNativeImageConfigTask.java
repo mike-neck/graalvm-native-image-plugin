@@ -63,7 +63,8 @@ public class DefaultMergeNativeImageConfigTask extends DefaultTask implements Me
     @SuppressWarnings("UnstableApiUsage")
     public DefaultMergeNativeImageConfigTask(@NotNull Project project) {
         ObjectFactory objects = project.getObjects();
-        this.destinationDir = objects.directoryProperty();
+        this.destinationDir = objects.directoryProperty()
+                .convention(MergeNativeImageConfigTask.DEFAULT_DESTINATION_DIR.apply(project));
         this.jniConfigs = objects.listProperty(File.class);
         this.proxyConfigs = objects.listProperty(File.class);
         this.reflectConfigs = objects.listProperty(File.class);

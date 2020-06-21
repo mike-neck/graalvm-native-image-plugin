@@ -52,6 +52,7 @@ public class GraalvmNativeImagePlugin implements Plugin<Project> {
             task.setGroup("graalvm");
             task.setDescription("Creates native executable");
             task.dependsOn(installNativeImageTask, nativeImageConfigFiles);
+            task.withConfigFiles(files -> files.fromMergeTask(mergeNativeImageConfigTask));
         });
     }
 }
