@@ -37,6 +37,7 @@ dependencies {
     implementation configurations.jackson
     functionalTestImplementation 'io.github.classgraph:classgraph:4.8.78'
     testImplementation 'junit:junit:4.12'
+    testImplementation 'org.assertj:assertj-core:3.16.1'
 }
 
 jar.enabled = false
