@@ -26,18 +26,28 @@ import java.util.Collections;
 
 public class FunctionalTestContext {
 
-    private final String name;
+    private final String resourceRoot;
     final Path rootDir;
 
-    public FunctionalTestContext(String name) {
-        this.name = name;
-        this.rootDir = Paths.get("build/functionalTest", name);
+    FunctionalTestContext(String resourceRoot) {
+        this(resourceRoot, resourceRoot);
     }
 
-    private static void createProjectRoot(Path projectDir) {
+    FunctionalTestContext(String resourceRoot, String path) {
+        this(resourceRoot, Paths.get("build/functionalTest", path));
+    }
+
+    FunctionalTestContext(String resourceRoot, Path rootDir) {
+        this.resourceRoot = resourceRoot;
+        this.rootDir = rootDir;
+    }
+
+    private void createProjectRoot(Path projectDir) {
         try {
             Files.createDirectories(projectDir);
-            writeString(projectDir.resolve("settings.gradle"), "");
+            writeString(
+                    projectDir.resolve("settings.gradle"),
+                    String.format("rootProject.name = '%s'", projectDir.getFileName()));
         } catch (IOException e) {
             rethrow(e);
         }
@@ -60,7 +70,7 @@ public class FunctionalTestContext {
 
     void setup() {
         try (ScanResult scanResult = new ClassGraph()
-                .whitelistPaths(name)
+                .whitelistPaths(resourceRoot)
                 .scan()) {
             createProjectRoot(rootDir);
             createBuildDir(rootDir);
@@ -68,7 +78,7 @@ public class FunctionalTestContext {
                     .getAllResources()
                     .forEachInputStream((resource, inputStream) -> {
                         String path = resource.getPath()
-                                .replace(String.format("%s/", name), "")
+                                .replace(String.format("%s/", resourceRoot), "")
                                 .replaceAll("_", "/")
                                 .replaceAll("\\.txt", "")
                                 .replaceAll("-", ".")
