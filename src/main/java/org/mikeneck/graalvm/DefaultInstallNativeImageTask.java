@@ -21,11 +21,10 @@ import java.util.Optional;
 import javax.inject.Inject;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.InvalidUserDataException;
+import org.gradle.api.logging.Logger;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.StopExecutionException;
 import org.gradle.api.tasks.TaskAction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class DefaultInstallNativeImageTask extends DefaultTask implements InstallNativeImageTask {
 
@@ -33,8 +32,6 @@ public class DefaultInstallNativeImageTask extends DefaultTask implements Instal
 
     @Inject
     public DefaultInstallNativeImageTask(Provider<GraalVmHome> graalVmHome) {
-        Logger logger = LoggerFactory.getLogger(InstallNativeImageTask.class);
-        logger.info("installNativeImage is initializing with graal: {}", graalVmHome.getOrNull());
         this.graalVmHome = graalVmHome;
         getOutputs().upToDateWhen(task -> 
                 nativeImageCommand()
@@ -44,22 +41,24 @@ public class DefaultInstallNativeImageTask extends DefaultTask implements Instal
 
     @TaskAction
     public void installNativeImage() {
+        Logger logger = getLogger();
+        logger.info("installing native-image at GraalVm:{}", this.graalVmHome.getOrNull());
         GraalVmHome graalVmHome = this.graalVmHome.get();
         if (graalVmHome.notFound()) {
-            getLogger().info("GRAALVM_HOME[{}] not found", graalVmHome);
+            logger.info("GRAALVM_HOME[{}] not found", graalVmHome);
             throw new InvalidUserDataException(String.format("graalVM not found at %s", graalVmHome));
         }
         Optional<Path> nativeImageCommand = nativeImageCommand();
         if (nativeImageCommand.isPresent()) {
             Path nativeImage = nativeImageCommand.get();
-            getLogger().info("native-image command exists: {}", nativeImage);
+            logger.info("native-image command exists: {}", nativeImage);
             throw new StopExecutionException(
                     String.format("native-image command exists at %s", nativeImage));
         }
         Path graalVmUpdaterCommand = graalVmUpdaterCommand()
                 .orElseThrow(() -> new InvalidUserDataException(
                         String.format("graalVM updater command does not exist in %s.", graalVmHome)));
-        getLogger().info("found graalVM updater command: {}", graalVmUpdaterCommand);
+        logger.info("found graalVM updater command: {}", graalVmUpdaterCommand);
         getProject().exec(execSpec -> {
             execSpec.setExecutable(graalVmUpdaterCommand);
             execSpec.args("install", "native-image");
