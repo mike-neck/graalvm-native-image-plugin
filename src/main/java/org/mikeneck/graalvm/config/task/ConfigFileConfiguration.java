@@ -13,14 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mikeneck.graalvm;
+package org.mikeneck.graalvm.config.task;
 
-import org.gradle.api.Task;
-import org.gradle.api.provider.Provider;
-import org.gradle.api.tasks.Internal;
+import java.io.File;
 
-public interface InstallNativeImageTask extends Task {
+public interface ConfigFileConfiguration {
 
-    @Internal
-    Provider<GraalVmHome> getGraalVmHome();
+    void addJniConfig(File jniConfig);
+
+    void addProxyConfig(File proxyConfig);
+
+    void addReflectConfig(File reflectConfig);
+
+    void addResourceConfig(File resourceConfig);
 }

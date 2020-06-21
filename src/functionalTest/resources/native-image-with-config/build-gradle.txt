@@ -1,0 +1,24 @@
+plugins {
+  id 'java'
+  id 'org.mikeneck.graalvm-native-image'
+}
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.11.0'
+}
+
+nativeImage {
+  graalVmHome = System.getenv('JAVA_HOME')
+  mainClass = 'com.example.App'
+  executableName = 'test-app'
+  arguments('--no-fallback')
+}
+
+generateNativeImageConfig {
+  enabled = true
+  byRunningApplicationWithoutArguments()
+}

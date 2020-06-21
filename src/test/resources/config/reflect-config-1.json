@@ -1,0 +1,28 @@
+[
+{
+  "name":"com.fasterxml.jackson.databind.ext.Java7SupportImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"java.sql.Date"
+},
+{
+  "name":"java.sql.Timestamp"
+},
+  {
+    "name":"java.util.ArrayList",
+    "allDeclaredMethods":true,
+    "allDeclaredConstructors":true
+  },
+  {
+    "name":"java.util.LinkedHashMap",
+    "allDeclaredMethods":true,
+    "allDeclaredConstructors":true
+  },
+  {
+    "name":"com.example.App",
+    "allDeclaredFields":true,
+    "allDeclaredMethods":true,
+    "allDeclaredConstructors":true
+  }
+]

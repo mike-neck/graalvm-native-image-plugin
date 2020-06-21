@@ -13,14 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mikeneck.graalvm;
+package org.mikeneck.graalvm.config;
 
-import org.gradle.api.Task;
-import org.gradle.api.provider.Provider;
-import org.gradle.api.tasks.Internal;
+public interface MergeableConfig<M extends MergeableConfig<M>> {
 
-public interface InstallNativeImageTask extends Task {
-
-    @Internal
-    Provider<GraalVmHome> getGraalVmHome();
+    M mergeWith(M other);
 }

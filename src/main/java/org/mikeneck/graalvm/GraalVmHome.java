@@ -20,6 +20,7 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 
 class GraalVmHome {
 
@@ -37,6 +38,7 @@ class GraalVmHome {
         return Files.exists(graalVmHome);
     }
 
+    @NotNull
     Optional<Path> graalVmUpdater() {
         return graalVmUpdaterCandidates()
                 .stream()
@@ -51,6 +53,7 @@ class GraalVmHome {
         );
     }
 
+    @NotNull
     Optional<Path> nativeImage() {
         return nativeImageCandidates()
                 .stream()
@@ -62,6 +65,21 @@ class GraalVmHome {
         return Arrays.asList(
                 graalVmHome.resolve("bin/native-image"),
                 graalVmHome.resolve("bin/native-image.cmd")
+        );
+    }
+
+    @NotNull
+    Optional<Path> javaExecutable() {
+        return javaExecutableCandidates()
+                .stream()
+                .filter(Files::exists)
+                .findFirst();
+    }
+
+    private List<Path> javaExecutableCandidates() {
+        return Arrays.asList(
+                graalVmHome.resolve("bin/java"),
+                graalVmHome.resolve("bin/java.exe")
         );
     }
 

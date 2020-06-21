@@ -13,14 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mikeneck.graalvm;
+package org.mikeneck.graalvm.nativeimage;
 
-import org.gradle.api.Task;
-import org.gradle.api.provider.Provider;
-import org.gradle.api.tasks.Internal;
+public enum OperatingSystem {
 
-public interface InstallNativeImageTask extends Task {
+    WINDOWS,
+    LINUX,
+    MACOSX,
+    ;
 
-    @Internal
-    Provider<GraalVmHome> getGraalVmHome();
+    public static OperatingSystem byName(String osName) {
+        if (osName.contains("win")) {
+            return WINDOWS;
+        } else if (osName.contains("Mac")) {
+            return MACOSX;
+        } else {
+            return LINUX;
+        }
+    }
 }

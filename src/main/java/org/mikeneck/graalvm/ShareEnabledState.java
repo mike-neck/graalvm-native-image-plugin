@@ -16,11 +16,11 @@
 package org.mikeneck.graalvm;
 
 import org.gradle.api.Task;
-import org.gradle.api.provider.Provider;
-import org.gradle.api.tasks.Internal;
 
-public interface InstallNativeImageTask extends Task {
+public interface ShareEnabledState extends Task {
 
-    @Internal
-    Provider<GraalVmHome> getGraalVmHome();
+    @Override
+    void setEnabled(boolean b);
+
+    void shareEnabledStateWith(Task... tasks);
 }

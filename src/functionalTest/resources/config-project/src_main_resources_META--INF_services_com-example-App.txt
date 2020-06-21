@@ -1,0 +1,2 @@
+com.example.App$Normal
+com.example.App$Pretty

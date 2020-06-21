@@ -1,0 +1,124 @@
+package com.example;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Proxy;
+import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Arrays;
+import java.util.ServiceLoader;
+import java.util.ResourceBundle;
+import java.util.function.Supplier;
+
+public interface App {
+
+    public static void main(String[] args) {
+        try {
+            if (Arrays.stream(args).anyMatch(op -> op.toLowerCase().equals("-h"))) {
+              showUsage();
+              System.exit(2);
+            }
+            App app = newApp(args);
+            JsonNode jsonNode = app.readYaml(System.in);
+            String json = app.toJson(jsonNode);
+
+            PrinterFactory factory = PrinterFactory.getInstance();
+            Printer printer = factory.create();
+            printer.print(json);
+            System.exit(0);
+        } catch (Exception e) {
+            System.err.println(e);
+            System.exit(1);
+        }
+    }
+
+    static void showUsage() {
+      String text = ResourceBundle.getBundle("usage")
+          .getString("usage.text");
+      System.err.println(text);
+    }
+
+    static App newApp(String... params) {
+      boolean proxy = params.length > 0 && "-x".equals(params[0]);
+      if (proxy) {
+        return createProxy();
+      }
+      boolean pretty = params.length > 0 && "-p".equals(params[0]);
+      ServiceLoader<App> loader = ServiceLoader.load(App.class);
+      List<App> apps = new ArrayList<>();
+      for (App app: loader) {
+        apps.add(app);
+        if (pretty == app.pretty()) {
+          return app;
+        }
+      }
+      throw new IllegalStateException("suitable App not found from " + apps);
+    }
+
+    static App createProxy() {
+      final MethodHandles.Lookup lookup = MethodHandles.lookup();
+      return (App) Proxy.newProxyInstance(
+          Thread.currentThread().getContextClassLoader(),
+          new Class<?>[] { App.class },
+          (Object proxy, Method method, Object[] args) -> {
+            String name = method.getName();
+            if ("readYaml".equals(name)) {
+              return lookup.unreflectSpecial(method, method.getDeclaringClass())
+                  .bindTo(proxy)
+                  .invokeWithArguments(args);
+            }
+            if ("toJson".equals(name)) {
+              JsonNode jsonNode = (JsonNode) args[0];
+              return jsonNode.toString(); 
+            }
+            if ("toString".equals(name)) {
+              return "App[proxy]";
+            }
+            if ("equals".equals(name)) {
+              return false;
+            }
+            if ("hashCode".equals(name)) {
+              return proxy.hashCode();
+            }
+            throw new UnsupportedOperationException(name + " not supported");
+          }
+      );
+    }
+
+    default JsonNode readYaml(InputStream inputStream) throws IOException {
+        Reader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+        ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
+        return objectMapper.readTree(reader);
+    }
+
+    default String toJson(JsonNode jsonNode) throws IOException {
+        ObjectWriter objectWriter = jsonObjectWriter();
+        return objectWriter.writeValueAsString(jsonNode);
+    }
+
+    default boolean pretty() { return false; }
+
+    ObjectWriter jsonObjectWriter();
+
+    class Normal implements App {
+      @Override public ObjectWriter jsonObjectWriter() {
+        return new ObjectMapper().writer();
+      }
+    }
+
+    class Pretty implements App {
+      @Override public boolean pretty() { return true; }
+      @Override public ObjectWriter jsonObjectWriter() {
+        return new ObjectMapper().writerWithDefaultPrettyPrinter();
+      }
+    }
+}

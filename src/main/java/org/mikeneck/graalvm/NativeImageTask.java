@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Shinya Mochida
+ * Copyright 2020 Shinya Mochida
  *
  * Licensed under the Apache License,Version2.0(the"License");
  * you may not use this file except in compliance with the License.
@@ -17,94 +17,63 @@ package org.mikeneck.graalvm;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import org.gradle.api.DefaultTask;
-import org.gradle.api.InvalidUserDataException;
-import org.gradle.api.provider.Property;
-import org.gradle.api.tasks.InputFile;
-import org.gradle.api.tasks.OutputDirectory;
-import org.gradle.api.tasks.OutputFile;
-import org.gradle.api.tasks.TaskAction;
+import org.gradle.api.Action;
+import org.gradle.api.Project;
+import org.gradle.api.Task;
+import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.file.Directory;
+import org.gradle.api.file.ProjectLayout;
+import org.gradle.api.provider.Provider;
+import org.gradle.api.tasks.Nested;
+import org.gradle.api.tasks.bundling.Jar;
+import org.jetbrains.annotations.NotNull;
+import org.mikeneck.graalvm.nativeimage.NativeImageArguments;
 
-public class NativeImageTask extends DefaultTask {
+public interface NativeImageTask extends Task, NativeImageConfig {
 
-    private final Property<NativeImageExtension> extension;
+    @NotNull
+    @Nested
+    NativeImageArguments getNativeImageArguments();
 
-    public NativeImageTask() {
-        this.extension = getProject().getObjects().property(NativeImageExtension.class);
+    @Override
+    void setGraalVmHome(String graalVmHome);
+
+    @Override
+    void setJarTask(Jar jarTask);
+
+    @Override
+    void setMainClass(String mainClass);
+
+    @Override
+    void setExecutableName(String name);
+
+    @Override
+    void setRuntimeClasspath(Configuration configuration);
+
+    @Override
+    default void setOutputDirectory(File directory) {
+        Project project = getProject();
+        ProjectLayout projectLayout = project.getLayout();
+        Provider<Directory> dir = projectLayout.dir(project.provider(() -> directory));
+        setOutputDirectory(dir);
     }
 
-    void setExtension(NativeImageExtension extension) {
-        this.extension.set(extension);
+    @Override
+    default void setOutputDirectory(Path directory) {
+        setOutputDirectory(directory.toFile());
     }
 
-    @TaskAction
-    public void createNativeImage() {
-        createOutputDirectoryIfNotExisting();
-        Path nativeImageCommand = nativeImageCommand();
-        getProject().exec(execSpec -> {
-            getLogger().info("run native-image binary.");
-            execSpec.setExecutable(nativeImageCommand);
-            execSpec.args(arguments());
-        });
+    @Override
+    default void setOutputDirectory(String directory) {
+        File dir = getProject().file(directory);
+        setOutputDirectory(dir);
     }
 
-    private Path nativeImageCommand() {
-        GraalVmHome graalVmHome = graalVmHome();
-        Optional<Path> nativeImage = graalVmHome.nativeImage();
-        if (!nativeImage.isPresent()) {
-            getLogger().warn("native-image not found in graalVmHome({})", graalVmHome);
-            throw new InvalidUserDataException("native-image not found in graalVmHome(" + graalVmHome + ")");
-        }
-        return nativeImage.get();
-    }
+    @Override
+    void setOutputDirectory(Provider<Directory> directory);
 
-    private GraalVmHome graalVmHome() {
-        return extension.get().graalVmHome();
-    }
+    void withConfigFiles(@NotNull Action<NativeImageConfigurationFiles> configuration);
 
-    @OutputDirectory
-    public File outputDirectory() {
-        return outputDirectoryPath().toFile();
-    }
-
-    private Path outputDirectoryPath() {
-        return extension.get().outputDirectory.getAsFile().map(File::toPath).get();
-    }
-
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    private void createOutputDirectoryIfNotExisting() {
-        File outputDir = outputDirectory();
-        getLogger().info("create output directory if not exists: {}", outputDir);
-        if (!outputDir.exists()) {
-            outputDir.mkdirs();
-        }
-    }
-
-    private List<String> arguments() {
-        NativeImageArguments arguments = NativeImageArguments.create(getProject(), extension.get());
-        List<String> args = new ArrayList<>();
-        args.add("-cp");
-        args.add(arguments.classpath());
-        args.add(arguments.outputPath());
-        arguments.executableName().ifPresent(args::add);
-        args.addAll(arguments.additionalArguments());
-        args.add(arguments.mainClass());
-        return Collections.unmodifiableList(args);
-    }
-
-    @InputFile
-    public File getJarFile() {
-        NativeImageExtension nativeImageExtension = extension.get();
-        return nativeImageExtension.jarFile();
-    }
-
-    @OutputFile
-    public File getOutputExecutable() {
-        NativeImageExtension nativeImageExtension = extension.get();
-        return outputDirectoryPath().resolve(nativeImageExtension.executableName()).toFile();
-    }
+    @Override
+    void arguments(String... arguments);
 }

@@ -1,0 +1,94 @@
+plugins {
+  id 'java'
+  id 'org.mikeneck.graalvm-native-image'
+}
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.11.0'
+}
+
+nativeImage {
+  graalVmHome = System.getenv('JAVA_HOME')
+  mainClass = 'com.example.App'
+  executableName = 'test-app'
+  arguments('--no-fallback')
+}
+
+generateNativeImageConfig {
+  enabled = true
+  byRunningApplication {
+    def stream = """
+    |total: 2
+    |contents:
+    |  - name: foo
+    |    size: 1024
+    |  - name: bar/Baz
+    |    size: 2203
+    |""".stripMargin()
+    stdIn(stream)
+  }
+  byRunningApplication {
+    arguments('-p')
+    stdIn("""
+    |total: 2
+    |contents:
+    |  - name: foo
+    |    size: 1024
+    |  - name: bar/Baz
+    |    size: 2203
+    |""".stripMargin())
+  }
+  byRunningApplication {
+    stdIn("""
+    |total: 2
+    | contents:
+    |  - name foo
+    |-size: 1024
+    |- name: bar/Baz
+    |    size: 2203
+    |""".stripMargin())
+  }
+  byRunningApplication {
+    arguments('-x')
+    stdIn("""
+    |total: 2
+    |contents:
+    |  - name: foo
+    |    size: 1024
+    |  - name: bar/Baz
+    |    size: 2203
+    |""".stripMargin())
+  }
+  byRunningApplication {
+    arguments('-p')
+    environment(PRINTER_TYPE: 'proxy')
+    stdIn("""
+    |total: 2
+    |contents:
+    |  - name: foo
+    |    size: 1024
+    |  - name: bar/Baz
+    |    size: 2203
+    |""".stripMargin())
+  }
+  byRunningApplication {
+    arguments('-x')
+    environment(PRINTER_TYPE: 'proxy')
+    stdIn("""
+    |total: 2
+    |contents:
+    |  - name: foo
+    |    size: 1024
+    |  - name: bar/Baz
+    |    size: 2203
+    |""".stripMargin())
+  }
+  byRunningApplication {
+    arguments('-h')
+  }
+  byRunningApplicationWithoutArguments()
+}

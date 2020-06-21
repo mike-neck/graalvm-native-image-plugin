@@ -1,0 +1,32 @@
+package com.example;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import java.io.IOException;
+import java.util.List;
+import java.util.ServiceLoader;
+
+public interface App {
+
+  String message();
+
+  static void main(String[] args) throws IOException {
+    ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+    ServiceLoader<App> loader = ServiceLoader.load(App.class);
+    for(App app: loader) {
+      List<String> list = mapper.readValue(
+          app.message(),
+          new TypeReference<List<String>>(){});
+      System.out.println(list);
+    }
+  }
+
+  class Impl implements App {
+    @Override
+    public String message() {
+      return "- app-impl";
+    }
+  }
+}
