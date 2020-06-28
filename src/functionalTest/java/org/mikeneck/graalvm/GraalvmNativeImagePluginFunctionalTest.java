@@ -21,8 +21,10 @@ import org.gradle.testkit.runner.GradleRunner;
 import org.gradle.testkit.runner.TaskOutcome;
 import org.junit.Test;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -43,7 +45,7 @@ public class GraalvmNativeImagePluginFunctionalTest {
         GradleRunner runner = GradleRunner.create();
         runner.forwardOutput();
         runner.withPluginClasspath();
-        runner.withArguments("clean","nativeImage", "--info");
+        runner.withArguments("clean","nativeImage", "--info", "--warning-mode", "all");
         runner.withProjectDir(projectDir);
         BuildResult result = runner.build();
 
@@ -52,6 +54,8 @@ public class GraalvmNativeImagePluginFunctionalTest {
                 .collect(Collectors.toList());
         assertThat(succeededTasks, hasItems(":compileJava", ":classes", ":jar", ":nativeImage"));
         assertTrue(Files.exists(projectDir.toPath().resolve("build/native-image/test-app")));
+        assertThat(result.getOutput(), 
+                not(containsString("This behaviour has been deprecated and is scheduled to be removed in Gradle 7.0")));
     }
 
     @Test public void runTaskWithCustomOutputDirectory() throws IOException {
@@ -67,12 +71,14 @@ public class GraalvmNativeImagePluginFunctionalTest {
         GradleRunner runner = GradleRunner.create();
         runner.forwardOutput();
         runner.withPluginClasspath();
-        runner.withArguments("clean","nativeImage", "--stacktrace");
+        runner.withArguments("clean","nativeImage", "--stacktrace", "--warning-mode", "all");
         runner.withProjectDir(projectDir);
         BuildResult result = runner.build();
 
         assertThat(result.taskPaths(TaskOutcome.SUCCESS), hasItem(":nativeImage"));
         assertTrue(Files.exists(projectDir.toPath().resolve("build/executable/test-app")));
+        assertThat(result.getOutput(),
+                not(containsString("This behaviour has been deprecated and is scheduled to be removed in Gradle 7.0")));
     }
 
     @Test public void runTaskOnKotlinProject() throws IOException {
@@ -88,7 +94,7 @@ public class GraalvmNativeImagePluginFunctionalTest {
         GradleRunner runner = GradleRunner.create();
         runner.forwardOutput();
         runner.withPluginClasspath();
-        runner.withArguments("clean","nativeImage");
+        runner.withArguments("clean","nativeImage", "--warning-mode", "all");
         runner.withProjectDir(projectDir);
         BuildResult result = runner.build();
 
@@ -97,6 +103,8 @@ public class GraalvmNativeImagePluginFunctionalTest {
                 .collect(Collectors.toList());
         assertThat(succeededTasks, hasItems(":compileKotlin", ":inspectClassesForKotlinIC", ":jar", ":nativeImage"));
         assertTrue(Files.exists(projectDir.toPath().resolve("build/native-image/test-app")));
+        assertThat(result.getOutput(),
+                not(containsString("This behaviour has been deprecated and is scheduled to be removed in Gradle 7.0")));
     }
 
     static File createProjectRoot(String s) throws IOException {
