@@ -103,6 +103,28 @@ public class GraalvmNativeImagePluginFunctionalTest {
                 not(containsString("This behaviour has been deprecated and is scheduled to be removed in Gradle 7.0")));
     }
 
+    @Test
+    public void runTaskOnKotlinProjectImprovedDsl() {
+        FunctionalTestContext context = new FunctionalTestContext("kotlin-project-dsl-improved");
+        context.setup();
+        Path projectDir = context.rootDir;
+
+        GradleRunner runner = GradleRunner.create();
+        runner.forwardOutput();
+        runner.withPluginClasspath();
+        runner.withArguments("clean","nativeImage", "--warning-mode", "all");
+        runner.withProjectDir(projectDir.toFile());
+        BuildResult result = runner.build();
+
+        List<String> succeededTasks = result.tasks(TaskOutcome.SUCCESS).stream()
+                .map(BuildTask::getPath)
+                .collect(Collectors.toList());
+        assertThat(succeededTasks, hasItems(":compileKotlin", ":inspectClassesForKotlinIC", ":jar", ":nativeImage"));
+        assertTrue(Files.exists(projectDir.resolve("build/image/test-app")));
+        assertThat(result.getOutput(),
+                not(containsString("This behaviour has been deprecated and is scheduled to be removed in Gradle 7.0")));
+    }
+
     static File createProjectRoot(String s) throws IOException {
         File projectDir = new File(s);
         Files.createDirectories(projectDir.toPath());
