@@ -1,5 +1,8 @@
 import org.gradle.api.Project
+import org.gradle.api.artifacts.Configuration
+import org.gradle.api.tasks.bundling.Jar
 import org.mikeneck.graalvm.NativeImageTask
+import java.io.File
 
 /*
  * Copyright 2020 Shinya Mochida
@@ -22,3 +25,27 @@ fun Project.nativeImage(configuration: NativeImageTask.() -> Unit): Unit =
       null -> Unit
       else -> configuration(nativeImageTask)
     }
+
+var NativeImageTask.graalVmHome: String
+  get() = throw UnsupportedOperationException("getGraalVmHome is not supported.")
+  set(value) = this.setGraalVmHome(value)
+
+var NativeImageTask.jarTask: Jar
+  get() = throw UnsupportedOperationException("getJarTask is not supported.")
+  set(value) = this.setJarTask(value)
+
+var NativeImageTask.mainClass: String
+  get() = throw UnsupportedOperationException("getMainClass is not supported.")
+  set(value) = this.setMainClass(value)
+
+var NativeImageTask.executableName: String
+  get() = throw UnsupportedOperationException("getExecutableName is not supported.")
+  set(value) = this.setExecutableName(value)
+
+var NativeImageTask.runtimeClasspath: Configuration
+  get() = throw UnsupportedOperationException("getRuntimeClasspath is not supported.")
+  set(value) = this.setRuntimeClasspath(value)
+
+var NativeImageTask.outputDirectory: File
+  get() = throw UnsupportedOperationException("getOutputDirectory is not supported.")
+  set(value) = this.setOutputDirectory(value)
