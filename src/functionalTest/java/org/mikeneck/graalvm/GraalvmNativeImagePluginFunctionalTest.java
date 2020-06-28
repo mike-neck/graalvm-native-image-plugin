@@ -81,28 +81,24 @@ public class GraalvmNativeImagePluginFunctionalTest {
                 not(containsString("This behaviour has been deprecated and is scheduled to be removed in Gradle 7.0")));
     }
 
-    @Test public void runTaskOnKotlinProject() throws IOException {
-        // Setup the test build
-        File projectDir = createProjectRoot("build/functionalTest/kotlin");
-        copyFile("kotlin-project/build-gradle-kts.txt", projectDir.toPath().resolve("build.gradle.kts"));
-        Path dir = projectDir.toPath().resolve("src/main/kotlin/com/example");
-        Files.createDirectories(dir);
-        Path appJava = dir.resolve("App.kt");
-        copyFile("kotlin-project/com_example_App_kt.txt", appJava);
+    @Test public void runTaskOnKotlinProject() {
+        FunctionalTestContext context = new FunctionalTestContext("kotlin-project");
+        context.setup();
+        Path projectDir = context.rootDir;
 
         // Run the build
         GradleRunner runner = GradleRunner.create();
         runner.forwardOutput();
         runner.withPluginClasspath();
         runner.withArguments("clean","nativeImage", "--warning-mode", "all");
-        runner.withProjectDir(projectDir);
+        runner.withProjectDir(projectDir.toFile());
         BuildResult result = runner.build();
 
         List<String> succeededTasks = result.tasks(TaskOutcome.SUCCESS).stream()
                 .map(BuildTask::getPath)
                 .collect(Collectors.toList());
         assertThat(succeededTasks, hasItems(":compileKotlin", ":inspectClassesForKotlinIC", ":jar", ":nativeImage"));
-        assertTrue(Files.exists(projectDir.toPath().resolve("build/native-image/test-app")));
+        assertTrue(Files.exists(projectDir.resolve("build/native-image/test-app")));
         assertThat(result.getOutput(),
                 not(containsString("This behaviour has been deprecated and is scheduled to be removed in Gradle 7.0")));
     }
