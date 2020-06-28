@@ -43,7 +43,7 @@ public class GraalvmNativeImagePluginFunctionalTest {
         GradleRunner runner = GradleRunner.create();
         runner.forwardOutput();
         runner.withPluginClasspath();
-        runner.withArguments("clean","nativeImage", "--info");
+        runner.withArguments("clean","nativeImage", "--info", "--warning-mode", "all");
         runner.withProjectDir(projectDir);
         BuildResult result = runner.build();
 
@@ -67,7 +67,7 @@ public class GraalvmNativeImagePluginFunctionalTest {
         GradleRunner runner = GradleRunner.create();
         runner.forwardOutput();
         runner.withPluginClasspath();
-        runner.withArguments("clean","nativeImage", "--stacktrace");
+        runner.withArguments("clean","nativeImage", "--stacktrace", "--warning-mode", "all");
         runner.withProjectDir(projectDir);
         BuildResult result = runner.build();
 
@@ -88,7 +88,7 @@ public class GraalvmNativeImagePluginFunctionalTest {
         GradleRunner runner = GradleRunner.create();
         runner.forwardOutput();
         runner.withPluginClasspath();
-        runner.withArguments("clean","nativeImage");
+        runner.withArguments("clean","nativeImage", "--warning-mode", "all");
         runner.withProjectDir(projectDir);
         BuildResult result = runner.build();
 
