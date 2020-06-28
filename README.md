@@ -29,7 +29,7 @@ Example
 ```groovy
 plugins {
   id 'java'
-  id 'org.mikeneck.graalvm-native-image' version 'v0.5.0'
+  id 'org.mikeneck.graalvm-native-image' version 'v0.7.0'
 }
 
 repositories {
@@ -58,7 +58,7 @@ nativeImage {
 ```kotlin
 plugins {
   kotlin("jvm") version "1.3.72"
-  id("org.mikeneck.graalvm-native-image") version "v0.5.0"
+  id("org.mikeneck.graalvm-native-image") version "v0.7.0"
 }
 
 repositories {
@@ -111,3 +111,5 @@ Make sure you are running `nativeImage` task on Windows SDK 7.1 Command Prompt.
 ##### For GitHub Actions
 
 If you are planning releasing both MacOS X and Linux applications, please refer example workflow under `example` directory.
+
+
