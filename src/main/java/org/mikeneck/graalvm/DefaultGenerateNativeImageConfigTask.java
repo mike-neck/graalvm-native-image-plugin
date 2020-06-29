@@ -183,6 +183,7 @@ public class DefaultGenerateNativeImageConfigTask extends DefaultTask implements
         return mainClass;
     }
 
+    @Override
     public void resumeOnApplicationError() {
         this.exitOnApplicationError.set(false);
     }
@@ -211,11 +212,13 @@ public class DefaultGenerateNativeImageConfigTask extends DefaultTask implements
         return graalVmHome::get;
     }
 
+    @Override
     public void byRunningApplicationWithoutArguments() {
         JavaExecutionImpl javaExecution = newJavaExecution(javaExecutions.size());
         javaExecutions.add(javaExecution);
     }
 
+    @Override
     public void byRunningApplication(Action<JavaExecution> argumentsConfiguration) {
         JavaExecutionImpl javaExecution = newJavaExecution(javaExecutions.size());
         argumentsConfiguration.execute(javaExecution);

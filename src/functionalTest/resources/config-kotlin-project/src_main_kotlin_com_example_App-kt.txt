@@ -1,0 +1,57 @@
+package com.example
+
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.ObjectReader
+import com.fasterxml.jackson.databind.ObjectWriter
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
+import java.util.ServiceLoader
+
+fun main(args: Array<String>) {
+  val reader = if (args.isEmpty()) {
+    showHelp()
+  } else {
+    when(args[0]) {
+      "-j" -> toYaml()
+      "-y" -> toJson()
+      else -> showHelp()
+    }
+  }
+  println(reader.readAndConvert())
+}
+
+interface Reader {
+  fun exitCode(): Int = 0
+  fun readAndConvert(): String
+}
+
+fun showHelp(): Reader {
+  val loader = ServiceLoader.load(Reader::class.java)
+  return loader.firstOrNull() ?: throw IllegalStateException("help object not found")
+}
+
+fun toYaml(): Reader {
+  val reader = ObjectMapper(YAMLFactory())
+  val writer = ObjectMapper()
+  return Impl(reader.reader(), writer.writer())
+}
+
+fun toJson(): Reader {
+  val reader = ObjectMapper()
+  val writer = ObjectMapper(YAMLFactory())
+  return Impl(reader.reader(), writer.writer())
+}
+
+class Help: Reader {
+  override fun exitCode(): Int = 1
+  override fun readAndConvert(): String =
+      Thread.currentThread().contextClassLoader
+          ?.getResource("help.txt")?.readText(Charsets.UTF_8)
+          ?: throw IllegalStateException("help not found")
+}
+
+class Impl(val reader: ObjectReader, val writer: ObjectWriter): Reader {
+  override fun readAndConvert(): String {
+    val jsonNode = reader.readTree(System.`in`.reader(Charsets.UTF_8))
+    return writer.writeValueAsString(jsonNode)
+  }
+}

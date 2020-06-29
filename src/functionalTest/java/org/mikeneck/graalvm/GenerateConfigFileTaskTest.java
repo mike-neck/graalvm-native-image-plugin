@@ -88,4 +88,23 @@ public class GenerateConfigFileTaskTest {
         TaskOutcome nativeImageResult = result.task(":nativeImage").getOutcome();
         assertThat(nativeImageResult, is(TaskOutcome.SUCCESS));
     }
+
+    @Test
+    public void buildNativeImageWithConfigurationOnKotlinProject() {
+        FunctionalTestContext context = new FunctionalTestContext("config-kotlin-project");
+        context.setup();
+        Path projectDir = context.rootDir;
+
+        GradleRunner runner = GradleRunner.create();
+        runner.forwardOutput();
+        runner.withPluginClasspath();
+        runner.withArguments("clean","nativeImage", "--stacktrace", "--info", "--warning-mode", "all");
+        runner.withProjectDir(projectDir.toFile());
+        BuildResult result = runner.build();
+
+        assertTrue(Files.exists(projectDir.resolve("build/image/json2yaml")));
+        TaskOutcome nativeImageResult = result.task(":nativeImage").getOutcome();
+        assertThat(nativeImageResult, is(TaskOutcome.SUCCESS));
+        assertTrue(Files.exists(projectDir.resolve("build/tmp/native-image-config/out-2")));
+    }
 }

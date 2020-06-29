@@ -18,6 +18,7 @@ package org.mikeneck.graalvm;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
+import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
@@ -55,6 +56,8 @@ public interface GenerateNativeImageConfigTask extends ShareEnabledState {
     @Input
     @NotNull Provider<String> getMainClass();
 
+    void resumeOnApplicationError();
+
     @NotNull
     @Nested
     List<JavaExecutionImpl> getJavaExecutions();
@@ -62,4 +65,8 @@ public interface GenerateNativeImageConfigTask extends ShareEnabledState {
     @Deprecated
     @OutputDirectory
     @NotNull File getTemporaryDirectory();
+
+    void byRunningApplicationWithoutArguments();
+
+    void byRunningApplication(Action<JavaExecution> argumentsConfiguration);
 }
