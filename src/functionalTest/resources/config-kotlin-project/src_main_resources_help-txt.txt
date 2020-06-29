@@ -1,0 +1,8 @@
+json2yaml
+
+  converts json from stdin to yaml, and vice versa.
+
+  options
+    -j  converts json to yaml.
+    -y  converts yaml to json.
+    -h  shows this help.
