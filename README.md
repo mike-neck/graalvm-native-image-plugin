@@ -10,6 +10,8 @@ This plugin offers a task (`nativeImage`), which wraps GraalVM's tool `native-im
 Configuration
 ---
 
+### NativeImageTask
+
 You can configure options via `nativeImage {}`.
 
 * `graalVmHome` - The Home directory of GraalVM, required.
@@ -20,6 +22,17 @@ You can configure options via `nativeImage {}`.
 * `outputDirectory` - An output directory under which the native image will be generated.(default: `$buildDir/native-image`)
 
 And you can configure arguments to be passed to GraalVM via `arguments(String...)` method.
+
+### GenerateNativeImageConfigTask
+
+You can configure running application parameters by `generateNativeImageConfig {}` block(`GenerateNativeImageConfigTask`).
+
+- `enabled` - A `boolean` property whether to run this task. This plugin disables `generateNativeImageConfig` task in default. Please set `true` to this property to run `generateNativeImageConfig` task.
+- `byRunningApplication {}` - Configuration block to run your application. You can configure multiple times.
+    - `stdIn(String)` - standard input for your application.
+    - `arguments(String...)` - Command line arguments, which will be given to your application.
+    - `environment(Map<String, String>)` - Environmental variable for your application.
+- `byRunningApplicationWithoutArguments()` - Run application without any configuration.
 
 Example
 ---
@@ -52,10 +65,28 @@ nativeImage {
       '--report-unsupported-elements-at-runtime'
   )
 }
+
+generateNativeImageConfig {
+  enabled = true
+  byRunningApplication {
+    stdIn("""
+    |total: 2
+    |contents:
+    |  - name: foo
+    |    size: 2052
+    |""".stripMargin())
+  }
+  byRunningApplicationWithoutArguments()
+  byRunningApplication {
+    arguments('-h')
+  }
+}
 ```
 
 #### Gradle Kotlin DSL
 ```kotlin
+import org.mikeneck.graalvm.GenerateNativeImageConfigTask
+
 plugins {
   kotlin("jvm") version "1.3.72"
   id("org.mikeneck.graalvm-native-image") version "v0.7.0"
@@ -70,16 +101,32 @@ dependencies {
 }
 
 nativeImage {
-    setGraalVmHome(System.getProperty("java.home"))
-    setMainClass("com.example.App")
-    setExecutableName("my-native-application")
-    setOutputDirectory("$buildDir/executable")
+    graalVmHome = System.getenv("JAVA_HOME")
+    mainClass ="com.example.App"
+    executableName = "my-native-application"
+    outputDirectory = "$buildDir/executable"
     arguments(
         "--no-fallback",
         "--enable-all-security-services",
         "--initialize-at-run-time=com.example.runtime",
         "--report-unsupported-elements-at-runtime"
     )
+}
+
+generateNativeImageConfig {
+  enabled = true
+  byRunningApplication {
+    stdIn("""
+      |total: 2
+      |contents:
+      |  - name: foo
+      |    size: 2052
+      |""".trimMargin())
+  }
+  byRunningApplicationWithoutArguments()
+  byRunningApplication {
+    arguments('-h')
+  }
 }
 ```
 
@@ -112,4 +159,7 @@ Make sure you are running `nativeImage` task on Windows SDK 7.1 Command Prompt.
 
 If you are planning releasing both MacOS X and Linux applications, please refer example workflow under `example` directory.
 
+### generateNativeImageConfig task
 
+This task requires `native-image` command. If your machine has no `native-image` command,
+run `gu` command or `installNativeImage` task before running `generateNativeImageConfig` task.
