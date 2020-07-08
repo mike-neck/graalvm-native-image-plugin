@@ -25,6 +25,7 @@ import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ReflectConfigTest {
@@ -97,7 +98,7 @@ public class ReflectConfigTest {
     public void mergeWithOtherHavingSameClassUsingAnotherMethods() {
         ReflectConfig left = new ReflectConfig(
                 new ClassUsage("java.sql.Date", MethodUsage.of("getTime")),
-                new ClassUsage(ArrayList.class, 
+                new ClassUsage(ArrayList.class,
                         MethodUsage.ofInit(int.class),
                         MethodUsage.of("add", Object.class),
                         MethodUsage.of("addAll", Collection.class)),
@@ -156,5 +157,14 @@ public class ReflectConfigTest {
         ReflectConfig reflectConfig = left.mergeWith(right);
 
         assertThat(reflectConfig, is(right));
+    }
+
+    // https://github.com/mike-neck/graalvm-native-image-plugin/issues/46
+    @Test
+    public void parseErrorCase46() throws IOException {
+        try (final InputStream inputStream = reader.configJsonResource("config/reflect-config-parse-error-46.json")) {
+            ReflectConfig reflectConfig = objectMapper.readValue(inputStream, ReflectConfig.class);
+            assertThat(reflectConfig, is(notNullValue()));
+        }
     }
 }
