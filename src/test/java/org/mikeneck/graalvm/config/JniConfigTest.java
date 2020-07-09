@@ -103,13 +103,15 @@ public class JniConfigTest {
                 new ClassUsage(IllegalArgumentException.class, MethodUsage.of("<init>", String.class), MethodUsage.of("getCause")),
                 new ClassUsage("com.example.App", new TreeSet<>(
                         Arrays.asList(MethodUsage.of("run"), MethodUsage.of("start", int.class))),
+                        Collections.emptySortedSet(),
                         null, Boolean.TRUE, Boolean.TRUE));
 
         JniConfig jniConfig = left.mergeWith(right);
 
         assertThat(jniConfig, hasItems(
                 new ClassUsage("com.example.App", new TreeSet<>(
-                        Arrays.asList(MethodUsage.of("run"), MethodUsage.of("<init>"), MethodUsage.of("start", int.class))),
+                        Arrays.asList(MethodUsage.of("run"), MethodUsage.of("<init>"), MethodUsage.of("start", int.class))), 
+                        Collections.emptySortedSet(),
                         null, Boolean.TRUE, Boolean.TRUE),
                 new ClassUsage(IllegalArgumentException.class, MethodUsage.of("<init>", String.class), MethodUsage.of("getCause")),
                 new ClassUsage(ArrayList.class, MethodUsage.of("<init>", int.class))));
