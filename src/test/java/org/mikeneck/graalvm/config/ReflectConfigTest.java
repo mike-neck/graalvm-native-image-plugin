@@ -95,16 +95,18 @@ public class ReflectConfigTest {
     }
 
     @Test
-    public void mergeWithOtherHavingSameClassUsingAnotherMethods() {
+    public void mergeWithOtherHavingSameClassUsingAnotherMethodsAndFields() {
         ReflectConfig left = new ReflectConfig(
                 new ClassUsage("java.sql.Date", MethodUsage.of("getTime")),
                 new ClassUsage(ArrayList.class,
                         MethodUsage.ofInit(int.class),
                         MethodUsage.of("add", Object.class),
                         MethodUsage.of("addAll", Collection.class)),
+                new ClassUsage("com.example.Bar", new FieldUsage("baz"), new FieldUsage("qux")),
                 new ClassUsage("java.sql.Timestamp"));
         ReflectConfig right = new ReflectConfig(
                 new ClassUsage(ArrayList.class, MethodUsage.ofInit()),
+                new ClassUsage("com.example.Bar", new FieldUsage("quux"), new FieldUsage("baz")),
                 new ClassUsage("java.sql.Date", MethodUsage.of("getTime")),
                 new ClassUsage("com.example.App", MethodUsage.of("run")));
 
@@ -112,6 +114,7 @@ public class ReflectConfigTest {
 
         assertThat(reflectConfig, hasItems(
                 new ClassUsage("com.example.App", MethodUsage.of("run")),
+                new ClassUsage("com.example.Bar", new FieldUsage("baz"), new FieldUsage("quux"), new FieldUsage("qux")),
                 new ClassUsage("java.sql.Date", MethodUsage.of("getTime")),
                 new ClassUsage("java.sql.Timestamp"),
                 new ClassUsage(ArrayList.class,

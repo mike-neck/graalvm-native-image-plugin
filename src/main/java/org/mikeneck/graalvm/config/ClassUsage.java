@@ -80,6 +80,11 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
         this.methods = new TreeSet<>(Arrays.asList(methods));
     }
 
+    ClassUsage(@NotNull String name, FieldUsage... fields) {
+        this.name = name;
+        this.fields = new TreeSet<>(Arrays.asList(fields));
+    }
+
     ClassUsage(
             @NotNull String name,
             boolean allDeclaredMethods,
