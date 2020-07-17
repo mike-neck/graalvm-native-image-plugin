@@ -104,7 +104,7 @@ nativeImage {
     graalVmHome = System.getenv("JAVA_HOME")
     mainClass ="com.example.App"
     executableName = "my-native-application"
-    outputDirectory = "$buildDir/executable"
+    outputDirectory = file("$buildDir/executable")
     arguments(
         "--no-fallback",
         "--enable-all-security-services",
