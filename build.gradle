@@ -31,13 +31,19 @@ configurations {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib"
     compileOnly 'org.jetbrains:annotations:19.0.0'
     jackson 'com.fasterxml.jackson.core:jackson-databind:2.11.0'
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib"
     implementation configurations.jackson
-    functionalTestImplementation 'io.github.classgraph:classgraph:4.8.78'
-    testImplementation 'junit:junit:4.12'
+
+    testImplementation 'junit:junit:4.13'
     testImplementation 'org.assertj:assertj-core:3.16.1'
+
+    testRuntimeClasspath 'org.junit.vintage:junit-vintage-engine:5.6.2'
+
+    functionalTestImplementation 'io.github.classgraph:classgraph:4.8.78'
+    functionalTestRuntimeClasspath 'org.junit.vintage:junit-vintage-engine:5.6.2'
 }
 
 jar.enabled = false
@@ -93,6 +99,10 @@ configurations.functionalTestImplementation.extendsFrom(configurations.testImple
 task functionalTest(type: Test) {
     testClassesDirs = sourceSets.functionalTest.output.classesDirs
     classpath = sourceSets.functionalTest.runtimeClasspath
+}
+
+tasks.withType(Test) {
+    useJUnitPlatform()
 }
 
 tasks.compileFunctionalTestJava.dependsOn('pluginDescriptors')
