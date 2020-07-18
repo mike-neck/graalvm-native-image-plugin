@@ -31,8 +31,8 @@ import static org.junit.Assert.assertTrue;
 /**
  * A simple functional test for the 'org.mikeneck.graalvm.greeting' plugin.
  */
-public class GraalvmNativeImagePluginFunctionalTest {
-    @Test public void runTaskOnJavaProject() throws IOException {
+class GraalvmNativeImagePluginFunctionalTest {
+    @Test void runTaskOnJavaProject() throws IOException {
         // Setup the test build
         File projectDir = createProjectRoot("build/functionalTest/java");
         copyFile("java-project/build-gradle.txt", projectDir.toPath().resolve("build.gradle"));
@@ -58,7 +58,7 @@ public class GraalvmNativeImagePluginFunctionalTest {
                 not(containsString("This behaviour has been deprecated and is scheduled to be removed in Gradle 7.0")));
     }
 
-    @Test public void runTaskWithCustomOutputDirectory() throws IOException {
+    @Test void runTaskWithCustomOutputDirectory() throws IOException {
         // Setup the test build
         File projectDir = createProjectRoot("build/functionalTest/java-custom-output-directory");
         copyFile("java-project/build-gradle-output-directory.txt", projectDir.toPath().resolve("build.gradle"));
@@ -81,7 +81,7 @@ public class GraalvmNativeImagePluginFunctionalTest {
                 not(containsString("This behaviour has been deprecated and is scheduled to be removed in Gradle 7.0")));
     }
 
-    @Test public void runTaskOnKotlinProject() {
+    @Test void runTaskOnKotlinProject() {
         FunctionalTestContext context = new FunctionalTestContext("kotlin-project");
         context.setup();
         Path projectDir = context.rootDir;
@@ -104,7 +104,7 @@ public class GraalvmNativeImagePluginFunctionalTest {
     }
 
     @Test
-    public void runTaskOnKotlinProjectImprovedDsl() {
+    void runTaskOnKotlinProjectImprovedDsl() {
         FunctionalTestContext context = new FunctionalTestContext("kotlin-project-dsl-improved");
         context.setup();
         Path projectDir = context.rootDir;

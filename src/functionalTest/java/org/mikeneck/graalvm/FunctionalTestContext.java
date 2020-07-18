@@ -24,7 +24,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Collections;
 
-public class FunctionalTestContext {
+class FunctionalTestContext {
 
     private final String resourceRoot;
     final Path rootDir;

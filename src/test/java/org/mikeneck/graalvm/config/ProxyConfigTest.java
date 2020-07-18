@@ -29,13 +29,13 @@ import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class ProxyConfigTest {
+class ProxyConfigTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final TestJsonReader reader = new TestJsonReader();
 
     @Test
-    public void jsonWithContents() throws IOException {
+    void jsonWithContents() throws IOException {
         try (InputStream inputStream = reader.configJsonResource("config/proxy-config-1.json")) {
             ProxyConfig proxyConfig = objectMapper.readValue(inputStream, ProxyConfig.class);
             assertThat(proxyConfig, hasItems(
@@ -45,7 +45,7 @@ public class ProxyConfigTest {
     }
 
     @Test
-    public void jsonWithoutContents() throws IOException {
+    void jsonWithoutContents() throws IOException {
         try (InputStream inputStream = reader.configJsonResource("config/proxy-config-2.json")) {
             ProxyConfig proxyConfig = objectMapper.readValue(inputStream, ProxyConfig.class);
             assertThat(proxyConfig, is(Collections.emptySortedSet()));
@@ -53,7 +53,7 @@ public class ProxyConfigTest {
     }
 
     @Test
-    public void mergeWithOthers() {
+    void mergeWithOthers() {
         ProxyConfig left = new ProxyConfig("com.example.Foo", "com.example.Bar");
         ProxyConfig right = new ProxyConfig("com.example.Baz", "com.example.Qux");
 
@@ -72,7 +72,7 @@ public class ProxyConfigTest {
     }
 
     @Test
-    public void mergeWithOthersSharding() {
+    void mergeWithOthersSharding() {
         ProxyConfig left = new ProxyConfig("com.abb.Foo", "com.example.Bar");
         ProxyConfig right = new ProxyConfig("com.example.Baz", "com.abb.Foo");
 
@@ -85,7 +85,7 @@ public class ProxyConfigTest {
     }
 
     @Test
-    public void mergeWithSelfBecomesSelf() {
+    void mergeWithSelfBecomesSelf() {
         ProxyConfig proxyConfig = new ProxyConfig("com.example.Foo", "com.example.Bar", "com.example.Baz");
 
         @SuppressWarnings("CollectionAddedToSelf") 
@@ -95,7 +95,7 @@ public class ProxyConfigTest {
     }
 
     @Test
-    public void mergeWithEmptyBecomesSelf() {
+    void mergeWithEmptyBecomesSelf() {
         ProxyConfig proxyConfig = new ProxyConfig("com.example.Foo", "com.example.Bar", "com.example.Baz");
 
         ProxyConfig merged = proxyConfig.mergeWith(new ProxyConfig());
@@ -104,7 +104,7 @@ public class ProxyConfigTest {
     }
 
     @Test
-    public void emptyMergedWithEmptyBecomesEmpty() {
+    void emptyMergedWithEmptyBecomesEmpty() {
         ProxyConfig proxyConfig = new ProxyConfig().mergeWith(new ProxyConfig());
 
         assertThat(proxyConfig, is(Collections.emptySortedSet()));

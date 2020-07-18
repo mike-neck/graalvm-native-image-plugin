@@ -17,9 +17,9 @@ import static org.junit.Assert.assertThat;
 /**
  * A simple unit test for the 'org.mikeneck.graalvm.greeting' plugin.
  */
-public class GraalvmNativeImagePluginTest {
+class GraalvmNativeImagePluginTest {
 
-    @Test public void pluginRegistersNativeImageTask() {
+    @Test void pluginRegistersNativeImageTask() {
         Project project = ProjectBuilder.builder().build();
         project.getPlugins().apply("java");
 
@@ -31,7 +31,7 @@ public class GraalvmNativeImagePluginTest {
     }
 
     @Test
-    public void generateNativeImageConfigTasksAreDisabled() {
+    void generateNativeImageConfigTasksAreDisabled() {
         Project project = ProjectBuilder.builder().build();
         project.getPlugins().apply("java");
         project.getPlugins().apply("org.mikeneck.graalvm-native-image");

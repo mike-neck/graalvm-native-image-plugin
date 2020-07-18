@@ -28,14 +28,14 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class ReflectConfigTest {
+class ReflectConfigTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     private final TestJsonReader reader = new TestJsonReader();
 
     @Test
-    public void jsonWithContents() throws IOException {
+    void jsonWithContents() throws IOException {
         try (final InputStream inputStream = reader.configJsonResource("config/reflect-config-1.json")) {
             ReflectConfig reflectConfig = objectMapper.readValue(inputStream, ReflectConfig.class);
             assertThat(reflectConfig, hasItems(
@@ -50,7 +50,7 @@ public class ReflectConfigTest {
     }
 
     @Test
-    public void jsonWithoutContents() throws IOException {
+    void jsonWithoutContents() throws IOException {
         try (final InputStream inputStream = reader.configJsonResource("config/reflect-config-2.json")) {
             ReflectConfig reflectConfig = objectMapper.readValue(inputStream, ReflectConfig.class);
             assertThat(reflectConfig, is(Collections.emptySortedSet()));
@@ -58,7 +58,7 @@ public class ReflectConfigTest {
     }
 
     @Test
-    public void mergeWithOther() {
+    void mergeWithOther() {
         ReflectConfig left = new ReflectConfig(
                 new ClassUsage("java.sql.Date", MethodUsage.of("getTime")),
                 new ClassUsage("java.sql.Timestamp"));
@@ -76,7 +76,7 @@ public class ReflectConfigTest {
     }
 
     @Test
-    public void mergeWithOtherHavingSameClass() {
+    void mergeWithOtherHavingSameClass() {
         ReflectConfig left = new ReflectConfig(
                 new ClassUsage("java.sql.Date", MethodUsage.of("getTime")),
                 new ClassUsage("java.sql.Timestamp"));
@@ -95,7 +95,7 @@ public class ReflectConfigTest {
     }
 
     @Test
-    public void mergeWithOtherHavingSameClassUsingAnotherMethodsAndFields() {
+    void mergeWithOtherHavingSameClassUsingAnotherMethodsAndFields() {
         ReflectConfig left = new ReflectConfig(
                 new ClassUsage("java.sql.Date", MethodUsage.of("getTime")),
                 new ClassUsage(ArrayList.class,
@@ -125,7 +125,7 @@ public class ReflectConfigTest {
     }
 
     @Test
-    public void mergeWithEmptyBecomesSelf() {
+    void mergeWithEmptyBecomesSelf() {
         ReflectConfig left = new ReflectConfig(
                 new ClassUsage("java.sql.Date", MethodUsage.of("getTime")),
                 new ClassUsage(ArrayList.class,
@@ -141,7 +141,7 @@ public class ReflectConfigTest {
     }
 
     @Test
-    public void mergeByEmptyWithEmptyBecomesEmpty() {
+    void mergeByEmptyWithEmptyBecomesEmpty() {
         ReflectConfig left = new ReflectConfig();
         ReflectConfig right = new ReflectConfig();
 
@@ -151,7 +151,7 @@ public class ReflectConfigTest {
     }
 
     @Test
-    public void mergeByEmptyWithOtherBecomesOther() {
+    void mergeByEmptyWithOtherBecomesOther() {
         ReflectConfig left = new ReflectConfig();
         ReflectConfig right = new ReflectConfig(
                 new ClassUsage(ArrayList.class, MethodUsage.ofInit(int.class)),
@@ -164,7 +164,7 @@ public class ReflectConfigTest {
 
     // https://github.com/mike-neck/graalvm-native-image-plugin/issues/46
     @Test
-    public void parseErrorCase46() throws IOException {
+    void parseErrorCase46() throws IOException {
         try (final InputStream inputStream = reader.configJsonResource("config/reflect-config-parse-error-46.json")) {
             ReflectConfig reflectConfig = objectMapper.readValue(inputStream, ReflectConfig.class);
             assertThat(reflectConfig, is(notNullValue()));

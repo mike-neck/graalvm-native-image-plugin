@@ -29,14 +29,14 @@ import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class ResourceConfigTest {
+class ResourceConfigTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     private final TestJsonReader reader = new TestJsonReader();
 
     @Test
-    public void jsonWithContents() throws IOException {
+    void jsonWithContents() throws IOException {
         try (InputStream inputStream = reader.configJsonResource("config/resource-config-1.json")) {
             ResourceConfig resourceConfig = objectMapper.readValue(inputStream, ResourceConfig.class);
             assertThat(
@@ -51,7 +51,7 @@ public class ResourceConfigTest {
     }
 
     @Test
-    public void jsonWithoutContents() throws IOException {
+    void jsonWithoutContents() throws IOException {
         try (InputStream inputStream = reader.configJsonResource("config/resource-config-2.json")) {
             ResourceConfig resourceConfig = objectMapper.readValue(inputStream, ResourceConfig.class);
             assertThat(resourceConfig.resources, is(Collections.emptyList()));
@@ -60,7 +60,7 @@ public class ResourceConfigTest {
     }
 
     @Test
-    public void merge() {
+    void merge() {
         ResourceConfig left = new ResourceConfig(
                 Arrays.asList("resource-foo", "resource-bar"),
                 "bundle-foo", "bundle-bar");
@@ -86,7 +86,7 @@ public class ResourceConfigTest {
     }
 
     @Test
-    public void mergeConfigWithSharedContents() {
+    void mergeConfigWithSharedContents() {
         ResourceConfig left = new ResourceConfig(
                 Arrays.asList("resource-foo", "resource-bar"),
                 "bundle-foo", "bundle-bar");
@@ -107,7 +107,7 @@ public class ResourceConfigTest {
     }
 
     @Test
-    public void mergeWithSelfBecomesSelf() {
+    void mergeWithSelfBecomesSelf() {
         ResourceConfig resourceConfig = new ResourceConfig(
                 Arrays.asList("resource-foo", "resource-bar"),
                 "bundle-foo", "bundle-bar");
@@ -118,7 +118,7 @@ public class ResourceConfigTest {
     }
 
     @Test
-    public void mergeWithEmptyBecomesSelf() {
+    void mergeWithEmptyBecomesSelf() {
         ResourceConfig resourceConfig = new ResourceConfig(
                 Arrays.asList("resource-foo", "resource-bar"),
                 "bundle-foo", "bundle-bar");

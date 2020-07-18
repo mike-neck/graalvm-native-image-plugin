@@ -24,10 +24,10 @@ import org.junit.jupiter.api.Test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class GraalVmHomeTest {
+class GraalVmHomeTest {
 
     @Test
-    public void nativeImageOnNixLikeOs() throws IOException {
+    void nativeImageOnNixLikeOs() throws IOException {
         Path graalVmHome = Files.createTempDirectory("test-on_nixLikeOs");
         Path binDirectory = Files.createDirectory(graalVmHome.resolve("bin"));
         Files.createFile(binDirectory.resolve("native-image"));
@@ -40,7 +40,7 @@ public class GraalVmHomeTest {
     }
 
     @Test
-    public void nativeImageOnWindows() throws IOException {
+    void nativeImageOnWindows() throws IOException {
         Path graalVmHome = Files.createTempDirectory("test-onWindows");
         Path binDirectory = Files.createDirectory(graalVmHome.resolve("bin"));
         Files.createFile(binDirectory.resolve("native-image.cmd"));
@@ -53,7 +53,7 @@ public class GraalVmHomeTest {
     }
 
     @Test
-    public void javaExecutableOnNixLikeOs() throws IOException {
+    void javaExecutableOnNixLikeOs() throws IOException {
         Path graalVmHome = Files.createTempDirectory("test-on_nixLikeOs");
         Path binDirectory = Files.createDirectory(graalVmHome.resolve("bin"));
         Files.createFile(binDirectory.resolve("java"));
@@ -66,7 +66,7 @@ public class GraalVmHomeTest {
     }
 
     @Test
-    public void javaExecutableOnWindows() throws IOException {
+    void javaExecutableOnWindows() throws IOException {
         Path graalVmHome = Files.createTempDirectory("test-onWindows");
         Path binDirectory = Files.createDirectory(graalVmHome.resolve("bin"));
         Files.createFile(binDirectory.resolve("java.exe"));
@@ -79,7 +79,7 @@ public class GraalVmHomeTest {
     }
 
     @Test
-    public void invalidHome() throws IOException {
+    void invalidHome() throws IOException {
         Path graalVmHome = Files.createTempDirectory("test-onWindows");
         Files.createDirectory(graalVmHome.resolve("bin"));
 

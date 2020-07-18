@@ -28,14 +28,14 @@ import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class JniConfigTest {
+class JniConfigTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     private final TestJsonReader reader = new TestJsonReader();
 
     @Test
-    public void jsonWithContents() throws IOException {
+    void jsonWithContents() throws IOException {
         try (InputStream inputStream = reader.configJsonResource("config/jni-config-1.json")) {
             JniConfig jniConfig = objectMapper.readValue(inputStream, JniConfig.class);
             assertThat(jniConfig, hasItems(
@@ -51,7 +51,7 @@ public class JniConfigTest {
     }
 
     @Test
-    public void jsonWithoutContents() throws IOException {
+    void jsonWithoutContents() throws IOException {
         try (InputStream inputStream = reader.configJsonResource("config/jni-config-2.json")) {
             JniConfig jniConfig = objectMapper.readValue(inputStream, JniConfig.class);
             assertThat(jniConfig, is(Collections.emptySortedSet()));
@@ -59,7 +59,7 @@ public class JniConfigTest {
     }
 
     @Test
-    public void mergeWithOther() {
+    void mergeWithOther() {
         JniConfig left = new JniConfig(
                 new ClassUsage(ArrayList.class, MethodUsage.of("<init>", int.class)),
                 new ClassUsage("com.example.App", new MethodUsage("<init>")));
@@ -76,7 +76,7 @@ public class JniConfigTest {
 
 
     @Test
-    public void mergeWithOtherHavingSameClass() {
+    void mergeWithOtherHavingSameClass() {
         JniConfig left = new JniConfig(
                 new ClassUsage(ArrayList.class, MethodUsage.of("<init>", int.class)),
                 new ClassUsage("com.example.App", new MethodUsage("<init>")));
@@ -94,7 +94,7 @@ public class JniConfigTest {
     }
 
     @Test
-    public void mergeWithAlreadyMerged() {
+    void mergeWithAlreadyMerged() {
         JniConfig left = new JniConfig(
                 new ClassUsage(ArrayList.class, MethodUsage.of("<init>", int.class)),
                 new ClassUsage("com.example.App", new MethodUsage("<init>")));

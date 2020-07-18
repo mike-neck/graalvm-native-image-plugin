@@ -27,7 +27,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
-public class OutputDirectoryProviderTest {
+class OutputDirectoryProviderTest {
 
     private static void assertThrowsInvalidUserDataException(String description, Callable<Object> operation) {
         try {
@@ -38,48 +38,48 @@ public class OutputDirectoryProviderTest {
         }
     }
 
-    @Test public void nullDirectory() {
+    @Test void nullDirectory() {
         OutputDirectoryProvider file = OutputDirectoryProvider.ofFile(null);
         assertThrowsInvalidUserDataException("null File object", file::calculateValue);
     }
 
-    @Test public void nullPath() {
+    @Test void nullPath() {
         OutputDirectoryProvider path = OutputDirectoryProvider.ofPath(null);
         assertThrowsInvalidUserDataException("null Path object", path::calculateValue);
     }
 
-    @Test public void existingFileFile() {
+    @Test void existingFileFile() {
         OutputDirectoryProvider file = OutputDirectoryProvider.ofFile(new File("README.md"));
         assertThrowsInvalidUserDataException("existing file File", file::calculateValue);
     }
 
-    @Test public void existingFilePath() {
+    @Test void existingFilePath() {
         OutputDirectoryProvider path = OutputDirectoryProvider.ofPath(Paths.get("README.md"));
         assertThrowsInvalidUserDataException("existing file Path", path::calculateValue);
     }
 
-    @Test public void existingDirectoryFile() {
+    @Test void existingDirectoryFile() {
         File src = new File("src");
         OutputDirectoryProvider provider = OutputDirectoryProvider.ofFile(src);
         File file = provider.calculateValue().get();
         assertThat(file, is(src));
     }
 
-    @Test public void existingDirectoryPath() {
+    @Test void existingDirectoryPath() {
         Path src = Paths.get("src");
         OutputDirectoryProvider provider = OutputDirectoryProvider.ofPath(src);
         File file = provider.calculateValue().get();
         assertThat(file, is(src.toFile()));
     }
 
-    @Test public void notExistingFile() {
+    @Test void notExistingFile() {
         File foo = new File("foo");
         OutputDirectoryProvider provider = OutputDirectoryProvider.ofFile(foo);
         File file = provider.calculateValue().get();
         assertThat(file, is(foo));
     }
 
-    @Test public void notExistingPath() {
+    @Test void notExistingPath() {
         Path foo = Paths.get("foo");
         OutputDirectoryProvider provider = OutputDirectoryProvider.ofPath(foo);
         File file = provider.calculateValue().get();

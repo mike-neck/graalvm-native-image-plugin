@@ -30,10 +30,10 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-public class GenerateConfigFileTaskTest {
+class GenerateConfigFileTaskTest {
 
     @Test
-    public void generateAndMergeNativeImageConfig() {
+    void generateAndMergeNativeImageConfig() {
         FunctionalTestContext context = new FunctionalTestContext("config-project");
         context.setup();
         Path projectDir = context.rootDir;
@@ -72,7 +72,7 @@ public class GenerateConfigFileTaskTest {
     }
 
     @Test
-    public void buildNativeImageWithConfiguration() {
+    void buildNativeImageWithConfiguration() {
         FunctionalTestContext context = new FunctionalTestContext("native-image-with-config");
         context.setup();
         Path projectDir = context.rootDir;
@@ -90,7 +90,7 @@ public class GenerateConfigFileTaskTest {
     }
 
     @Test
-    public void buildNativeImageWithConfigurationOnKotlinProject() {
+    void buildNativeImageWithConfigurationOnKotlinProject() {
         FunctionalTestContext context = new FunctionalTestContext("config-kotlin-project");
         context.setup();
         Path projectDir = context.rootDir;
