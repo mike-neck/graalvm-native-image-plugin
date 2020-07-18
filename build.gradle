@@ -40,14 +40,10 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
     implementation configurations.jackson
 
-    testImplementation 'junit:junit:4.13'
     testImplementation "org.junit.jupiter:junit-jupiter:$junitJupiterVersion"
     testImplementation 'org.assertj:assertj-core:3.16.1'
 
-    testRuntimeOnly "org.junit.vintage:junit-vintage-engine:$junitJupiterVersion"
-
     functionalTestImplementation 'io.github.classgraph:classgraph:4.8.78'
-    functionalTestRuntimeOnly "org.junit.vintage:junit-vintage-engine:$junitJupiterVersion"
 }
 
 jar.enabled = false

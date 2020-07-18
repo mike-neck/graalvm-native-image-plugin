@@ -22,10 +22,8 @@ import java.util.concurrent.Callable;
 import org.gradle.api.InvalidUserDataException;
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 class OutputDirectoryProviderTest {
 
@@ -34,7 +32,7 @@ class OutputDirectoryProviderTest {
             operation.call();
             fail(description);
         } catch (Exception e) {
-            assertThat(description, e, instanceOf(InvalidUserDataException.class));
+            assertThat(e).isInstanceOf(InvalidUserDataException.class);
         }
     }
 
@@ -62,27 +60,27 @@ class OutputDirectoryProviderTest {
         File src = new File("src");
         OutputDirectoryProvider provider = OutputDirectoryProvider.ofFile(src);
         File file = provider.calculateValue().get();
-        assertThat(file, is(src));
+        assertThat(file).isEqualTo(src);
     }
 
     @Test void existingDirectoryPath() {
         Path src = Paths.get("src");
         OutputDirectoryProvider provider = OutputDirectoryProvider.ofPath(src);
         File file = provider.calculateValue().get();
-        assertThat(file, is(src.toFile()));
+        assertThat(file).isEqualTo(src.toFile());
     }
 
     @Test void notExistingFile() {
         File foo = new File("foo");
         OutputDirectoryProvider provider = OutputDirectoryProvider.ofFile(foo);
         File file = provider.calculateValue().get();
-        assertThat(file, is(foo));
+        assertThat(file).isEqualTo(foo);
     }
 
     @Test void notExistingPath() {
         Path foo = Paths.get("foo");
         OutputDirectoryProvider provider = OutputDirectoryProvider.ofPath(foo);
         File file = provider.calculateValue().get();
-        assertThat(file, is(foo.toFile()));
+        assertThat(file).isEqualTo(foo.toFile());
     }
 }

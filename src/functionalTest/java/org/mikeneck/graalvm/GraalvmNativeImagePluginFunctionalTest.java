@@ -21,12 +21,8 @@ import org.gradle.testkit.runner.GradleRunner;
 import org.gradle.testkit.runner.TaskOutcome;
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.hasItems;
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * A simple functional test for the 'org.mikeneck.graalvm.greeting' plugin.
@@ -52,10 +48,10 @@ class GraalvmNativeImagePluginFunctionalTest {
         List<String> succeededTasks = result.tasks(TaskOutcome.SUCCESS).stream()
                 .map(BuildTask::getPath)
                 .collect(Collectors.toList());
-        assertThat(succeededTasks, hasItems(":compileJava", ":classes", ":jar", ":nativeImage"));
+        assertThat(succeededTasks).contains(":compileJava", ":classes", ":jar", ":nativeImage");
         assertTrue(Files.exists(projectDir.toPath().resolve("build/native-image/test-app")));
-        assertThat(result.getOutput(), 
-                not(containsString("This behaviour has been deprecated and is scheduled to be removed in Gradle 7.0")));
+        assertThat(result.getOutput())
+                .doesNotContain("This behaviour has been deprecated and is scheduled to be removed in Gradle 7.0");
     }
 
     @Test void runTaskWithCustomOutputDirectory() throws IOException {
@@ -75,10 +71,10 @@ class GraalvmNativeImagePluginFunctionalTest {
         runner.withProjectDir(projectDir);
         BuildResult result = runner.build();
 
-        assertThat(result.taskPaths(TaskOutcome.SUCCESS), hasItem(":nativeImage"));
+        assertThat(result.taskPaths(TaskOutcome.SUCCESS)).contains(":nativeImage");
         assertTrue(Files.exists(projectDir.toPath().resolve("build/executable/test-app")));
-        assertThat(result.getOutput(),
-                not(containsString("This behaviour has been deprecated and is scheduled to be removed in Gradle 7.0")));
+        assertThat(result.getOutput())
+                .doesNotContain("This behaviour has been deprecated and is scheduled to be removed in Gradle 7.0");
     }
 
     @Test void runTaskOnKotlinProject() {
@@ -97,10 +93,10 @@ class GraalvmNativeImagePluginFunctionalTest {
         List<String> succeededTasks = result.tasks(TaskOutcome.SUCCESS).stream()
                 .map(BuildTask::getPath)
                 .collect(Collectors.toList());
-        assertThat(succeededTasks, hasItems(":compileKotlin", ":inspectClassesForKotlinIC", ":jar", ":nativeImage"));
+        assertThat(succeededTasks).contains(":compileKotlin", ":inspectClassesForKotlinIC", ":jar", ":nativeImage");
         assertTrue(Files.exists(projectDir.resolve("build/native-image/test-app")));
-        assertThat(result.getOutput(),
-                not(containsString("This behaviour has been deprecated and is scheduled to be removed in Gradle 7.0")));
+        assertThat(result.getOutput())
+                .doesNotContain("This behaviour has been deprecated and is scheduled to be removed in Gradle 7.0");
     }
 
     @Test
@@ -119,10 +115,10 @@ class GraalvmNativeImagePluginFunctionalTest {
         List<String> succeededTasks = result.tasks(TaskOutcome.SUCCESS).stream()
                 .map(BuildTask::getPath)
                 .collect(Collectors.toList());
-        assertThat(succeededTasks, hasItems(":compileKotlin", ":inspectClassesForKotlinIC", ":jar", ":nativeImage"));
+        assertThat(succeededTasks).contains(":compileKotlin", ":inspectClassesForKotlinIC", ":jar", ":nativeImage");
         assertTrue(Files.exists(projectDir.resolve("build/image/test-app")));
-        assertThat(result.getOutput(),
-                not(containsString("This behaviour has been deprecated and is scheduled to be removed in Gradle 7.0")));
+        assertThat(result.getOutput())
+                .doesNotContain("This behaviour has been deprecated and is scheduled to be removed in Gradle 7.0");
     }
 
     static File createProjectRoot(String s) throws IOException {

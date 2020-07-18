@@ -21,13 +21,9 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import org.hamcrest.Matcher;
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.hasItems;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class ResourceConfigTest {
 
@@ -40,13 +36,12 @@ class ResourceConfigTest {
         try (InputStream inputStream = reader.configJsonResource("config/resource-config-1.json")) {
             ResourceConfig resourceConfig = objectMapper.readValue(inputStream, ResourceConfig.class);
             assertThat(
-                    resourceConfig.resources,
-                    hasItems(
+                    resourceConfig.resources)
+                    .contains(
                             new ResourceUsage("\\QMETA-INF/services/jdk.vm.ci.hotspot.HotSpotJVMCIBackendFactory\\E"),
-                            new ResourceUsage("\\QMETA-INF/services/jdk.vm.ci.services.JVMCIServiceLocator\\E")));
-            assertThat(
-                    resourceConfig.bundles,
-                    hasItem(new BundleUsage("usage")));
+                            new ResourceUsage("\\QMETA-INF/services/jdk.vm.ci.services.JVMCIServiceLocator\\E"));
+            assertThat(resourceConfig.bundles)
+                    .contains(new BundleUsage("usage"));
         }
     }
 
@@ -54,8 +49,8 @@ class ResourceConfigTest {
     void jsonWithoutContents() throws IOException {
         try (InputStream inputStream = reader.configJsonResource("config/resource-config-2.json")) {
             ResourceConfig resourceConfig = objectMapper.readValue(inputStream, ResourceConfig.class);
-            assertThat(resourceConfig.resources, is(Collections.emptyList()));
-            assertThat(resourceConfig.bundles, is(Collections.emptyList()));
+            assertThat(resourceConfig.resources).isEqualTo(Collections.emptyList());
+            assertThat(resourceConfig.bundles).isEqualTo(Collections.emptyList());
         }
     }
 
@@ -70,19 +65,19 @@ class ResourceConfigTest {
 
         ResourceConfig resourceConfig = left.mergeWith(right);
 
-        assertThat(resourceConfig.resources, listOf(
+        assertThat(resourceConfig.resources).contains(
                 new ResourceUsage("resource-bar"),
                 new ResourceUsage("resource-baz"),
-                new ResourceUsage("resource-foo")));
-        assertThat(resourceConfig.bundles, listOf(
+                new ResourceUsage("resource-foo"));
+        assertThat(resourceConfig.bundles).contains(
                 new BundleUsage("bundle-bar"),
                 new BundleUsage("bundle-baz"),
-                new BundleUsage("bundle-foo")));
+                new BundleUsage("bundle-foo"));
     }
 
     @SafeVarargs
-    private static <T extends Comparable<T>> Matcher<List<T>> listOf(T... items) {
-        return is(Arrays.asList(items));
+    private static <T extends Comparable<T>> List<T> listOf(T... items) {
+        return Arrays.asList(items);
     }
 
     @Test
@@ -96,14 +91,14 @@ class ResourceConfigTest {
 
         ResourceConfig resourceConfig = left.mergeWith(right);
 
-        assertThat(resourceConfig.resources, listOf(
+        assertThat(resourceConfig.resources).contains(
                 new ResourceUsage("resource-bar"),
                 new ResourceUsage("resource-baz"),
-                new ResourceUsage("resource-foo")));
-        assertThat(resourceConfig.bundles, listOf(
+                new ResourceUsage("resource-foo"));
+        assertThat(resourceConfig.bundles).contains(
                 new BundleUsage("bundle-bar"),
                 new BundleUsage("bundle-baz"),
-                new BundleUsage("bundle-foo")));
+                new BundleUsage("bundle-foo"));
     }
 
     @Test
@@ -114,7 +109,7 @@ class ResourceConfigTest {
 
         ResourceConfig actual = resourceConfig.mergeWith(resourceConfig);
 
-        assertThat(actual, is(resourceConfig));
+        assertThat(actual).isEqualTo(resourceConfig);
     }
 
     @Test
@@ -125,6 +120,6 @@ class ResourceConfigTest {
 
         ResourceConfig actual = resourceConfig.mergeWith(new ResourceConfig());
 
-        assertThat(actual, is(resourceConfig));
+        assertThat(actual).isEqualTo(resourceConfig);
     }
 }

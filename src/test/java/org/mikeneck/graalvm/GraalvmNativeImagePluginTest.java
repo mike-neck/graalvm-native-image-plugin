@@ -10,9 +10,7 @@ import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * A simple unit test for the 'org.mikeneck.graalvm.greeting' plugin.
@@ -27,7 +25,7 @@ class GraalvmNativeImagePluginTest {
 
         Task nativeImageTask = project.getTasks().getByName("nativeImage");
         assertNotNull(nativeImageTask);
-        assertThat(nativeImageTask, instanceOf(DefaultNativeImageTask.class));
+        assertThat(nativeImageTask).isInstanceOf(DefaultNativeImageTask.class);
     }
 
     @Test

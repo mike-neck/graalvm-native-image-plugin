@@ -22,8 +22,7 @@ import java.util.List;
 import java.util.function.Function;
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class MethodUsageTest {
 
@@ -40,7 +39,7 @@ class MethodUsageTest {
 
         List<MethodUsage> sorted = sorted(foo, bar);
 
-        assertThat(sorted, is(Arrays.asList(bar, foo)));
+        assertThat(sorted).isEqualTo(Arrays.asList(bar, foo));
     }
 
     @Test
@@ -50,7 +49,7 @@ class MethodUsageTest {
 
         List<MethodUsage> sorted = sorted(bar, baz);
 
-        assertThat(sorted, is(Arrays.asList(bar, baz)));
+        assertThat(sorted).isEqualTo(Arrays.asList(bar, baz));
     }
 
     @Test
@@ -60,7 +59,7 @@ class MethodUsageTest {
 
         List<MethodUsage> sorted = sorted(fooInteger, fooLong);
 
-        assertThat(sorted, is(Arrays.asList(fooInteger, fooLong)));
+        assertThat(sorted).isEqualTo(Arrays.asList(fooInteger, fooLong));
     }
 
     @Test
@@ -70,7 +69,7 @@ class MethodUsageTest {
 
         List<MethodUsage> sorted = sorted(fooLong, fooInteger);
 
-        assertThat(sorted, is(Arrays.asList(fooInteger, fooLong)));
+        assertThat(sorted).isEqualTo(Arrays.asList(fooInteger, fooLong));
     }
 
     @Test
@@ -80,7 +79,7 @@ class MethodUsageTest {
 
         List<MethodUsage> sorted = sorted(fooWith3Params, fooWith4Params);
 
-        assertThat(sorted, is(Arrays.asList(fooWith3Params, fooWith4Params)));
+        assertThat(sorted).isEqualTo(Arrays.asList(fooWith3Params, fooWith4Params));
     }
 
     @Test
@@ -90,7 +89,7 @@ class MethodUsageTest {
 
         List<MethodUsage> sorted = sorted(fooWith4Params, fooWith3Params);
 
-        assertThat(sorted, is(Arrays.asList(fooWith3Params, fooWith4Params)));
+        assertThat(sorted).isEqualTo(Arrays.asList(fooWith3Params, fooWith4Params));
     }
 
     @Test
@@ -98,6 +97,6 @@ class MethodUsageTest {
         MethodUsage methodUsage = MethodUsage.of("foo", String.class, String.class, int.class, Function.class);
         MethodUsage self = MethodUsage.of("foo", String.class, String.class, int.class, Function.class);
 
-        assertThat(methodUsage.compareTo(self), is(0));
+        assertThat(methodUsage.compareTo(self)).isEqualTo(0);
     }
 }
