@@ -20,12 +20,11 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
-public class MethodUsageTest {
+class MethodUsageTest {
 
     static List<MethodUsage> sorted(MethodUsage... methods) {
         List<MethodUsage> list = new ArrayList<>(Arrays.asList(methods));
@@ -34,70 +33,70 @@ public class MethodUsageTest {
     }
 
     @Test
-    public void compareToSmallName() {
+    void compareToSmallName() {
         MethodUsage foo = MethodUsage.of("foo");
         MethodUsage bar = MethodUsage.of("bar");
 
         List<MethodUsage> sorted = sorted(foo, bar);
 
-        assertThat(sorted, is(Arrays.asList(bar, foo)));
+        assertThat(sorted).isEqualTo(Arrays.asList(bar, foo));
     }
 
     @Test
-    public void compareToLargeName() {
+    void compareToLargeName() {
         MethodUsage bar = MethodUsage.of("bar");
         MethodUsage baz = MethodUsage.of("baz");
 
         List<MethodUsage> sorted = sorted(bar, baz);
 
-        assertThat(sorted, is(Arrays.asList(bar, baz)));
+        assertThat(sorted).isEqualTo(Arrays.asList(bar, baz));
     }
 
     @Test
-    public void compareToSameNameWithSingleLargeParameterType() {
+    void compareToSameNameWithSingleLargeParameterType() {
         MethodUsage fooInteger = MethodUsage.of("foo", Integer.class);
         MethodUsage fooLong = MethodUsage.of("foo", Long.class);
 
         List<MethodUsage> sorted = sorted(fooInteger, fooLong);
 
-        assertThat(sorted, is(Arrays.asList(fooInteger, fooLong)));
+        assertThat(sorted).isEqualTo(Arrays.asList(fooInteger, fooLong));
     }
 
     @Test
-    public void compareToSameNameWithSingleSmallParameterType() {
+    void compareToSameNameWithSingleSmallParameterType() {
         MethodUsage fooLong = MethodUsage.of("foo", Long.class);
         MethodUsage fooInteger = MethodUsage.of("foo", Integer.class);
 
         List<MethodUsage> sorted = sorted(fooLong, fooInteger);
 
-        assertThat(sorted, is(Arrays.asList(fooInteger, fooLong)));
+        assertThat(sorted).isEqualTo(Arrays.asList(fooInteger, fooLong));
     }
 
     @Test
-    public void compareToSameNameWithManyParameterType() {
+    void compareToSameNameWithManyParameterType() {
         MethodUsage fooWith3Params = MethodUsage.of("foo", String.class, String.class, int.class);
         MethodUsage fooWith4Params = MethodUsage.of("foo", String.class, String.class, int.class, Function.class);
 
         List<MethodUsage> sorted = sorted(fooWith3Params, fooWith4Params);
 
-        assertThat(sorted, is(Arrays.asList(fooWith3Params, fooWith4Params)));
+        assertThat(sorted).isEqualTo(Arrays.asList(fooWith3Params, fooWith4Params));
     }
 
     @Test
-    public void compareToSameNameWithLessParameterType() {
+    void compareToSameNameWithLessParameterType() {
         MethodUsage fooWith4Params = MethodUsage.of("foo", String.class, String.class, int.class, Function.class);
         MethodUsage fooWith3Params = MethodUsage.of("foo", String.class, String.class, int.class);
 
         List<MethodUsage> sorted = sorted(fooWith4Params, fooWith3Params);
 
-        assertThat(sorted, is(Arrays.asList(fooWith3Params, fooWith4Params)));
+        assertThat(sorted).isEqualTo(Arrays.asList(fooWith3Params, fooWith4Params));
     }
 
     @Test
-    public void compareToSelf() {
+    void compareToSelf() {
         MethodUsage methodUsage = MethodUsage.of("foo", String.class, String.class, int.class, Function.class);
         MethodUsage self = MethodUsage.of("foo", String.class, String.class, int.class, Function.class);
 
-        assertThat(methodUsage.compareTo(self), is(0));
+        assertThat(methodUsage.compareTo(self)).isEqualTo(0);
     }
 }

@@ -22,23 +22,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.TreeSet;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.hasItems;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
-public class JniConfigTest {
+class JniConfigTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     private final TestJsonReader reader = new TestJsonReader();
 
     @Test
-    public void jsonWithContents() throws IOException {
+    void jsonWithContents() throws IOException {
         try (InputStream inputStream = reader.configJsonResource("config/jni-config-1.json")) {
             JniConfig jniConfig = objectMapper.readValue(inputStream, JniConfig.class);
-            assertThat(jniConfig, hasItems(
+            assertThat(jniConfig).contains(
                     new ClassUsage(
                             IllegalArgumentException.class, 
                             new MethodUsage("<init>", "java.lang.String")),
@@ -46,20 +44,20 @@ public class JniConfigTest {
                             ArrayList.class, 
                             new MethodUsage("<init>"), 
                             MethodUsage.of("add", Object.class))
-            ));
+            );
         }
     }
 
     @Test
-    public void jsonWithoutContents() throws IOException {
+    void jsonWithoutContents() throws IOException {
         try (InputStream inputStream = reader.configJsonResource("config/jni-config-2.json")) {
             JniConfig jniConfig = objectMapper.readValue(inputStream, JniConfig.class);
-            assertThat(jniConfig, is(Collections.emptySortedSet()));
+            assertThat(jniConfig).isEqualTo(Collections.emptySortedSet());
         }
     }
 
     @Test
-    public void mergeWithOther() {
+    void mergeWithOther() {
         JniConfig left = new JniConfig(
                 new ClassUsage(ArrayList.class, MethodUsage.of("<init>", int.class)),
                 new ClassUsage("com.example.App", new MethodUsage("<init>")));
@@ -68,15 +66,15 @@ public class JniConfigTest {
 
         JniConfig jniConfig = left.mergeWith(right);
 
-        assertThat(jniConfig, hasItems(
+        assertThat(jniConfig).contains(
                 new ClassUsage("com.example.App", new MethodUsage("<init>")),
                 new ClassUsage(IllegalArgumentException.class, MethodUsage.of("<init>", String.class)),
-                new ClassUsage(ArrayList.class, MethodUsage.of("<init>", int.class))));
+                new ClassUsage(ArrayList.class, MethodUsage.of("<init>", int.class)));
     }
 
 
     @Test
-    public void mergeWithOtherHavingSameClass() {
+    void mergeWithOtherHavingSameClass() {
         JniConfig left = new JniConfig(
                 new ClassUsage(ArrayList.class, MethodUsage.of("<init>", int.class)),
                 new ClassUsage("com.example.App", new MethodUsage("<init>")));
@@ -87,14 +85,14 @@ public class JniConfigTest {
 
         JniConfig jniConfig = left.mergeWith(right);
 
-        assertThat(jniConfig, hasItems(
+        assertThat(jniConfig).contains(
                 new ClassUsage("com.example.App", new MethodUsage("<init>"), MethodUsage.of("run")),
                 new ClassUsage(IllegalArgumentException.class, MethodUsage.of("<init>", String.class)),
-                new ClassUsage(ArrayList.class, MethodUsage.of("<init>", int.class))));
+                new ClassUsage(ArrayList.class, MethodUsage.of("<init>", int.class)));
     }
 
     @Test
-    public void mergeWithAlreadyMerged() {
+    void mergeWithAlreadyMerged() {
         JniConfig left = new JniConfig(
                 new ClassUsage(ArrayList.class, MethodUsage.of("<init>", int.class)),
                 new ClassUsage("com.example.App", new MethodUsage("<init>")));
@@ -108,12 +106,12 @@ public class JniConfigTest {
 
         JniConfig jniConfig = left.mergeWith(right);
 
-        assertThat(jniConfig, hasItems(
+        assertThat(jniConfig).contains(
                 new ClassUsage("com.example.App", new TreeSet<>(
                         Arrays.asList(MethodUsage.of("run"), MethodUsage.of("<init>"), MethodUsage.of("start", int.class))), 
                         Collections.emptySortedSet(),
                         null, Boolean.TRUE, Boolean.TRUE),
                 new ClassUsage(IllegalArgumentException.class, MethodUsage.of("<init>", String.class), MethodUsage.of("getCause")),
-                new ClassUsage(ArrayList.class, MethodUsage.of("<init>", int.class))));
+                new ClassUsage(ArrayList.class, MethodUsage.of("<init>", int.class)));
     }
 }

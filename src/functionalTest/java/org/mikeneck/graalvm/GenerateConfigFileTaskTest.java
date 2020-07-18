@@ -17,23 +17,21 @@ package org.mikeneck.graalvm;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.BuildTask;
 import org.gradle.testkit.runner.GradleRunner;
 import org.gradle.testkit.runner.TaskOutcome;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class GenerateConfigFileTaskTest {
+class GenerateConfigFileTaskTest {
 
     @Test
-    public void generateAndMergeNativeImageConfig() {
+    void generateAndMergeNativeImageConfig() {
         FunctionalTestContext context = new FunctionalTestContext("config-project");
         context.setup();
         Path projectDir = context.rootDir;
@@ -49,14 +47,14 @@ public class GenerateConfigFileTaskTest {
                 .map(BuildTask::getPath)
                 .collect(Collectors.toList());
         System.out.println(succeededTasks);
-        assertThat(succeededTasks, is(Arrays.asList(
+        assertThat(succeededTasks).contains(
                 ":clean",
                 ":compileJava",
                 ":processResources",
                 ":classes",
                 ":jar",
                 ":generateNativeImageConfig",
-                ":mergeNativeImageConfig")));
+                ":mergeNativeImageConfig");
         assertTrue(Files.exists(projectDir.resolve("build/tmp/native-image-config/out-0")));
         assertTrue(Files.exists(projectDir.resolve("build/tmp/native-image-config/out-1")));
         assertTrue(Files.exists(projectDir.resolve("build/tmp/native-image-config/out-2")));
@@ -72,7 +70,7 @@ public class GenerateConfigFileTaskTest {
     }
 
     @Test
-    public void buildNativeImageWithConfiguration() {
+    void buildNativeImageWithConfiguration() {
         FunctionalTestContext context = new FunctionalTestContext("native-image-with-config");
         context.setup();
         Path projectDir = context.rootDir;
@@ -86,11 +84,11 @@ public class GenerateConfigFileTaskTest {
 
         assertTrue(Files.exists(projectDir.resolve("build/native-image/test-app")));
         TaskOutcome nativeImageResult = result.task(":nativeImage").getOutcome();
-        assertThat(nativeImageResult, is(TaskOutcome.SUCCESS));
+        assertThat(nativeImageResult).isEqualTo(TaskOutcome.SUCCESS);
     }
 
     @Test
-    public void buildNativeImageWithConfigurationOnKotlinProject() {
+    void buildNativeImageWithConfigurationOnKotlinProject() {
         FunctionalTestContext context = new FunctionalTestContext("config-kotlin-project");
         context.setup();
         Path projectDir = context.rootDir;
@@ -104,7 +102,7 @@ public class GenerateConfigFileTaskTest {
 
         assertTrue(Files.exists(projectDir.resolve("build/image/json2yaml")));
         TaskOutcome nativeImageResult = result.task(":nativeImage").getOutcome();
-        assertThat(nativeImageResult, is(TaskOutcome.SUCCESS));
+        assertThat(nativeImageResult).isEqualTo(TaskOutcome.SUCCESS);
         assertTrue(Files.exists(projectDir.resolve("build/tmp/native-image-config/out-2")));
     }
 }

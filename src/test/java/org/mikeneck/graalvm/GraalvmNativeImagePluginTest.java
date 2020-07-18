@@ -7,19 +7,17 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.tasks.TaskCollection;
 import org.gradle.testfixtures.ProjectBuilder;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * A simple unit test for the 'org.mikeneck.graalvm.greeting' plugin.
  */
-public class GraalvmNativeImagePluginTest {
+class GraalvmNativeImagePluginTest {
 
-    @Test public void pluginRegistersNativeImageTask() {
+    @Test void pluginRegistersNativeImageTask() {
         Project project = ProjectBuilder.builder().build();
         project.getPlugins().apply("java");
 
@@ -27,11 +25,11 @@ public class GraalvmNativeImagePluginTest {
 
         Task nativeImageTask = project.getTasks().getByName("nativeImage");
         assertNotNull(nativeImageTask);
-        assertThat(nativeImageTask, instanceOf(DefaultNativeImageTask.class));
+        assertThat(nativeImageTask).isInstanceOf(DefaultNativeImageTask.class);
     }
 
     @Test
-    public void generateNativeImageConfigTasksAreDisabled() {
+    void generateNativeImageConfigTasksAreDisabled() {
         Project project = ProjectBuilder.builder().build();
         project.getPlugins().apply("java");
         project.getPlugins().apply("org.mikeneck.graalvm-native-image");

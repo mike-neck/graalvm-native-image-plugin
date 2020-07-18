@@ -21,44 +21,41 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.hasItems;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
-public class ReflectConfigTest {
+class ReflectConfigTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     private final TestJsonReader reader = new TestJsonReader();
 
     @Test
-    public void jsonWithContents() throws IOException {
+    void jsonWithContents() throws IOException {
         try (final InputStream inputStream = reader.configJsonResource("config/reflect-config-1.json")) {
             ReflectConfig reflectConfig = objectMapper.readValue(inputStream, ReflectConfig.class);
-            assertThat(reflectConfig, hasItems(
+            assertThat(reflectConfig).contains(
                     new ClassUsage("com.fasterxml.jackson.databind.ext.Java7SupportImpl", new MethodUsage("<init>")),
                     new ClassUsage("java.sql.Date"),
                     new ClassUsage("java.sql.Timestamp"),
                     new ClassUsage("java.util.ArrayList", true, true),
                     new ClassUsage("java.util.LinkedHashMap", true, true),
                     new ClassUsage("com.example.App", true, true, true)
-            ));
+            );
         }
     }
 
     @Test
-    public void jsonWithoutContents() throws IOException {
+    void jsonWithoutContents() throws IOException {
         try (final InputStream inputStream = reader.configJsonResource("config/reflect-config-2.json")) {
             ReflectConfig reflectConfig = objectMapper.readValue(inputStream, ReflectConfig.class);
-            assertThat(reflectConfig, is(Collections.emptySortedSet()));
+            assertThat(reflectConfig).isEqualTo(Collections.emptySortedSet());
         }
     }
 
     @Test
-    public void mergeWithOther() {
+    void mergeWithOther() {
         ReflectConfig left = new ReflectConfig(
                 new ClassUsage("java.sql.Date", MethodUsage.of("getTime")),
                 new ClassUsage("java.sql.Timestamp"));
@@ -68,15 +65,15 @@ public class ReflectConfigTest {
 
         ReflectConfig reflectConfig = left.mergeWith(right);
 
-        assertThat(reflectConfig, hasItems(
+        assertThat(reflectConfig).contains(
                 new ClassUsage("com.example.App", MethodUsage.of("run")),
                 new ClassUsage("java.sql.Date", MethodUsage.of("getTime")),
                 new ClassUsage("java.sql.Timestamp"),
-                new ClassUsage(ArrayList.class, MethodUsage.ofInit(int.class))));
+                new ClassUsage(ArrayList.class, MethodUsage.ofInit(int.class)));
     }
 
     @Test
-    public void mergeWithOtherHavingSameClass() {
+    void mergeWithOtherHavingSameClass() {
         ReflectConfig left = new ReflectConfig(
                 new ClassUsage("java.sql.Date", MethodUsage.of("getTime")),
                 new ClassUsage("java.sql.Timestamp"));
@@ -87,15 +84,15 @@ public class ReflectConfigTest {
 
         ReflectConfig reflectConfig = left.mergeWith(right);
 
-        assertThat(reflectConfig, hasItems(
+        assertThat(reflectConfig).contains(
                 new ClassUsage("com.example.App", MethodUsage.of("run")),
                 new ClassUsage("java.sql.Date", MethodUsage.of("getTime")),
                 new ClassUsage("java.sql.Timestamp"),
-                new ClassUsage(ArrayList.class, MethodUsage.ofInit(int.class))));
+                new ClassUsage(ArrayList.class, MethodUsage.ofInit(int.class)));
     }
 
     @Test
-    public void mergeWithOtherHavingSameClassUsingAnotherMethodsAndFields() {
+    void mergeWithOtherHavingSameClassUsingAnotherMethodsAndFields() {
         ReflectConfig left = new ReflectConfig(
                 new ClassUsage("java.sql.Date", MethodUsage.of("getTime")),
                 new ClassUsage(ArrayList.class,
@@ -112,7 +109,7 @@ public class ReflectConfigTest {
 
         ReflectConfig reflectConfig = left.mergeWith(right);
 
-        assertThat(reflectConfig, hasItems(
+        assertThat(reflectConfig).contains(
                 new ClassUsage("com.example.App", MethodUsage.of("run")),
                 new ClassUsage("com.example.Bar", new FieldUsage("baz"), new FieldUsage("quux"), new FieldUsage("qux")),
                 new ClassUsage("java.sql.Date", MethodUsage.of("getTime")),
@@ -121,11 +118,11 @@ public class ReflectConfigTest {
                         MethodUsage.ofInit(),
                         MethodUsage.ofInit(int.class),
                         MethodUsage.of("add", Object.class),
-                        MethodUsage.of("addAll", Collection.class))));
+                        MethodUsage.of("addAll", Collection.class)));
     }
 
     @Test
-    public void mergeWithEmptyBecomesSelf() {
+    void mergeWithEmptyBecomesSelf() {
         ReflectConfig left = new ReflectConfig(
                 new ClassUsage("java.sql.Date", MethodUsage.of("getTime")),
                 new ClassUsage(ArrayList.class,
@@ -137,21 +134,21 @@ public class ReflectConfigTest {
 
         ReflectConfig reflectConfig = left.mergeWith(right);
 
-        assertThat(reflectConfig, is(left));
+        assertThat(reflectConfig).isEqualTo(left);
     }
 
     @Test
-    public void mergeByEmptyWithEmptyBecomesEmpty() {
+    void mergeByEmptyWithEmptyBecomesEmpty() {
         ReflectConfig left = new ReflectConfig();
         ReflectConfig right = new ReflectConfig();
 
         ReflectConfig reflectConfig = left.mergeWith(right);
 
-        assertThat(reflectConfig, is(Collections.emptySortedSet()));
+        assertThat(reflectConfig).isEqualTo(Collections.emptySortedSet());
     }
 
     @Test
-    public void mergeByEmptyWithOtherBecomesOther() {
+    void mergeByEmptyWithOtherBecomesOther() {
         ReflectConfig left = new ReflectConfig();
         ReflectConfig right = new ReflectConfig(
                 new ClassUsage(ArrayList.class, MethodUsage.ofInit(int.class)),
@@ -159,15 +156,15 @@ public class ReflectConfigTest {
 
         ReflectConfig reflectConfig = left.mergeWith(right);
 
-        assertThat(reflectConfig, is(right));
+        assertThat(reflectConfig).isEqualTo(right);
     }
 
     // https://github.com/mike-neck/graalvm-native-image-plugin/issues/46
     @Test
-    public void parseErrorCase46() throws IOException {
+    void parseErrorCase46() throws IOException {
         try (final InputStream inputStream = reader.configJsonResource("config/reflect-config-parse-error-46.json")) {
             ReflectConfig reflectConfig = objectMapper.readValue(inputStream, ReflectConfig.class);
-            assertThat(reflectConfig, is(notNullValue()));
+            assertThat(reflectConfig).isNotNull();
         }
     }
 }
