@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import org.hamcrest.Matcher;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;

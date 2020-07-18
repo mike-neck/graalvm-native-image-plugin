@@ -11,6 +11,9 @@ ext {
     thisPluginVersion = project.hasProperty('pluginVersion')?
             project.property('pluginVersion'):
             'snapshot'
+
+
+    junitJupiterVersion = '5.6.2'
 }
 
 group = 'org.mikeneck'
@@ -38,12 +41,13 @@ dependencies {
     implementation configurations.jackson
 
     testImplementation 'junit:junit:4.13'
+    testImplementation "org.junit.jupiter:junit-jupiter:$junitJupiterVersion"
     testImplementation 'org.assertj:assertj-core:3.16.1'
 
-    testRuntimeClasspath 'org.junit.vintage:junit-vintage-engine:5.6.2'
+    testRuntimeOnly "org.junit.vintage:junit-vintage-engine:$junitJupiterVersion"
 
     functionalTestImplementation 'io.github.classgraph:classgraph:4.8.78'
-    functionalTestRuntimeClasspath 'org.junit.vintage:junit-vintage-engine:5.6.2'
+    functionalTestRuntimeOnly "org.junit.vintage:junit-vintage-engine:$junitJupiterVersion"
 }
 
 jar.enabled = false
