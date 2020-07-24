@@ -54,3 +54,4 @@ Additional context
 ===
 
 Add any other context about the problem here.
+If it is about `generateNativeImageConfig` task or `mergeNativeImageConfigTask`, please provide generated config file(if available, it locates under `build/tmp/native-image-config/out-n` directory).
