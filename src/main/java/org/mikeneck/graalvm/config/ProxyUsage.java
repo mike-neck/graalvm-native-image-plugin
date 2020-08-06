@@ -16,51 +16,51 @@
 package org.mikeneck.graalvm.config;
 
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
 import org.jetbrains.annotations.NotNull;
 
-@JsonFormat(shape = JsonFormat.Shape.ARRAY)
-public class ProxyUsage implements Comparable<ProxyUsage> {
-
-    @NotNull
-    public String canonicalClassName = "";
+public class ProxyUsage extends ArrayList<String> implements Comparable<ProxyUsage> {
 
     public ProxyUsage() {
+        super();
     }
 
     ProxyUsage(@NotNull String canonicalClassName) {
-        this.canonicalClassName = canonicalClassName;
+        super(Collections.singleton(canonicalClassName));
     }
 
     ProxyUsage(@NotNull Class<?> klass) {
         this(klass.getCanonicalName());
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ProxyUsage)) return false;
-        ProxyUsage that = (ProxyUsage) o;
-        return canonicalClassName.equals(that.canonicalClassName);
+    ProxyUsage(@NotNull String... canonicalClassNames) {
+        super(Arrays.asList(canonicalClassNames));
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(canonicalClassName);
-    }
-
-    @SuppressWarnings("StringBufferReplaceableByString")
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("ProxyTarget{");
-        sb.append("canonicalClassName='").append(canonicalClassName).append('\'');
-        sb.append('}');
-        return sb.toString();
+    ProxyUsage(@NotNull Class<?>... classes) {
+        this(Arrays.stream(classes)
+                .map(Class::getCanonicalName)
+                .toArray(String[]::new));
     }
 
     @Override
     public int compareTo(@NotNull ProxyUsage o) {
-        return this.canonicalClassName.compareTo(o.canonicalClassName);
+        Iterator<String> thisIterator = this.iterator();
+        Iterator<String> thatIterator = o.iterator();
+        while (thisIterator.hasNext()) {
+            if (!thatIterator.hasNext()) {
+                return 1;
+            }
+            String thisClassName = thisIterator.next();
+            String thatClassName = thatIterator.next();
+            int classNameComparison = thisClassName.compareTo(thatClassName);
+            if (classNameComparison != 0) {
+                return classNameComparison;
+            }
+        }
+        return thatIterator.hasNext()? -1: 0;
     }
 }
