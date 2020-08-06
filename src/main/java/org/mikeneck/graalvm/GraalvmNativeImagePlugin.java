@@ -26,6 +26,7 @@ public class GraalvmNativeImagePlugin implements Plugin<Project> {
         GenerateNativeImageConfigTask nativeImageConfigFiles = taskFactory.nativeImageConfigFilesTask(task -> {
             task.setGroup("graalvm");
             task.setDescription("Generates native image config json files via test run.");
+            task.dependsOn(installNativeImageTask);
         });
 
         MergeNativeImageConfigTask mergeNativeImageConfigTask = taskFactory.mergeNativeImageConfigTask(task -> {
