@@ -105,4 +105,29 @@ class GenerateConfigFileTaskTest {
         assertThat(nativeImageResult).isEqualTo(TaskOutcome.SUCCESS);
         assertTrue(Files.exists(projectDir.resolve("build/tmp/native-image-config/out-2")));
     }
+
+    @Test
+    void dryRunNativeImageConfig() {
+        FunctionalTestContext context = new FunctionalTestContext("config-project", "config-project-dry-run");
+        context.setup();
+        Path projectDir = context.rootDir;
+
+        GradleRunner runner = GradleRunner.create();
+        runner.forwardOutput();
+        runner.withPluginClasspath();
+        runner.withArguments("generateNativeImageConfig", "--dry-run");
+        runner.withProjectDir(projectDir.toFile());
+        BuildResult result = runner.build();
+
+        String succeededTasks = result.getOutput();
+
+        assertThat(succeededTasks).contains(
+                ":installNativeImage SKIPPED",
+                ":compileJava SKIPPED",
+                ":processResources SKIPPED",
+                ":classes SKIPPED",
+                ":jar SKIPPED",
+                ":generateNativeImageConfig SKIPPED",
+                ":mergeNativeImageConfig SKIPPED");
+    }
 }
