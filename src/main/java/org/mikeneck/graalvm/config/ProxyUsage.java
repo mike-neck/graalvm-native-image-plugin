@@ -16,13 +16,13 @@
 package org.mikeneck.graalvm.config;
 
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.TreeSet;
 import org.jetbrains.annotations.NotNull;
 
-public class ProxyUsage extends ArrayList<String> implements Comparable<ProxyUsage> {
+public class ProxyUsage extends TreeSet<String> implements Comparable<ProxyUsage> {
 
     public ProxyUsage() {
         super();
