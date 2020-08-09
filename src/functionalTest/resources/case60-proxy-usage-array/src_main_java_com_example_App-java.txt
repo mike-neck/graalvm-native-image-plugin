@@ -1,0 +1,75 @@
+package com.example;
+
+import java.lang.reflect.Proxy;
+import java.lang.reflect.Method;
+
+import java.time.ZonedDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+
+import java.util.Arrays;
+
+class App {
+  public static void main(String[] args) {
+    App app = decideApp(args);
+    ZoneId zone = ZoneId.of("PST8PDT");
+    ZonedDateTime now = ZonedDateTime.now(zone);
+    int code = app.out(now.format(DateTimeFormatter.ISO_ZONED_DATE_TIME));
+    System.exit(code);
+  }
+
+  static App decideApp(String[] args) {
+    if (args.length == 0 || "-D".equals(args[0].toUpperCase())) {
+      return new App();
+    } else if ("-P".equals(args[0].toUpperCase())) {
+      Object proxy = proxy();
+      return new App((Printer)proxy, (ExitCode)proxy);
+    } else {
+      System.err.println("illegal argument " + Arrays.toString(args));
+      System.exit(1);
+      return null;
+    }
+  }
+
+  static Object proxy() {
+     return Proxy.newProxyInstance(
+       Thread.currentThread().getContextClassLoader(),
+       new Class<?>[]{ Printer.class, ExitCode.class },
+       (Object p, Method m, Object[] args) -> {
+         String name = m.getName();
+         if ("withError".equals(name)) {
+           return 1;
+         } else if ("put".equals(name)) {
+           String text = args.length == 0? "": args[0].toString();
+           System.out.println("From Proxy: " + text);
+           return null;
+         } else if ("noError".equals(name)) {
+           return 0;
+         } else {
+           throw new IllegalArgumentException("method[" + name + "] not found");
+         }
+       }
+     );
+  }
+
+  final Printer printer;
+  final ExitCode exitCode;
+
+  App(Printer printer, ExitCode exitCode) {
+    this.printer = printer;
+    this.exitCode = exitCode;
+  }
+
+  App() {
+    this(System.out::println, e -> 1);
+  }
+
+  int out(String text) {
+    try {
+      printer.put(text);
+      return exitCode.noError();
+    } catch(Throwable e) {
+      return exitCode.withError(e);
+    }
+  }
+}

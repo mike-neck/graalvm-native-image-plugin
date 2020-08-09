@@ -1,0 +1,32 @@
+plugins {
+    java
+    id("org.mikeneck.graalvm-native-image")
+    application
+}
+
+repositories {
+    jcenter()
+}
+
+application {
+    mainClassName = "com.example.App"
+}
+
+nativeImage {
+  graalVmHome = System.getenv("JAVA_HOME")
+  mainClass = "com.example.App"
+  executableName = "pst8pdt-time"
+  outputDirectory = file("$buildDir/image")
+  arguments("--no-fallback")
+}
+
+generateNativeImageConfig {
+  enabled = true
+  byRunningApplicationWithoutArguments()
+  byRunningApplication {
+    arguments("-d")
+  }
+  byRunningApplication {
+    arguments("-p")
+  }
+}

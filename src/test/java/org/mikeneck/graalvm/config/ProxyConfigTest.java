@@ -50,6 +50,22 @@ class ProxyConfigTest {
     }
 
     @Test
+    void case60() throws IOException {
+        try (InputStream inputStream = reader.configJsonResource("config/proxy-config-3.json")) {
+            ProxyConfig proxyConfig = objectMapper.readValue(inputStream, ProxyConfig.class);
+            assertThat(proxyConfig).contains(
+                    new ProxyUsage(
+                            "org.apache.http.conn.ConnectionRequest",
+                            "com.amazonaws.http.conn.Wrapped"),
+                    new ProxyUsage(
+                            "org.apache.http.conn.HttpClientConnectionManager",
+                            "org.apache.http.pool.ConnPoolControl",
+                            "com.amazonaws.http.conn.Wrapped")
+            );
+        }
+    }
+
+    @Test
     void mergeWithOthers() {
         ProxyConfig left = new ProxyConfig("com.example.Foo", "com.example.Bar");
         ProxyConfig right = new ProxyConfig("com.example.Baz", "com.example.Qux");

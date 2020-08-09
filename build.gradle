@@ -43,6 +43,7 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter:$junitJupiterVersion"
     testImplementation 'org.assertj:assertj-core:3.16.1'
 
+    functionalTestImplementation 'org.assertj:assertj-core:3.16.1'
     functionalTestImplementation 'io.github.classgraph:classgraph:4.8.78'
 }
 
