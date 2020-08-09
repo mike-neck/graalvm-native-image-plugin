@@ -68,5 +68,22 @@ public class Case60ProxyUsageArrayTest {
         );
     }
 
+    @Test
+    void createNativeImage() {
+        FunctionalTestContext context = new FunctionalTestContext("case60-proxy-usage-array", "case60-native-image");
+        context.setup();
 
+        GradleRunner runner = GradleRunner.create();
+        runner
+                .withProjectDir(context.rootDir.toFile())
+                .forwardOutput()
+                .withPluginClasspath()
+                .withArguments("nativeImage", "--warning-mode", "all")
+                .build();
+
+        assertThat(context.file("build/image/pst8pdt-time"))
+                .exists()
+                .isRegularFile()
+                .isExecutable();
+    }
 }
