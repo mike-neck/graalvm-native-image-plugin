@@ -18,11 +18,15 @@ package org.mikeneck.graalvm;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ScanResult;
 import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 class FunctionalTestContext {
 
@@ -93,6 +97,19 @@ class FunctionalTestContext {
                             Files.copy(inputStream, file, StandardCopyOption.REPLACE_EXISTING);
                         });
                     }, false);
+        }
+    }
+
+    Path file(String relativePathFromProjectRoot) {
+        return rootDir.resolve(relativePathFromProjectRoot);
+    }
+
+    String fileTextContentsOf(String relativePathFromProjectRoot) {
+        Path file = file(relativePathFromProjectRoot);
+        try (Stream<String> lines = Files.lines(file, StandardCharsets.UTF_8)) {
+            return lines.collect(Collectors.joining("\n"));
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
         }
     }
 

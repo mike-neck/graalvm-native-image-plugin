@@ -1,0 +1,9 @@
+package com.example;
+
+interface ExitCode {
+  default int noError() {
+    return 0;
+  }
+
+  int withError(Throwable th);
+}
