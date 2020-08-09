@@ -42,7 +42,7 @@ Example
 ```groovy
 plugins {
   id 'java'
-  id 'org.mikeneck.graalvm-native-image' version 'v0.7.0'
+  id 'org.mikeneck.graalvm-native-image' version 'v0.8.0'
 }
 
 repositories {
@@ -89,7 +89,7 @@ import org.mikeneck.graalvm.GenerateNativeImageConfigTask
 
 plugins {
   kotlin("jvm") version "1.3.72"
-  id("org.mikeneck.graalvm-native-image") version "v0.7.0"
+  id("org.mikeneck.graalvm-native-image") version "v0.8.0"
 }
 
 repositories {
