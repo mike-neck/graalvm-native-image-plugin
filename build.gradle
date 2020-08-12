@@ -35,7 +35,7 @@ configurations {
 
 dependencies {
     compileOnly 'org.jetbrains:annotations:20.0.0'
-    jackson 'com.fasterxml.jackson.core:jackson-databind:2.11.1'
+    jackson 'com.fasterxml.jackson.core:jackson-databind:2.11.2'
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
     implementation configurations.jackson
