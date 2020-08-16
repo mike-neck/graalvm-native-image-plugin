@@ -5,3 +5,8 @@
 build
 
 .idea
+
+version-tests/src
+version-tests/build.gradle
+version-tests/gradle/wrapper
+version-tests/gradlew
