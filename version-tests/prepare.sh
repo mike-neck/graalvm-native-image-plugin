@@ -46,6 +46,7 @@ cat "${testDirectory}/gradle/wrapper/gradle-wrapper.properties-tmp" | \
 rm "${testDirectory}/gradle/wrapper/gradle-wrapper.properties-tmp"
 
 cp gradlew "${testDirectory}/"
+echo "rootProject.name = '${PWD##*/}'" > "${testDirectory}/settings.gradle"
 
 cd "${testDirectory}"
 ./gradlew nativeImage
