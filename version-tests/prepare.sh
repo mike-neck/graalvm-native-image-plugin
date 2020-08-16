@@ -18,7 +18,9 @@ mkdir -p "${testDirectory}/src/main/java/com/example"
 mkdir -p "${testDirectory}/src/main/resources/META-INF/services"
 
 readonly pattern=$(echo "${originalSource}/" | sed -e 's/\//\\\//g')
-for sourceFile in $(find "${originalSource}"); do
+
+while IFS= read -r -d '' sourceFile
+do
   if [ -d "${sourceFile}" ]; then
       continue
   fi
@@ -31,15 +33,17 @@ for sourceFile in $(find "${originalSource}"); do
   )
   printf "%s -> %s\n" "${sourceFile}" "${destination}"
   cp "${sourceFile}" "${testDirectory}/${destination}"
-done
+done < <(find "${originalSource}" -print0)
 
 mv "${testDirectory}/build.gradle" "${testDirectory}/build.gradle-tmp"
+# shellcheck disable=SC2002
 cat "${testDirectory}/build.gradle-tmp" |
   sed "s/graalvm-native-image'/graalvm-native-image' version '${latestVersion}'/g" >"${testDirectory}/build.gradle"
 rm "${testDirectory}/build.gradle-tmp"
 
 cp -r ./gradle "${testDirectory}/gradle"
 mv "${testDirectory}/gradle/wrapper/gradle-wrapper.properties" "${testDirectory}/gradle/wrapper/gradle-wrapper.properties-tmp"
+# shellcheck disable=SC2002
 cat "${testDirectory}/gradle/wrapper/gradle-wrapper.properties-tmp" | \
   sed -e  "s/[0-9]\{1,\}\.[0-9]\{1,\}\.\([0-9]\{1,\}\)\{0,\}-all/${gradleVersion}-bin/g" > \
   "${testDirectory}/gradle/wrapper/gradle-wrapper.properties"
@@ -48,5 +52,5 @@ rm "${testDirectory}/gradle/wrapper/gradle-wrapper.properties-tmp"
 cp gradlew "${testDirectory}/"
 echo "rootProject.name = '${PWD##*/}'" > "${testDirectory}/settings.gradle"
 
-cd "${testDirectory}"
+cd "${testDirectory}" || exit 
 ./gradlew nativeImage
