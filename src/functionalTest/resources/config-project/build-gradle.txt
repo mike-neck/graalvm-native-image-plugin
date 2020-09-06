@@ -18,6 +18,7 @@ nativeImage {
   arguments(
     '--no-fallback',
     '-H:+TraceClassInitialization',
+    '--initialize-at-build-time=com.example.Printer',
     '-H:+ReportExceptionStackTraces',
   )
 }
