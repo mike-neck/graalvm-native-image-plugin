@@ -72,9 +72,9 @@ public interface App {
           (Object proxy, Method method, Object[] args) -> {
             String name = method.getName();
             if ("readYaml".equals(name)) {
-              return lookup.unreflectSpecial(method, method.getDeclaringClass())
-                  .bindTo(proxy)
-                  .invokeWithArguments(args);
+              InputStream inputStream = (InputStream)args[0];
+              App delegate = new Normal();
+              return delegate.readYaml(inputStream);
             }
             if ("toJson".equals(name)) {
               JsonNode jsonNode = (JsonNode) args[0];
