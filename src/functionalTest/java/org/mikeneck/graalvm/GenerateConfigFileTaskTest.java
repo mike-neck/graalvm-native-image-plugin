@@ -18,6 +18,7 @@ package org.mikeneck.graalvm;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.BuildTask;
@@ -30,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GenerateConfigFileTaskTest {
 
+    @SuppressWarnings("DuplicatedCode")
     @Test
     void generateAndMergeNativeImageConfig() {
         FunctionalTestContext context = new FunctionalTestContext("config-project");
@@ -69,6 +71,7 @@ class GenerateConfigFileTaskTest {
         assertTrue(Files.exists(projectDir.resolve("build/native-image-config/resource-config.json")));
     }
 
+    @SuppressWarnings("DuplicatedCode")
     @Test
     void buildNativeImageWithConfiguration() {
         FunctionalTestContext context = new FunctionalTestContext("native-image-with-config");
@@ -83,10 +86,11 @@ class GenerateConfigFileTaskTest {
         BuildResult result = runner.build();
 
         assertTrue(Files.exists(projectDir.resolve("build/native-image/test-app")));
-        TaskOutcome nativeImageResult = result.task(":nativeImage").getOutcome();
+        TaskOutcome nativeImageResult = Objects.requireNonNull(result.task(":nativeImage")).getOutcome();
         assertThat(nativeImageResult).isEqualTo(TaskOutcome.SUCCESS);
     }
 
+    @SuppressWarnings("DuplicatedCode")
     @Test
     void buildNativeImageWithConfigurationOnKotlinProject() {
         FunctionalTestContext context = new FunctionalTestContext("config-kotlin-project");
@@ -101,11 +105,12 @@ class GenerateConfigFileTaskTest {
         BuildResult result = runner.build();
 
         assertTrue(Files.exists(projectDir.resolve("build/image/json2yaml")));
-        TaskOutcome nativeImageResult = result.task(":nativeImage").getOutcome();
+        TaskOutcome nativeImageResult = Objects.requireNonNull(result.task(":nativeImage")).getOutcome();
         assertThat(nativeImageResult).isEqualTo(TaskOutcome.SUCCESS);
         assertTrue(Files.exists(projectDir.resolve("build/tmp/native-image-config/out-2")));
     }
 
+    @SuppressWarnings("DuplicatedCode")
     @Test
     void dryRunNativeImageConfig() {
         FunctionalTestContext context = new FunctionalTestContext("config-project", "config-project-dry-run");
@@ -129,5 +134,30 @@ class GenerateConfigFileTaskTest {
                 ":jar SKIPPED",
                 ":generateNativeImageConfig SKIPPED",
                 ":mergeNativeImageConfig SKIPPED");
+    }
+
+    @SuppressWarnings("DuplicatedCode")
+    @Test
+    void nativeImageNativeImageConfig() {
+        FunctionalTestContext context = new FunctionalTestContext("config-project", "config-project-native-image");
+        context.setup();
+        Path projectDir = context.rootDir;
+
+        GradleRunner runner = GradleRunner.create();
+        runner.forwardOutput();
+        runner.withPluginClasspath();
+        runner.withArguments("nativeImage");
+        runner.withProjectDir(projectDir.toFile());
+        BuildResult result = runner.build();
+
+        Path nativeBinary = projectDir.resolve("build/native-image/test-app");
+        assertThat(nativeBinary)
+                .exists()
+                .isExecutable();
+        List<String> tasks = result.tasks(TaskOutcome.SUCCESS)
+                .stream()
+                .map(BuildTask::getPath)
+                .collect(Collectors.toList());
+        assertThat(tasks).contains(":nativeImage");
     }
 }
