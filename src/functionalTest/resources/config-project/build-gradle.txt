@@ -15,7 +15,11 @@ nativeImage {
   graalVmHome = System.getenv('JAVA_HOME')
   mainClass = 'com.example.App'
   executableName = 'test-app'
-  arguments('--no-fallback')
+  arguments(
+    '--no-fallback',
+    '-H:+TraceClassInitialization',
+    '-H:+ReportExceptionStackTraces',
+  )
 }
 
 generateNativeImageConfig {
