@@ -31,7 +31,7 @@ jobs:
       - name: Set up GraalVM
         uses: DeLaGuardo/setup-graalvm@2.0
         with:
-          graalvm-version: 20.1.0.java11
+          graalvm-version: 20.2.0.java11
 
       - name: Install GraalVM native-image
         run: gu install native-image

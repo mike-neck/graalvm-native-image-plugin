@@ -13,7 +13,7 @@ jobs:
       - name: Set up Java
         uses: actions/setup-java@v1.3.0
         with:
-          java-version: '8.0.242'
+          java-version: '8.0.265'
 
       - name: Cache gradle
         id: gradle
@@ -40,7 +40,7 @@ jobs:
       matrix:
         graal:
           - 19.3.3
-          - 20.1.0
+          - 20.2.0
         javaVersion:
           - java8
           - java11
