@@ -1,0 +1,50 @@
+name: Auto update versions.yml
+
+on:
+  schedule:
+    - cron: '25 9 * * 3'
+  workflow_dispatch: {}
+
+jobs:
+  update-versions:
+    name: "auto update versions.yml"
+    runs-on: ubuntu-20.04
+    env:
+      YJ_VERSION: "v5.0.0"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Cache tools
+        uses: actions/cache@v2
+        with:
+          key: ${{ env.YJ_VERSION }}
+          path: ~/yj
+
+      - name: Download yj
+        run: |
+          if [[ ! -d ~/yj ]] ; then mkdir ~/yj ; else echo "yj directory existing"; fi
+          if [[ ! -x ~/yj/yj ]] ; then
+            echo "downloading yj"
+            curl -sL "https://github.com/sclevine/yj/releases/download/${YJ_VERSION}/yj-linux" -o ~/yj/yj
+            chmod +x ~/yj/yj
+            ~/yj/yj -v
+          fi
+
+      - name: Get Gradle version
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./script/generate-versions.sh
+
+      - name: Set Date
+        id: date
+        run: echo "::set-output name=value""$(date '+%Y-%m-%d')"
+
+      - name: Create PR
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Update gradle versions to the latest in ${{ steps.date.outputs.value }}."
+          branch: "versions/update-${{ steps.date.outputs.value }}"
+          title: "Update Gradle versions for versions test(${{ steps.date.outputs.value }})"
