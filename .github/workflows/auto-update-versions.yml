@@ -3,6 +3,7 @@ name: Auto update versions.yml
 on:
   schedule:
     - cron: '25 9 * * 3'
+  workflow_dispatch: {}
 
 jobs:
   update-versions:
