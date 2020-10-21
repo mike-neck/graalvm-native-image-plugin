@@ -1,4 +1,4 @@
-#!/usr/bin/env jq -f
+#!/usr/bin/env -S jq -f
 
 # expect github repos release API as input
 
@@ -70,7 +70,7 @@ def uses(name; action; with; id):
     "DeLaGuardo/setup-graalvm@2.0";
     {"graalvm-version": "20.2.0.java11"};
     null),
-  runs("Install GraalVM"; "gu install native-image"; null; null),
+  runs("Install GraalVM native image"; "gu install native-image"; null; null),
   uses(
     "Cache Gradle Wrapper";
     { owner: "actions", action: "cache", version: "v1" };
