@@ -23,28 +23,31 @@ jobs:
           path: ~/yj
 
       - name: Download yj
+        id: yj
         run: |
           if [[ ! -d ~/yj ]] ; then mkdir ~/yj ; else echo "yj directory existing"; fi
           if [[ ! -x ~/yj/yj ]] ; then
             echo "downloading yj"
             curl -sL "https://github.com/sclevine/yj/releases/download/${YJ_VERSION}/yj-linux" -o ~/yj/yj
             chmod +x ~/yj/yj
-            ~/yj/yj -v
           fi
+          ~/yj/yj -v
+          echo "::set-output name=path::${HOME}/yj/yj"
 
       - name: Get Gradle version
         env:
-          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TOKEN: ${{ secrets.GH_TOKEN }}
+          YJ: ${{ steps.yj.outputs.path }}
         run: ./script/generate-versions.sh
 
       - name: Set Date
         id: date
-        run: echo "::set-output name=value""$(date '+%Y-%m-%d')"
+        run: echo "::set-output name=value::$(date '+%Y-%m-%d')"
 
       - name: Create PR
         uses: peter-evans/create-pull-request@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_TOKEN }}
           commit-message: "Update gradle versions to the latest in ${{ steps.date.outputs.value }}."
           branch: "versions/update-${{ steps.date.outputs.value }}"
           title: "Update Gradle versions for versions test(${{ steps.date.outputs.value }})"
