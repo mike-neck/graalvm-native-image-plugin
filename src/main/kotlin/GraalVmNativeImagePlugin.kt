@@ -1,5 +1,6 @@
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
+import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.bundling.Jar
 import org.mikeneck.graalvm.GenerateNativeImageConfigTask
 import org.mikeneck.graalvm.GenerateNativeImageConfigTaskWrapper
@@ -32,9 +33,14 @@ var NativeImageTask.graalVmHome: String
   get() = throw UnsupportedOperationException("getGraalVmHome is not supported.")
   set(value) = this.setGraalVmHome(value)
 
+@Deprecated(message = "use `NativeImageTask.classpath = jarTask` instead.", level = DeprecationLevel.WARNING)
 var NativeImageTask.jarTask: Jar
   get() = throw UnsupportedOperationException("getJarTask is not supported.")
-  set(value) = this.setJarTask(value)
+  set(value) = this.setClasspath(value)
+
+var NativeImageTask.classpath: FileCollection
+  get() = throw UnsupportedOperationException("getClasspath is not supported.")
+  set(value) = this.setClasspath(value)
 
 var NativeImageTask.mainClass: String
   get() = throw UnsupportedOperationException("getMainClass is not supported.")

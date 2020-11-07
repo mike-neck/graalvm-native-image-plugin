@@ -21,7 +21,9 @@ import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.Directory;
+import org.gradle.api.file.FileCollection;
 import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Nested;
@@ -38,8 +40,26 @@ public interface NativeImageTask extends Task, NativeImageConfig {
     @Override
     void setGraalVmHome(String graalVmHome);
 
+    /**
+     * @param jarTask - jarTask which builds application.
+     * @deprecated use {@link #setClasspath} instead.
+     */
+    @Deprecated
     @Override
     void setJarTask(Jar jarTask);
+
+    @Override
+    void setClasspath(FileCollection files);
+
+    default void setClasspath(File file) {
+        ConfigurableFileCollection files = getProject().files(file);
+        this.setClasspath(files);
+    }
+
+    default void setClasspath(Provider<File> file) {
+        ConfigurableFileCollection files = getProject().files(file);
+        this.setClasspath(files);
+    }
 
     @Override
     void setMainClass(String mainClass);

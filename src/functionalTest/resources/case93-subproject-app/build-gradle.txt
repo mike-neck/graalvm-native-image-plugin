@@ -1,0 +1,47 @@
+plugins {
+  id 'java'
+  id 'org.mikeneck.graalvm-native-image'
+}
+
+repositories {
+  mavenCentral()
+}
+
+configurations {
+  app
+  lib
+}
+
+dependencies {
+  app project(':sub')
+  lib project(':lib')
+}
+
+nativeImage {
+  graalVmHome = System.getenv('JAVA_HOME')
+  mainClass = 'com.example.App'
+  classpath = configurations.app
+  executableName = 'test-app'
+  runtimeClasspath = configurations.lib
+  arguments(
+    '--no-fallback',
+    '-H:+TraceClassInitialization',
+    '--initialize-at-build-time=com.example.Printer',
+    '-H:+ReportExceptionStackTraces',
+  )
+}
+
+subprojects {
+  apply plugin: 'java'
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+  }
+}
+
+project(':sub') {
+  dependencies {
+    implementation project(':lib')
+  }
+}

@@ -19,6 +19,7 @@ import java.io.File;
 import java.nio.file.Path;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.Directory;
+import org.gradle.api.file.FileCollection;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.bundling.Jar;
 
@@ -26,7 +27,17 @@ public interface NativeImageConfig {
 
     void setGraalVmHome(String graalVmHome);
 
+    /**
+     * set JarTask
+     * @param jarTask - jarTask which builds application.
+     * @deprecated use {@link #setClasspath} instead.
+     */
+    @Deprecated
     void setJarTask(Jar jarTask);
+
+    void setClasspath(FileCollection files);
+
+    void setClasspath(Jar jarTask);
 
     void setMainClass(String mainClass);
 
