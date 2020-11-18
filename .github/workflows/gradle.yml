@@ -55,7 +55,7 @@ jobs:
         uses: actions/checkout@v1
 
       - name: Set up GraalVM
-        uses: DeLaGuardo/setup-graalvm@2.0
+        uses: DeLaGuardo/setup-graalvm@8bbfe44ef9c6f5c07e5af036a1bffd561c037d18
         with:
           graalvm-version: "${{ matrix.graal }}.${{ matrix.javaVersion }}"
 
