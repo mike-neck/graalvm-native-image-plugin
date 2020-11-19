@@ -67,7 +67,7 @@ def uses(name; action; with; id):
   uses("Checkout"; "actions/checkout@v2"; null; null),
   uses(
     "Setup GraalVM";
-    "DeLaGuardo/setup-graalvm@2.0";
+    "DeLaGuardo/setup-graalvm@8bbfe44ef9c6f5c07e5af036a1bffd561c037d18";
     {"graalvm-version": "20.2.0.java11"};
     null),
   runs("Install GraalVM native image"; "gu install native-image"; null; null),
