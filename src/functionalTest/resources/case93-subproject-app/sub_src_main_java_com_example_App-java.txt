@@ -1,0 +1,8 @@
+package com.example;
+
+class App {
+  public static void main(String[] args) {
+    MessageProvider messageProvider = () -> "hello";
+    System.out.println(messageProvider.getMessage());
+  }
+}

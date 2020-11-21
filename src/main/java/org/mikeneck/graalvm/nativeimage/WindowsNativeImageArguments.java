@@ -23,6 +23,7 @@ import org.gradle.api.Action;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.file.FileCollection;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.bundling.Jar;
@@ -88,18 +89,43 @@ class WindowsNativeImageArguments implements NativeImageArguments {
     }
 
     @Override
-    public void addJarFile(@NotNull File jarFile) {
-        delegate.addJarFile(jarFile);
+    public void addClasspath(@NotNull File jarFile) {
+        delegate.addClasspath(jarFile);
     }
 
     @Override
-    public void addJarFile(@NotNull Provider<File> jarFile) {
-        delegate.addJarFile(jarFile);
+    public void addClasspath(@NotNull Provider<File> jarFile) {
+        delegate.addClasspath(jarFile);
     }
 
     @Override
-    public void addJarFile(@NotNull Jar jar) {
-        delegate.addJarFile(jar);
+    public void addClasspath(@NotNull FileCollection files) {
+        delegate.addClasspath(files);
+    }
+
+    @Override
+    public void addClasspath(@NotNull Jar jar) {
+        delegate.addClasspath(jar);
+    }
+
+    @Override
+    public void setClasspath(@NotNull File jarFile) {
+        delegate.setClasspath(jarFile);
+    }
+
+    @Override
+    public void setClasspath(@NotNull Provider<File> jarFile) {
+        delegate.setClasspath(jarFile);
+    }
+
+    @Override
+    public void setClasspath(@NotNull FileCollection files) {
+        delegate.setClasspath(files);
+    }
+
+    @Override
+    public void setClasspath(@NotNull Jar jar) {
+        delegate.setClasspath(jar);
     }
 
     @Override

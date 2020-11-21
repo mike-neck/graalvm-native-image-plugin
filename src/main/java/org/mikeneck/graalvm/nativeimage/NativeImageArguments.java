@@ -24,6 +24,7 @@ import org.gradle.api.Action;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.file.FileCollection;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.OutputDirectory;
@@ -64,11 +65,21 @@ public interface NativeImageArguments {
 
     void setMainClass(@NotNull Provider<String> mainClass);
 
-    void addJarFile(@NotNull File jarFile);
+    void addClasspath(@NotNull File jarFile);
 
-    void addJarFile(@NotNull Provider<File> jarFile);
+    void addClasspath(@NotNull Provider<File> jarFile);
 
-    void addJarFile(@NotNull Jar jar);
+    void addClasspath(@NotNull FileCollection files);
+
+    void addClasspath(@NotNull Jar jar);
+
+    void setClasspath(@NotNull File jarFile);
+
+    void setClasspath(@NotNull Provider<File> jarFile);
+
+    void setClasspath(@NotNull FileCollection files);
+
+    void setClasspath(@NotNull Jar jar);
 
     @NotNull
     @OutputDirectory

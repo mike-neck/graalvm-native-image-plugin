@@ -31,6 +31,7 @@ import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.file.FileCollection;
 import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.ListProperty;
@@ -45,6 +46,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mikeneck.graalvm.nativeimage.ConfigurationFiles;
 import org.mikeneck.graalvm.nativeimage.NativeImageArguments;
 import org.mikeneck.graalvm.nativeimage.NativeImageArgumentsFactory;
+import org.slf4j.LoggerFactory;
 
 public class DefaultNativeImageTask extends DefaultTask implements NativeImageTask {
 
@@ -153,9 +155,21 @@ public class DefaultNativeImageTask extends DefaultTask implements NativeImageTa
                         () -> new GraalVmHome(Paths.get(graalVmHome))));
     }
 
+    @Deprecated
     @Override
     public void setJarTask(Jar jarTask) {
-        nativeImageArguments.addJarFile(jarTask);
+        LoggerFactory.getLogger(NativeImageTask.class).warn("jarTask is deprecated. Please use setClasspath(Jar) instead.");
+        nativeImageArguments.setClasspath(jarTask);
+    }
+
+    @Override
+    public void setClasspath(FileCollection files) {
+        nativeImageArguments.setClasspath(files);
+    }
+
+    @Override
+    public void setClasspath(Jar jarTask) {
+        nativeImageArguments.setClasspath(jarTask);
     }
 
     @Override

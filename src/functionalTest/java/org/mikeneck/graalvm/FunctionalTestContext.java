@@ -24,7 +24,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -32,6 +35,7 @@ class FunctionalTestContext {
 
     private final String resourceRoot;
     final Path rootDir;
+    private final List<String> subprojects;
 
     FunctionalTestContext(String resourceRoot) {
         this(resourceRoot, resourceRoot);
@@ -44,14 +48,33 @@ class FunctionalTestContext {
     FunctionalTestContext(String resourceRoot, Path rootDir) {
         this.resourceRoot = resourceRoot;
         this.rootDir = rootDir;
+        this.subprojects = Collections.emptyList();
+    }
+
+    FunctionalTestContext(String resourceRoot, Collection<SubProject> subProjects) {
+        this(resourceRoot, resourceRoot, subProjects);
+    }
+
+    FunctionalTestContext(String resourceRoot, String path, Collection<SubProject> subProjects) {
+        this(resourceRoot, Paths.get("build/functionalTest", path), subProjects);
+    }
+
+
+    FunctionalTestContext(String resourceRoot, Path rootDir, Collection<SubProject> subProjects) {
+        this.resourceRoot = resourceRoot;
+        this.rootDir = rootDir;
+        this.subprojects = subProjects.stream().map(SubProject::path).collect(Collectors.toList());
     }
 
     private void createProjectRoot(Path projectDir) {
         try {
             Files.createDirectories(projectDir);
+            List<String> lines = new ArrayList<>(1 + subprojects.size());
+            lines.add(String.format("rootProject.name = '%s'", projectDir.getFileName()));
+            lines.addAll(subprojects.stream().map(path -> String.format("include '%s'", path)).collect(Collectors.toList()));
             writeString(
                     projectDir.resolve("settings.gradle"),
-                    String.format("rootProject.name = '%s'", projectDir.getFileName()));
+                    Collections.unmodifiableList(lines));
         } catch (IOException e) {
             rethrow(e);
         }
@@ -68,8 +91,8 @@ class FunctionalTestContext {
         }
     }
 
-    static void writeString(Path file, String string) throws IOException {
-        Files.write(file, Collections.singleton(string));
+    static void writeString(Path file, Collection<String> strings) throws IOException {
+        Files.write(file, strings);
     }
 
     void setup() {

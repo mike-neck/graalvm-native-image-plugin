@@ -27,6 +27,7 @@ import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.file.FileCollection;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
@@ -86,7 +87,7 @@ class UnixLikeOsArguments implements NativeImageArguments {
     @NotNull
     private Collection<File> runtimeClasspath() {
         return runtimeClasspath.map(Configuration::getFiles)
-                .get();
+                .getOrElse(Collections.emptySet());
     }
 
     @NotNull
@@ -154,26 +155,52 @@ class UnixLikeOsArguments implements NativeImageArguments {
     }
 
     @InputFiles
-    public @NotNull ConfigurableFileCollection getJarFiles() {
+    public @NotNull Iterable<File> getJarFiles() {
         LoggerFactory.getLogger(NativeImageArguments.class)
                 .info("jar-file: {}/build: {}", jarFile, jarFile.getBuiltBy());
         return jarFile;
     }
 
     @Override
-    public void addJarFile(@NotNull File jarFile) {
+    public void addClasspath(@NotNull File jarFile) {
         this.jarFile.from(jarFile);
     }
 
     @Override
-    public void addJarFile(@NotNull Provider<File> jarFile) {
+    public void addClasspath(@NotNull Provider<File> jarFile) {
         this.jarFile.from(jarFile);
     }
 
     @Override
-    public void addJarFile(@NotNull Jar jar) {
+    public void addClasspath(@NotNull FileCollection files) {
+        this.jarFile.from(files);
+    }
+
+    @Override
+    public void addClasspath(@NotNull Jar jar) {
         jarFile.builtBy(jar);
         jarFile.from(jar);
+    }
+
+    @Override
+    public void setClasspath(@NotNull File jarFile) {
+        this.jarFile.setFrom(jarFile);
+    }
+
+    @Override
+    public void setClasspath(@NotNull Provider<File> jarFile) {
+        this.jarFile.setFrom(jarFile);
+    }
+
+    @Override
+    public void setClasspath(@NotNull FileCollection files) {
+        this.jarFile.setFrom(files);
+    }
+
+    @Override
+    public void setClasspath(@NotNull Jar jar) {
+        this.jarFile.setBuiltBy(Collections.singleton(jar));
+        this.jarFile.setFrom(jar);
     }
 
     @Override
