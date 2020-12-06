@@ -21,9 +21,11 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 class ReflectConfigTest {
 
@@ -165,6 +167,18 @@ class ReflectConfigTest {
         try (final InputStream inputStream = reader.configJsonResource("config/reflect-config-parse-error-46.json")) {
             ReflectConfig reflectConfig = objectMapper.readValue(inputStream, ReflectConfig.class);
             assertThat(reflectConfig).isNotNull();
+        }
+    }
+
+
+    @DisplayName("test-case98[https://github.com/mike-neck/graalvm-native-image-plugin/issues/98]")
+    @Test
+    void case98() {
+        try (InputStream inputStream = reader.configJsonResource("config/reflect-config-case-98.json")) {
+            ReflectConfig reflectConfig = objectMapper.readValue(inputStream, ReflectConfig.class);
+            assertThat(reflectConfig).isNotNull();
+        } catch (IOException e) {
+            fail("failed to parse allPublicMethods", e);
         }
     }
 }

@@ -1,0 +1,1792 @@
+[
+{
+  "name":"byte[]"
+},
+{
+  "name":"com.cdancy.bitbucket.rest.BitbucketApi",
+  "allDeclaredMethods":true
+},
+{
+  "name":"com.cdancy.bitbucket.rest.config.BitbucketAuthenticationModule",
+  "allDeclaredMethods":true
+},
+{
+  "name":"com.cdancy.bitbucket.rest.config.BitbucketAuthenticationProvider",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"com.cdancy.bitbucket.rest.config.BitbucketHttpApiModule",
+  "allDeclaredMethods":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.cdancy.bitbucket.rest.domain.system.AutoValue_Version",
+  "allDeclaredFields":true
+},
+{
+  "name":"com.cdancy.bitbucket.rest.domain.system.Version",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"com.cdancy.bitbucket.rest.features.SystemApi",
+  "allDeclaredMethods":true
+},
+{
+  "name":"com.cdancy.bitbucket.rest.filters.BitbucketAuthenticationFilter",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"com.cdancy.bitbucket.rest.filters.BitbucketAuthenticationFilter$$FastClassByGuice$$9be29f0e",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"com.cdancy.bitbucket.rest.handlers.BitbucketErrorHandler",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"com.cdancy.bitbucket.rest.handlers.BitbucketErrorHandler$$FastClassByGuice$$bdaef05a",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"com.google.common.base.Function",
+  "allDeclaredMethods":true
+},
+{
+  "name":"com.google.common.base.Predicate",
+  "allDeclaredMethods":true
+},
+{
+  "name":"com.google.common.base.Supplier",
+  "allDeclaredMethods":true
+},
+{
+  "name":"com.google.common.base.Suppliers$SupplierOfInstance",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"com.google.common.collect.ForwardingObject",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"com.google.common.collect.ImmutableCollection",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"com.google.common.collect.ImmutableSet",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"com.google.common.collect.RegularImmutableSet",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"com.google.common.reflect.TypeCapture",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"com.google.common.reflect.TypeToken",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"com.google.common.reflect.TypeToken$SimpleTypeToken",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"com.google.common.reflect.Types$TypeVariableImpl",
+  "allPublicMethods":true
+},
+{
+  "name":"com.google.common.util.concurrent.AbstractFuture",
+  "fields":[
+    {"name":"listeners", "allowUnsafeAccess":true}, 
+    {"name":"value", "allowUnsafeAccess":true}, 
+    {"name":"waiters", "allowUnsafeAccess":true}
+  ]
+},
+{
+  "name":"com.google.common.util.concurrent.AbstractFuture$Waiter",
+  "fields":[
+    {"name":"next", "allowUnsafeAccess":true}, 
+    {"name":"thread", "allowUnsafeAccess":true}
+  ]
+},
+{
+  "name":"com.google.common.util.concurrent.ExecutionList",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"com.google.common.util.concurrent.SimpleTimeLimiter",
+  "methods":[{"name":"create","parameterTypes":["java.util.concurrent.ExecutorService"] }]
+},
+{
+  "name":"com.google.gson.ExclusionStrategy",
+  "allDeclaredMethods":true
+},
+{
+  "name":"com.google.gson.TypeAdapter",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"com.google.gson.TypeAdapterFactory",
+  "allDeclaredMethods":true
+},
+{
+  "name":"com.google.gson.stream.JsonWriter",
+  "fields":[{"name":"out"}]
+},
+{
+  "name":"com.google.inject.AbstractModule",
+  "allDeclaredMethods":true
+},
+{
+  "name":"com.google.inject.Module",
+  "allDeclaredMethods":true
+},
+{
+  "name":"com.google.inject.Provider",
+  "allDeclaredMethods":true
+},
+{
+  "name":"com.google.inject.assistedinject.Assisted",
+  "allDeclaredMethods":true
+},
+{
+  "name":"com.google.inject.assistedinject.AssistedInjectBinding",
+  "allDeclaredMethods":true
+},
+{
+  "name":"com.google.inject.assistedinject.FactoryModuleBuilder$1",
+  "allDeclaredMethods":true
+},
+{
+  "name":"com.google.inject.assistedinject.FactoryProvider2",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"com.google.inject.assistedinject.FactoryProvider2$$FastClassByGuice$$9dcdf6d7",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"com.google.inject.assistedinject.FactoryProvider2$2",
+  "allDeclaredMethods":true
+},
+{
+  "name":"com.google.inject.assistedinject.FactoryProvider2$ThreadLocalProvider",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"com.google.inject.internal.Annotations",
+  "methods":[{"name":"determineWhetherToQuote","parameterTypes":[] }]
+},
+{
+  "name":"com.google.inject.internal.InjectorShell$InheritedScannersModule",
+  "allDeclaredMethods":true
+},
+{
+  "name":"com.google.inject.internal.InjectorShell$RootModule",
+  "allDeclaredMethods":true
+},
+{
+  "name":"com.google.inject.internal.InternalProviderInstanceBindingImpl$CyclicFactory",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"com.google.inject.internal.InternalProviderInstanceBindingImpl$Factory",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"com.google.inject.internal.ProviderMethod",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"com.google.inject.internal.ProviderMethod$FastClassProviderMethod",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"com.google.inject.internal.UniqueAnnotations$Internal",
+  "allDeclaredMethods":true
+},
+{
+  "name":"com.google.inject.internal.cglib.core.$MethodWrapper$MethodWrapperKey",
+  "allDeclaredMethods":true
+},
+{
+  "name":"com.google.inject.internal.cglib.core.$MethodWrapper$MethodWrapperKey$$$KeyFactoryByCGLIB$$e23ecb5d",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.google.inject.internal.cglib.reflect.$FastClass"
+},
+{
+  "name":"com.google.inject.name.Named",
+  "allDeclaredMethods":true
+},
+{
+  "name":"com.google.inject.spi.HasDependencies",
+  "allDeclaredMethods":true
+},
+{
+  "name":"com.google.inject.spi.ProviderWithExtensionVisitor",
+  "allDeclaredMethods":true
+},
+{
+  "name":"com.google.inject.util.Modules$EmptyModule",
+  "allDeclaredMethods":true
+},
+{
+  "name":"com.google.inject.util.Providers$ConstantProvider",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"com.sun.crypto.provider.AESCipher$General",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.crypto.provider.DHParameters",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.crypto.provider.TlsKeyMaterialGenerator",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.crypto.provider.TlsMasterSecretGenerator",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.crypto.provider.TlsPrfGenerator$V12",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"java.io.Closeable",
+  "allDeclaredMethods":true,
+  "methods":[{"name":"close","parameterTypes":[] }]
+},
+{
+  "name":"java.io.Serializable",
+  "allDeclaredMethods":true
+},
+{
+  "name":"java.lang.AutoCloseable",
+  "allDeclaredMethods":true
+},
+{
+  "name":"java.lang.Boolean",
+  "methods":[{"name":"parseBoolean","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"java.lang.Byte",
+  "methods":[{"name":"parseByte","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"java.lang.CharSequence",
+  "allDeclaredMethods":true
+},
+{
+  "name":"java.lang.Class",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"java.lang.ClassLoader",
+  "methods":[{"name":"defineClass","parameterTypes":["java.lang.String","byte[]","int","int","java.security.ProtectionDomain"] }]
+},
+{
+  "name":"java.lang.Comparable",
+  "allDeclaredMethods":true
+},
+{
+  "name":"java.lang.Double",
+  "methods":[{"name":"parseDouble","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"java.lang.Enum",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"java.lang.Float",
+  "methods":[{"name":"parseFloat","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"java.lang.Integer",
+  "methods":[{"name":"parseInt","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"java.lang.Iterable",
+  "allDeclaredMethods":true
+},
+{
+  "name":"java.lang.Long",
+  "methods":[{"name":"parseLong","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"java.lang.Object",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"java.lang.Object[]"
+},
+{
+  "name":"java.lang.ProcessHandle",
+  "methods":[
+    {"name":"current","parameterTypes":[] }, 
+    {"name":"info","parameterTypes":[] }, 
+    {"name":"parent","parameterTypes":[] }
+  ]
+},
+{
+  "name":"java.lang.ProcessHandle$Info",
+  "methods":[{"name":"command","parameterTypes":[] }]
+},
+{
+  "name":"java.lang.Short",
+  "methods":[{"name":"parseShort","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"java.lang.String",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"java.lang.String[]"
+},
+{
+  "name":"java.lang.ThreadLocal",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"java.lang.invoke.MethodHandles$Lookup",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class","int"] }]
+},
+{
+  "name":"java.lang.reflect.AccessibleObject",
+  "fields":[{"name":"override"}]
+},
+{
+  "name":"java.lang.reflect.AnnotatedElement",
+  "allDeclaredMethods":true
+},
+{
+  "name":"java.lang.reflect.GenericDeclaration",
+  "allDeclaredMethods":true
+},
+{
+  "name":"java.lang.reflect.InvocationHandler",
+  "allDeclaredMethods":true
+},
+{
+  "name":"java.lang.reflect.Type",
+  "allDeclaredMethods":true
+},
+{
+  "name":"java.security.AlgorithmParametersSpi"
+},
+{
+  "name":"java.security.KeyStoreSpi"
+},
+{
+  "name":"java.security.MessageDigestSpi"
+},
+{
+  "name":"java.security.SecureRandomParameters"
+},
+{
+  "name":"java.security.interfaces.ECPrivateKey"
+},
+{
+  "name":"java.security.interfaces.ECPublicKey"
+},
+{
+  "name":"java.security.interfaces.RSAPrivateKey"
+},
+{
+  "name":"java.security.interfaces.RSAPublicKey"
+},
+{
+  "name":"java.util.AbstractCollection",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"java.util.AbstractMap",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"java.util.Collection",
+  "allDeclaredMethods":true
+},
+{
+  "name":"java.util.Date"
+},
+{
+  "name":"java.util.Map",
+  "allDeclaredMethods":true
+},
+{
+  "name":"java.util.Set",
+  "allDeclaredMethods":true
+},
+{
+  "name":"java.util.concurrent.ConcurrentHashMap",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"java.util.concurrent.ConcurrentMap",
+  "allDeclaredMethods":true
+},
+{
+  "name":"java.util.concurrent.atomic.AtomicReference",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"java.util.function.Function",
+  "allDeclaredMethods":true
+},
+{
+  "name":"java.util.function.Predicate",
+  "allDeclaredMethods":true
+},
+{
+  "name":"java.util.function.Supplier",
+  "allDeclaredMethods":true
+},
+{
+  "name":"javax.inject.Named",
+  "allDeclaredMethods":true
+},
+{
+  "name":"javax.inject.Provider",
+  "allDeclaredMethods":true
+},
+{
+  "name":"javax.net.ssl.HostnameVerifier",
+  "allDeclaredMethods":true
+},
+{
+  "name":"javax.net.ssl.TrustManager",
+  "allDeclaredMethods":true
+},
+{
+  "name":"javax.net.ssl.X509TrustManager",
+  "allDeclaredMethods":true
+},
+{
+  "name":"javax.security.auth.x500.X500Principal",
+  "fields":[{"name":"thisX500Name"}],
+  "methods":[{"name":"<init>","parameterTypes":["sun.security.x509.X500Name"] }]
+},
+{
+  "name":"org.jclouds.Context",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.Fallback",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.annotations.Name",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.collect.Memoized",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.concurrent.config.ExecutorServiceModule",
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.concurrent.config.ExecutorServiceModule$$FastClassByGuice$$fdc2f949",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.config.BindApiContextWithWildcardExtendsExplicitAndRawType",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.config.BindNameToContext",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.config.ValueOfConfigurationKeyOrNull",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.crypto.Crypto",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.date.DateCodecFactory",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.date.DateService",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.date.internal.DateServiceDateCodecFactory",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.date.internal.DateServiceDateCodecFactory$$FastClassByGuice$$6d394d68",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.date.internal.SimpleDateFormatDateService",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.date.internal.SimpleDateFormatDateService$$FastClassByGuice$$6949b74f",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.domain.Location",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.encryption.internal.JCECrypto",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.encryption.internal.JCECrypto$$FastClassByGuice$$fe1f9337",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.events.config.EventBusModule",
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.events.config.EventBusModule$$FastClassByGuice$$86ebe3f9",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.events.config.annotations.AsyncBus",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.events.handlers.DeadEventLoggingHandler",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.events.handlers.DeadEventLoggingHandler$$FastClassByGuice$$e1f13581",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.fallbacks.HeaderToRetryAfterException",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.fallbacks.MapHttp4xxCodesToExceptions",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.fallbacks.MapHttp4xxCodesToExceptions$$FastClassByGuice$$6a799868",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.fallbacks.PropagateIfRetryAfter",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.functions.IdentityFunction",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.http.HttpCommandExecutorService",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.http.HttpErrorHandler",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.http.HttpRequestFilter",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.http.HttpRetryHandler",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.http.HttpUtils",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.http.HttpUtils$$FastClassByGuice$$8bc4d633",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.http.IOExceptionRetryHandler",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.http.annotation.ClientError",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.http.annotation.Redirection",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.http.annotation.ServerError",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.http.config.JavaUrlHttpCommandExecutorServiceModule",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.http.config.SSLModule",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.http.config.SSLModule$LogToMapHostnameVerifier",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.http.config.SSLModule$LogToMapHostnameVerifier$$FastClassByGuice$$7be5dd88",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.http.config.SSLModule$TrustAllCerts",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.http.config.SSLModule$TrustAllCerts$$FastClassByGuice$$2c8ad624",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.http.config.SSLModule$UntrustedSSLContextSupplier",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.http.config.SSLModule$UntrustedSSLContextSupplier$$FastClassByGuice$$9ea6a34b",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.http.functions.ParseJson",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.http.functions.ParseJson$$FastClassByGuice$$c6c3d452",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.http.functions.ParseSax$Factory",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.http.functions.config.SaxParserModule",
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.http.functions.config.SaxParserModule$$FastClassByGuice$$624398d2",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.http.functions.config.SaxParserModule$Factory",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.http.functions.config.SaxParserModule$Factory$$FastClassByGuice$$6f1cbf18",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.http.handlers.BackoffLimitedRetryHandler",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.http.handlers.BackoffLimitedRetryHandler$$FastClassByGuice$$644183",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.http.handlers.DelegatingErrorHandler",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.http.handlers.DelegatingErrorHandler$$FastClassByGuice$$50b5e553",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.http.handlers.DelegatingRetryHandler",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.http.handlers.DelegatingRetryHandler$$FastClassByGuice$$a1a6a0b3",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.http.handlers.RedirectionRetryHandler",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.http.handlers.RedirectionRetryHandler$$FastClassByGuice$$af4a431f",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.http.internal.BaseHttpCommandExecutorService",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.http.internal.HttpWire",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.http.internal.HttpWire$$FastClassByGuice$$e3271ca8",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.http.internal.JavaUrlHttpCommandExecutorService",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.http.internal.JavaUrlHttpCommandExecutorService$$FastClassByGuice$$b27b8cf1",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.internal.ContextImpl",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.internal.FilterStringsBoundToInjectorByName",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.internal.FilterStringsBoundToInjectorByName$$FastClassByGuice$$dbe0fac6",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.io.ContentMetadataCodec",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.io.ContentMetadataCodec$DefaultContentMetadataCodec",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.io.ContentMetadataCodec$DefaultContentMetadataCodec$$FastClassByGuice$$9a0fb731",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.json.Json",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.json.config.GsonModule",
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.json.config.GsonModule$$FastClassByGuice$$3f8d440d",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.json.config.GsonModule$ByteArrayAdapter",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.json.config.GsonModule$ByteListAdapter",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.json.config.GsonModule$CDateAdapter",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.json.config.GsonModule$CDateAdapter$$FastClassByGuice$$83613eb5",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.json.config.GsonModule$CredentialsAdapterFactory",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.json.config.GsonModule$CredentialsAdapterFactory$$FastClassByGuice$$a083d2e0",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.json.config.GsonModule$DateAdapter",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.json.config.GsonModule$DefaultExclusionStrategy",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.json.config.GsonModule$HexByteArrayAdapter",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.json.config.GsonModule$HexByteArrayAdapter$$FastClassByGuice$$870d75e2",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.json.config.GsonModule$HexByteListAdapter",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.json.config.GsonModule$HexByteListAdapter$$FastClassByGuice$$3228d425",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.json.config.GsonModule$JsonAdapterBindings",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.json.config.GsonModule$JsonAdapterBindings$$FastClassByGuice$$599571be",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.json.config.GsonModule$NoExclusions",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.json.config.GsonModule$NoExclusions$$FastClassByGuice$$a45d205d",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.json.config.GsonModule$NullHackJsonBallAdapter",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.json.config.GsonModule$NullHackJsonBallAdapter$$FastClassByGuice$$2a112029",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.json.config.GsonModule$PropertiesAdapter",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.json.config.GsonModule$PropertiesAdapter$$FastClassByGuice$$95fe45a5",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.json.internal.GsonWrapper",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.json.internal.GsonWrapper$$FastClassByGuice$$6107708d",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.json.internal.NullFilteringTypeAdapterFactories$CollectionTypeAdapterFactory",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.json.internal.NullFilteringTypeAdapterFactories$CollectionTypeAdapterFactory$$FastClassByGuice$$dbbeb73c",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.json.internal.NullFilteringTypeAdapterFactories$FluentIterableTypeAdapterFactory",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.json.internal.NullFilteringTypeAdapterFactories$FluentIterableTypeAdapterFactory$$FastClassByGuice$$9b5c86cc",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.json.internal.NullFilteringTypeAdapterFactories$ImmutableListTypeAdapterFactory",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.json.internal.NullFilteringTypeAdapterFactories$ImmutableListTypeAdapterFactory$$FastClassByGuice$$bd9995ec",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.json.internal.NullFilteringTypeAdapterFactories$ImmutableMapTypeAdapterFactory",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.json.internal.NullFilteringTypeAdapterFactories$ImmutableMapTypeAdapterFactory$$FastClassByGuice$$c841fd8",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.json.internal.NullFilteringTypeAdapterFactories$ImmutableSetTypeAdapterFactory",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.json.internal.NullFilteringTypeAdapterFactories$ImmutableSetTypeAdapterFactory$$FastClassByGuice$$2d4ac15e",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.json.internal.NullFilteringTypeAdapterFactories$IterableTypeAdapterFactory",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.json.internal.NullFilteringTypeAdapterFactories$IterableTypeAdapterFactory$$FastClassByGuice$$51784650",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.json.internal.NullFilteringTypeAdapterFactories$ListTypeAdapterFactory",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.json.internal.NullFilteringTypeAdapterFactories$ListTypeAdapterFactory$$FastClassByGuice$$f05a3bfc",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.json.internal.NullFilteringTypeAdapterFactories$MapTypeAdapterFactory",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.json.internal.NullFilteringTypeAdapterFactories$MapTypeAdapterFactory$$FastClassByGuice$$ab0e77c8",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.json.internal.NullFilteringTypeAdapterFactories$MultimapTypeAdapterFactory",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.json.internal.NullFilteringTypeAdapterFactories$MultimapTypeAdapterFactory$$FastClassByGuice$$f69a5921",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.json.internal.NullFilteringTypeAdapterFactories$SetTypeAdapterFactory",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.json.internal.NullFilteringTypeAdapterFactories$SetTypeAdapterFactory$$FastClassByGuice$$cbd5194e",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.json.internal.NullHackJsonLiteralAdapter",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.json.internal.OptionalTypeAdapterFactory",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.json.internal.OptionalTypeAdapterFactory$$FastClassByGuice$$72929b30",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.lifecycle.Closer",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.lifecycle.config.LifeCycleModule",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.lifecycle.config.LifeCycleModule$1",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.location.Iso3166",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.location.Provider",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.location.Region",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.location.Zone",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.location.config.LocationModule",
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.location.config.LocationModule$$FastClassByGuice$$a4e02484",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.location.predicates.RegionIdFilter",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.location.predicates.ZoneIdFilter",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.location.predicates.fromconfig.AnyOrConfiguredRegionId",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.location.predicates.fromconfig.AnyOrConfiguredRegionId$$FastClassByGuice$$abd53483",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.location.predicates.fromconfig.AnyOrConfiguredZoneId",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.location.predicates.fromconfig.AnyOrConfiguredZoneId$$FastClassByGuice$$ea6e283b",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.location.suppliers.ImplicitLocationSupplier",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.location.suppliers.ImplicitRegionIdSupplier",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.location.suppliers.LocationIdToIso3166CodesSupplier",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.location.suppliers.LocationsSupplier",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.location.suppliers.ProviderURISupplier",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.location.suppliers.RegionIdToURISupplier",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.location.suppliers.RegionIdToZoneIdsSupplier",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.location.suppliers.RegionIdsSupplier",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.location.suppliers.ZoneIdToURISupplier",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.location.suppliers.ZoneIdsSupplier",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.location.suppliers.all.JustProvider",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.location.suppliers.all.JustProvider$$FastClassByGuice$$ffb09dda",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.location.suppliers.all.RegionToProviderOrJustProvider",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.location.suppliers.all.RegionToProviderOrJustProvider$$FastClassByGuice$$2b48c9dd",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.location.suppliers.all.ZoneToRegionToProviderOrJustProvider",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.location.suppliers.all.ZoneToRegionToProviderOrJustProvider$$FastClassByGuice$$7f3b2944",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.location.suppliers.fromconfig.LocationIdToIso3166CodesFromConfiguration",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.location.suppliers.fromconfig.LocationIdToIso3166CodesFromConfiguration$$FastClassByGuice$$a1e71e4c",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.location.suppliers.fromconfig.LocationIdToURIFromConfigurationOrDefaultToProvider",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.location.suppliers.fromconfig.ProviderURIFromProviderMetadata",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.location.suppliers.fromconfig.ProviderURIFromProviderMetadata$$FastClassByGuice$$f0b87f53",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.location.suppliers.fromconfig.RegionIdToURIFromConfigurationOrDefaultToProvider",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.location.suppliers.fromconfig.RegionIdToURIFromConfigurationOrDefaultToProvider$$FastClassByGuice$$cdd2e98e",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.location.suppliers.fromconfig.RegionIdToZoneIdsFromConfiguration",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.location.suppliers.fromconfig.RegionIdToZoneIdsFromConfiguration$$FastClassByGuice$$c71787dc",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.location.suppliers.fromconfig.RegionIdsFromConfiguration",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.location.suppliers.fromconfig.RegionIdsFromConfiguration$$FastClassByGuice$$fa9d24fa",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.location.suppliers.fromconfig.SplitConfigurationKey",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.location.suppliers.fromconfig.ZoneIdToURIFromConfigurationOrDefaultToProvider",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.location.suppliers.fromconfig.ZoneIdToURIFromConfigurationOrDefaultToProvider$$FastClassByGuice$$153ad56",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.location.suppliers.fromconfig.ZoneIdsFromConfiguration",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.location.suppliers.fromconfig.ZoneIdsFromConfiguration$$FastClassByGuice$$312b0232",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.location.suppliers.implicit.GetRegionIdMatchingProviderURIOrNull",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.location.suppliers.implicit.GetRegionIdMatchingProviderURIOrNull$$FastClassByGuice$$beabb8fc",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.location.suppliers.implicit.OnlyLocationOrFirstRegionOptionallyMatchingRegionId",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.location.suppliers.implicit.OnlyLocationOrFirstRegionOptionallyMatchingRegionId$$FastClassByGuice$$4ee8c140",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.logging.config.LoggingModule",
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.logging.config.LoggingModule$$FastClassByGuice$$9785833e",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.logging.internal.Wire",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.logging.jdk.config.JDKLoggingModule",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.providers.AnonymousProviderMetadata",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.providers.ProviderMetadata",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.providers.config.BindProviderMetadataContextAndCredentials",
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.providers.config.BindProviderMetadataContextAndCredentials$$FastClassByGuice$$5de988c7",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.providers.internal.BaseProviderMetadata",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.proxy.ProxyConfig",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.proxy.ProxyForURI",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.proxy.ProxyForURI$$FastClassByGuice$$cafc7721",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.proxy.internal.GuiceProxyConfig",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.proxy.internal.GuiceProxyConfig$$FastClassByGuice$$8e9aeb4",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.rest.ApiContext",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.rest.Binder",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.rest.InputParamValidator",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.rest.InputParamValidator$$FastClassByGuice$$99278da5",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.rest.MapBinder",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.rest.Utils",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.rest.annotations.Api",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.rest.annotations.ApiVersion",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.rest.annotations.BuildVersion",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.rest.binders.BindToJsonPayload",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.rest.binders.BindToJsonPayload$$FastClassByGuice$$85d5cf9f",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.rest.binders.BindToJsonPayloadWrappedWith",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.rest.binders.BindToJsonPayloadWrappedWith$$FastClassByGuice$$38b50dcc",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.rest.binders.BindToJsonPayloadWrappedWith$Factory",
+  "allPublicMethods":true
+},
+{
+  "name":"org.jclouds.rest.config.AnnotatedHttpApiProvider",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.rest.config.CredentialStoreModule",
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.rest.config.CredentialStoreModule$$FastClassByGuice$$a57a7eb4",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.rest.config.CredentialStoreModule$CredentialsFromJsonByteSource",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.rest.config.CredentialStoreModule$CredentialsFromJsonByteSource$$FastClassByGuice$$41c1bea1",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.rest.config.CredentialStoreModule$CredentialsToJsonByteSource",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.rest.config.CredentialStoreModule$CredentialsToJsonByteSource$$FastClassByGuice$$dfab06b2",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.rest.config.HttpApiModule",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.rest.config.InvocationConfig",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.rest.config.ReadAnnotationsAndProperties",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.rest.config.ReadAnnotationsAndProperties$$FastClassByGuice$$e40fcabe",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.rest.config.RestModule",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.rest.config.SetCaller",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.rest.config.SetCaller$CallerInvocationProvider",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.rest.config.SetCaller$Module",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.rest.functions.ImplicitOptionalConverter",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.rest.functions.PresentWhenApiVersionLexicographicallyAtOrAfterSinceApiVersion",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.rest.functions.PresentWhenApiVersionLexicographicallyAtOrAfterSinceApiVersion$$FastClassByGuice$$989ae366",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.rest.internal.ApiContextImpl",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.rest.internal.ApiContextImpl$$FastClassByGuice$$b21f307c",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.rest.internal.DelegatesToInvocationFunction",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.rest.internal.DelegatesToInvocationFunction$$FastClassByGuice$$baa19daa",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.rest.internal.GetAcceptHeaders",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.rest.internal.GetAcceptHeaders$$FastClassByGuice$$b0122a6f",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.rest.internal.InvokeHttpMethod",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.rest.internal.InvokeHttpMethod$$FastClassByGuice$$628e7ee8",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.rest.internal.RestAnnotationProcessor",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.rest.internal.TransformerForRequest",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.rest.internal.TransformerForRequest$$FastClassByGuice$$b74ba718",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.rest.internal.UtilsImpl",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.rest.internal.UtilsImpl$$FastClassByGuice$$5402938a",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"org.jclouds.rest.suppliers.URIFromStringSupplier",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.suppliers.SupplyKeyMatchingValueOrNull",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.xml.XMLParser",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.jclouds.xml.internal.JAXBParser",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.jclouds.xml.internal.JAXBParser$$FastClassByGuice$$3805b02a",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"sun.misc.Unsafe",
+  "allDeclaredFields":true,
+  "methods":[
+    {"name":"allocateInstance","parameterTypes":["java.lang.Class"] }, 
+    {"name":"objectFieldOffset","parameterTypes":["java.lang.reflect.Field"] }, 
+    {"name":"putBoolean","parameterTypes":["java.lang.Object","long","boolean"] }
+  ]
+},
+{
+  "name":"sun.security.pkcs.SignerInfo[]"
+},
+{
+  "name":"sun.security.pkcs12.PKCS12KeyStore",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.pkcs12.PKCS12KeyStore$DualFormatPKCS12",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.DSA$SHA224withDSA",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.DSA$SHA256withDSA",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.JavaKeyStore$DualFormatJKS",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.JavaKeyStore$JKS",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.NativePRNG",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.SHA",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.SHA2$SHA224",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.SHA2$SHA256",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.SHA5$SHA384",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.SHA5$SHA512",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.X509Factory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.certpath.PKIXCertPathValidator",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.rsa.RSAKeyFactory$Legacy",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.rsa.RSAKeyPairGenerator$Legacy",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.rsa.RSAPSSSignature",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.rsa.RSASignature$SHA224withRSA",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.rsa.RSASignature$SHA256withRSA",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.rsa.RSASignature$SHA384withRSA",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.rsa.RSASignature$SHA512withRSA",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.ssl.KeyManagerFactoryImpl$SunX509",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.ssl.SSLContextImpl$DefaultSSLContext",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.ssl.TrustManagerFactoryImpl$PKIXFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.util.ObjectIdentifier"
+},
+{
+  "name":"sun.security.x509.AuthorityInfoAccessExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.AuthorityKeyIdentifierExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.BasicConstraintsExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.CRLDistributionPointsExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.CertificateExtensions"
+},
+{
+  "name":"sun.security.x509.CertificatePoliciesExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.ExtendedKeyUsageExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.IssuerAlternativeNameExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.KeyUsageExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.NetscapeCertTypeExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.PrivateKeyUsageExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.SubjectAlternativeNameExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.SubjectKeyIdentifierExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+}
+]
