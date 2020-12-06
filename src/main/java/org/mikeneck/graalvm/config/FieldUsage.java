@@ -15,13 +15,19 @@
  */
 package org.mikeneck.graalvm.config;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class FieldUsage implements Comparable<FieldUsage> {
 
     @NotNull
     public String name = "";
+
+    @Nullable
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    public Boolean allowUnsafeAccess;
 
     public FieldUsage() {
     }
@@ -35,6 +41,7 @@ public class FieldUsage implements Comparable<FieldUsage> {
     public String toString() {
         final StringBuilder sb = new StringBuilder("FieldUsage{");
         sb.append("name='").append(name).append('\'');
+        sb.append(", allowUnsafeAccess=").append(allowUnsafeAccess);
         sb.append('}');
         return sb.toString();
     }
@@ -44,12 +51,13 @@ public class FieldUsage implements Comparable<FieldUsage> {
         if (this == o) return true;
         if (!(o instanceof FieldUsage)) return false;
         FieldUsage that = (FieldUsage) o;
-        return name.equals(that.name);
+        return name.equals(that.name) &&
+                Objects.equals(allowUnsafeAccess, that.allowUnsafeAccess);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(name, allowUnsafeAccess);
     }
 
     @Override

@@ -49,7 +49,28 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public Boolean allDeclaredConstructors;
 
+    @Nullable
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public Boolean allPublicMethods;
+
     public ClassUsage() {
+    }
+
+    public ClassUsage(
+            @NotNull String name, 
+            @NotNull SortedSet<MethodUsage> methods, 
+            @NotNull SortedSet<FieldUsage> fields,
+            @Nullable Boolean allDeclaredFields,
+            @Nullable Boolean allDeclaredMethods,
+            @Nullable Boolean allDeclaredConstructors,
+            @Nullable Boolean allPublicMethods) {
+        this.name = name;
+        this.methods = methods;
+        this.fields = fields;
+        this.allDeclaredFields = allDeclaredFields;
+        this.allDeclaredMethods = allDeclaredMethods;
+        this.allDeclaredConstructors = allDeclaredConstructors;
+        this.allPublicMethods = allPublicMethods;
     }
 
     public ClassUsage(
@@ -115,12 +136,20 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
                 fields.equals(that.fields) &&
                 Objects.equals(allDeclaredFields, that.allDeclaredFields) &&
                 Objects.equals(allDeclaredMethods, that.allDeclaredMethods) &&
-                Objects.equals(allDeclaredConstructors, that.allDeclaredConstructors);
+                Objects.equals(allDeclaredConstructors, that.allDeclaredConstructors) &&
+                Objects.equals(allPublicMethods, that.allPublicMethods);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, methods, fields, allDeclaredFields, allDeclaredMethods, allDeclaredConstructors);
+        return Objects.hash(
+                name,
+                methods,
+                fields,
+                allDeclaredFields,
+                allDeclaredMethods,
+                allDeclaredConstructors,
+                allPublicMethods);
     }
 
     @SuppressWarnings("StringBufferReplaceableByString")
@@ -133,6 +162,7 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
         sb.append(", allDeclaredFields=").append(allDeclaredFields);
         sb.append(", allDeclaredMethods=").append(allDeclaredMethods);
         sb.append(", allDeclaredConstructors=").append(allDeclaredConstructors);
+        sb.append(", allPublicMethods=").append(allPublicMethods);
         sb.append('}');
         return sb.toString();
     }
@@ -150,10 +180,11 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
         Boolean declaredFields = this.allDeclaredFields == null ? other.allDeclaredFields : this.allDeclaredFields;
         Boolean declaredConstructors = this.allDeclaredConstructors == null ? other.allDeclaredConstructors : this.allDeclaredConstructors;
         Boolean declaredMethods = this.allDeclaredMethods == null ? other.allDeclaredMethods : this.allDeclaredMethods;
+        Boolean publicMethods = this.allPublicMethods == null ? other.allPublicMethods : this.allPublicMethods;
         TreeSet<MethodUsage> newMethods = new TreeSet<>(this.methods);
         newMethods.addAll(other.methods);
         TreeSet<FieldUsage> newFields = new TreeSet<>(this.fields);
         newFields.addAll(other.fields);
-        return new ClassUsage(this.name, newMethods, newFields, declaredFields, declaredMethods, declaredConstructors);
+        return new ClassUsage(this.name, newMethods, newFields, declaredFields, declaredMethods, declaredConstructors, publicMethods);
     }
 }
