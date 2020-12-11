@@ -75,7 +75,7 @@ def uses(name; action; with; id):
     "Cache Gradle Wrapper";
     { owner: "actions", action: "cache", version: "v1" };
     {
-      path: "~/.gradle/caches",
+      path: "~/.gradle/caches\n~/.gradle/wrapper\n.cache",
       key: "wrapper-${{ matrix.version }}",
       "restore-keys": "wrapper-"
     };
