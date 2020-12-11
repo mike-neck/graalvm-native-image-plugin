@@ -19,7 +19,9 @@ jobs:
         id: gradle
         uses: actions/cache@v2
         with:
-          path: ~/.gradle/caches
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
           key: gradle-${{ hashFiles('**/*.gradle') }}-${{ hashFiles('**/gradle-wrapper.properties') }}
           restore-keys: gradle-
 
@@ -70,14 +72,21 @@ jobs:
 
       - name: Cache gradle
         id: gradle
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         with:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-            .cache
           key: gradle-${{ hashFiles('**/*.gradle') }}-${{ hashFiles('**/gradle-wrapper.properties') }}
           restore-keys: gradle-
+
+      - name: Build Cache
+        id: build-cache
+        uses: actions/cache@v2
+        with:
+          path: .cache
+          key: build-${{ hashFiles('src/functionalTest/**/*.java') }}
+          restore-keys: build-
 
       - name: Run functional test
         run: ./gradlew clean functionalTest
