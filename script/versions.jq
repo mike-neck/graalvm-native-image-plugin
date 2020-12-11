@@ -61,14 +61,14 @@ def uses(name; action; with; id):
 ;
 
 .jobs.test.name = "Gradle-${{ matrix.version }} nativeImage" |
-.jobs.test["runs-on"] = "ubuntu-18.04" |
+.jobs.test["runs-on"] = "ubuntu-20.04" |
 .jobs.test.strategy.matrix.version = $versions |
 .jobs.test.steps = [
   uses("Checkout"; "actions/checkout@v2"; null; null),
   uses(
     "Setup GraalVM";
     "DeLaGuardo/setup-graalvm@8bbfe44ef9c6f5c07e5af036a1bffd561c037d18";
-    {"graalvm-version": "20.2.0.java11"};
+    {"graalvm-version": "20.3.0.java11"};
     null),
   runs("Install GraalVM native image"; "gu install native-image"; null; null),
   uses(
