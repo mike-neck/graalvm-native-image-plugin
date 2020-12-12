@@ -102,7 +102,7 @@ public class ResourceConfig implements MergeableConfig<ResourceConfig> {
                 Collections.unmodifiableList(new ArrayList<>(bundles)));
     }
 
-    public static class $20$3 {
+    public static class $20$3 implements MergeableConfig<$20$3> {
 
         @NotNull
         public ResourceUsage.$20$3 resources = new ResourceUsage.$20$3();
@@ -147,6 +147,16 @@ public class ResourceConfig implements MergeableConfig<ResourceConfig> {
             sb.append(", bundles=").append(bundles);
             sb.append('}');
             return sb.toString();
+        }
+
+        @NotNull
+        @Override
+        public $20$3 mergeWith(@NotNull $20$3 other) {
+            Set<BundleUsage> bundles = new TreeSet<>(this.bundles);
+            bundles.addAll(other.bundles);
+            $20$3 newValue = new $20$3();
+            newValue.bundles = new ArrayList<>(bundles);
+            return newValue;
         }
     }
 }

@@ -153,5 +153,16 @@ class ResourceConfigTest {
                 );
             }
         }
+
+        @Test
+        void merge() {
+            ResourceConfig.$20$3 left = new ResourceConfig.$20$3(Collections.emptyList(), Collections.emptyList(), "bundle-foo");
+            ResourceConfig.$20$3 right = new ResourceConfig.$20$3(Collections.emptyList(), Collections.emptyList(), "bundle-bar");
+
+            ResourceConfig.$20$3 actual = left.mergeWith(right);
+
+            assertThat(actual)
+                    .isEqualTo(new ResourceConfig.$20$3(Collections.emptyList(), Collections.emptyList(), "bundle-bar", "bundle-foo"));
+        }
     }
 }
