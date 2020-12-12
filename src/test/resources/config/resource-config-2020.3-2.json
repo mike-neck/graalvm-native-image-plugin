@@ -1,0 +1,18 @@
+{
+  "resources":{
+    "excludes":[{"pattern":"\\QMETA-INF/services/com.example.App\\E"}],
+    "includes":[
+      {"pattern":"\\QMETA-INF/maven/org.apache.jclouds/jclouds-core/pom.properties\\E"},
+      {"pattern":"\\QMETA-INF/maven/org.fusesource.jansi/jansi/pom.properties\\E"},
+      {"pattern":"\\QMETA-INF/services/org.jline.terminal.spi.JansiSupport\\E"},
+      {"pattern":"\\Qorg/fusesource/jansi/internal/native/Linux/x86_64/libjansi.so\\E"},
+      {"pattern":"\\Qorg/fusesource/jansi/jansi.properties\\E"},
+      {"pattern":"\\Qorg/jline/utils/capabilities.txt\\E"},
+      {"pattern":"\\Qorg/jline/utils/dumb.caps\\E"}
+    ]},
+  "bundles": [
+    {"name":"your.pkg.Bundle"},
+    {"name":"another.pkg.Resource"},
+    {"name":"etc.Bundle"}
+  ]
+}

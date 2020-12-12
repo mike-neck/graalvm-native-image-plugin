@@ -139,5 +139,19 @@ class ResourceConfigTest {
                 );
             }
         }
+
+        @Test
+        void jsonBothData() throws IOException {
+            try (InputStream inputStream = reader.configJsonResource("config/resource-config-2020.3-2.json")) {
+                ResourceConfig.$2020$3 resourceConfig =  objectMapper.readValue(inputStream, ResourceConfig.$2020$3.class);
+                assertAll(
+                        () -> assertThat(resourceConfig).isNotNull(),
+                        () -> assertThat(resourceConfig.resources).isNotNull(),
+                        () -> assertThat(resourceConfig.bundles).hasSize(3),
+                        () -> assertThat(resourceConfig.resources.excludes).containsOnly(new ResourceUsage("\\QMETA-INF/services/com.example.App\\E")),
+                        () -> assertThat(resourceConfig.resources.includes).hasSize(7)
+                );
+            }
+        }
     }
 }
