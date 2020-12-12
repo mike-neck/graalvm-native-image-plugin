@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,95 +31,94 @@ class ResourceConfigTest {
 
     private final TestJsonReader reader = new TestJsonReader();
 
-    @Test
-    void jsonWithContents() throws IOException {
-        try (InputStream inputStream = reader.configJsonResource("config/resource-config-1.json")) {
-            ResourceConfig resourceConfig = objectMapper.readValue(inputStream, ResourceConfig.class);
-            assertThat(
-                    resourceConfig.resources)
-                    .contains(
-                            new ResourceUsage("\\QMETA-INF/services/jdk.vm.ci.hotspot.HotSpotJVMCIBackendFactory\\E"),
-                            new ResourceUsage("\\QMETA-INF/services/jdk.vm.ci.services.JVMCIServiceLocator\\E"));
-            assertThat(resourceConfig.bundles)
-                    .contains(new BundleUsage("usage"));
+    @Nested
+    class FirstDataModel {
+
+        @Test
+        void jsonWithContents() throws IOException {
+            try (InputStream inputStream = reader.configJsonResource("config/resource-config-1.json")) {
+                ResourceConfig resourceConfig = objectMapper.readValue(inputStream, ResourceConfig.class);
+                assertThat(
+                        resourceConfig.resources)
+                        .contains(
+                                new ResourceUsage("\\QMETA-INF/services/jdk.vm.ci.hotspot.HotSpotJVMCIBackendFactory\\E"),
+                                new ResourceUsage("\\QMETA-INF/services/jdk.vm.ci.services.JVMCIServiceLocator\\E"));
+                assertThat(resourceConfig.bundles)
+                        .contains(new BundleUsage("usage"));
+            }
         }
-    }
 
-    @Test
-    void jsonWithoutContents() throws IOException {
-        try (InputStream inputStream = reader.configJsonResource("config/resource-config-2.json")) {
-            ResourceConfig resourceConfig = objectMapper.readValue(inputStream, ResourceConfig.class);
-            assertThat(resourceConfig.resources).isEqualTo(Collections.emptyList());
-            assertThat(resourceConfig.bundles).isEqualTo(Collections.emptyList());
+        @Test
+        void jsonWithoutContents() throws IOException {
+            try (InputStream inputStream = reader.configJsonResource("config/resource-config-2.json")) {
+                ResourceConfig resourceConfig = objectMapper.readValue(inputStream, ResourceConfig.class);
+                assertThat(resourceConfig.resources).isEqualTo(Collections.emptyList());
+                assertThat(resourceConfig.bundles).isEqualTo(Collections.emptyList());
+            }
         }
-    }
 
-    @Test
-    void merge() {
-        ResourceConfig left = new ResourceConfig(
-                Arrays.asList("resource-foo", "resource-bar"),
-                "bundle-foo", "bundle-bar");
-        ResourceConfig right = new ResourceConfig(
-                Collections.singletonList("resource-baz"),
-                "bundle-baz");
+        @Test
+        void merge() {
+            ResourceConfig left = new ResourceConfig(
+                    Arrays.asList("resource-foo", "resource-bar"),
+                    "bundle-foo", "bundle-bar");
+            ResourceConfig right = new ResourceConfig(
+                    Collections.singletonList("resource-baz"),
+                    "bundle-baz");
 
-        ResourceConfig resourceConfig = left.mergeWith(right);
+            ResourceConfig resourceConfig = left.mergeWith(right);
 
-        assertThat(resourceConfig.resources).contains(
-                new ResourceUsage("resource-bar"),
-                new ResourceUsage("resource-baz"),
-                new ResourceUsage("resource-foo"));
-        assertThat(resourceConfig.bundles).contains(
-                new BundleUsage("bundle-bar"),
-                new BundleUsage("bundle-baz"),
-                new BundleUsage("bundle-foo"));
-    }
+            assertThat(resourceConfig.resources).contains(
+                    new ResourceUsage("resource-bar"),
+                    new ResourceUsage("resource-baz"),
+                    new ResourceUsage("resource-foo"));
+            assertThat(resourceConfig.bundles).contains(
+                    new BundleUsage("bundle-bar"),
+                    new BundleUsage("bundle-baz"),
+                    new BundleUsage("bundle-foo"));
+        }
 
-    @SafeVarargs
-    private static <T extends Comparable<T>> List<T> listOf(T... items) {
-        return Arrays.asList(items);
-    }
+        @Test
+        void mergeConfigWithSharedContents() {
+            ResourceConfig left = new ResourceConfig(
+                    Arrays.asList("resource-foo", "resource-bar"),
+                    "bundle-foo", "bundle-bar");
+            ResourceConfig right = new ResourceConfig(
+                    Arrays.asList("resource-baz", "resource-bar"),
+                    "bundle-baz", "bundle-bar");
 
-    @Test
-    void mergeConfigWithSharedContents() {
-        ResourceConfig left = new ResourceConfig(
-                Arrays.asList("resource-foo", "resource-bar"),
-                "bundle-foo", "bundle-bar");
-        ResourceConfig right = new ResourceConfig(
-                Arrays.asList("resource-baz", "resource-bar"),
-                "bundle-baz", "bundle-bar");
+            ResourceConfig resourceConfig = left.mergeWith(right);
 
-        ResourceConfig resourceConfig = left.mergeWith(right);
+            assertThat(resourceConfig.resources).contains(
+                    new ResourceUsage("resource-bar"),
+                    new ResourceUsage("resource-baz"),
+                    new ResourceUsage("resource-foo"));
+            assertThat(resourceConfig.bundles).contains(
+                    new BundleUsage("bundle-bar"),
+                    new BundleUsage("bundle-baz"),
+                    new BundleUsage("bundle-foo"));
+        }
 
-        assertThat(resourceConfig.resources).contains(
-                new ResourceUsage("resource-bar"),
-                new ResourceUsage("resource-baz"),
-                new ResourceUsage("resource-foo"));
-        assertThat(resourceConfig.bundles).contains(
-                new BundleUsage("bundle-bar"),
-                new BundleUsage("bundle-baz"),
-                new BundleUsage("bundle-foo"));
-    }
+        @Test
+        void mergeWithSelfBecomesSelf() {
+            ResourceConfig resourceConfig = new ResourceConfig(
+                    Arrays.asList("resource-foo", "resource-bar"),
+                    "bundle-foo", "bundle-bar");
 
-    @Test
-    void mergeWithSelfBecomesSelf() {
-        ResourceConfig resourceConfig = new ResourceConfig(
-                Arrays.asList("resource-foo", "resource-bar"),
-                "bundle-foo", "bundle-bar");
+            ResourceConfig actual = resourceConfig.mergeWith(resourceConfig);
 
-        ResourceConfig actual = resourceConfig.mergeWith(resourceConfig);
+            assertThat(actual).isEqualTo(resourceConfig);
+        }
 
-        assertThat(actual).isEqualTo(resourceConfig);
-    }
+        @Test
+        void mergeWithEmptyBecomesSelf() {
+            ResourceConfig resourceConfig = new ResourceConfig(
+                    Arrays.asList("resource-foo", "resource-bar"),
+                    "bundle-foo", "bundle-bar");
 
-    @Test
-    void mergeWithEmptyBecomesSelf() {
-        ResourceConfig resourceConfig = new ResourceConfig(
-                Arrays.asList("resource-foo", "resource-bar"),
-                "bundle-foo", "bundle-bar");
+            ResourceConfig actual = resourceConfig.mergeWith(new ResourceConfig());
 
-        ResourceConfig actual = resourceConfig.mergeWith(new ResourceConfig());
-
-        assertThat(actual).isEqualTo(resourceConfig);
+            assertThat(actual).isEqualTo(resourceConfig);
+        }
     }
 }
