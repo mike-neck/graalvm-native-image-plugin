@@ -124,12 +124,12 @@ class ResourceConfigTest {
     }
 
     @Nested
-    class $2020$3Test {
+    class $20$3Test {
 
         @Test
         void jsonWithInclude1() throws IOException {
             try (InputStream inputStream = reader.configJsonResource("config/resource-config-2020.3-1.json")) {
-                ResourceConfig.$2020$3 resourceConfig =  objectMapper.readValue(inputStream, ResourceConfig.$2020$3.class);
+                ResourceConfig.$20$3 resourceConfig =  objectMapper.readValue(inputStream, ResourceConfig.$20$3.class);
                 assertAll(
                         () -> assertThat(resourceConfig).isNotNull(),
                         () -> assertThat(resourceConfig.resources).isNotNull(),
@@ -143,7 +143,7 @@ class ResourceConfigTest {
         @Test
         void jsonBothData() throws IOException {
             try (InputStream inputStream = reader.configJsonResource("config/resource-config-2020.3-2.json")) {
-                ResourceConfig.$2020$3 resourceConfig =  objectMapper.readValue(inputStream, ResourceConfig.$2020$3.class);
+                ResourceConfig.$20$3 resourceConfig =  objectMapper.readValue(inputStream, ResourceConfig.$20$3.class);
                 assertAll(
                         () -> assertThat(resourceConfig).isNotNull(),
                         () -> assertThat(resourceConfig.resources).isNotNull(),

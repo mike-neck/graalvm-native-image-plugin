@@ -102,26 +102,26 @@ public class ResourceConfig implements MergeableConfig<ResourceConfig> {
                 Collections.unmodifiableList(new ArrayList<>(bundles)));
     }
 
-    public static class $2020$3 {
+    public static class $20$3 {
 
         @NotNull
-        public ResourceUsage.$2020$3 resources = new ResourceUsage.$2020$3();
+        public ResourceUsage.$20$3 resources = new ResourceUsage.$20$3();
 
         @NotNull
         public List<BundleUsage> bundles = Collections.emptyList();
 
-        public $2020$3() {
+        public $20$3() {
         }
 
-        public $2020$3(@NotNull ResourceUsage.$2020$3 resources) {
+        public $20$3(@NotNull ResourceUsage.$20$3 resources) {
             this.resources = resources;
         }
 
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
-            if (!(o instanceof $2020$3)) return false;
-            $2020$3 $2020$3 = ($2020$3) o;
+            if (!(o instanceof $20$3)) return false;
+            $20$3 $2020$3 = ($20$3) o;
             return resources.equals($2020$3.resources) && bundles.equals($2020$3.bundles);
         }
 

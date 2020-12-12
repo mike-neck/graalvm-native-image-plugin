@@ -59,29 +59,29 @@ public class ResourceUsage implements Comparable<ResourceUsage> {
         return this.pattern.compareTo(o.pattern);
     }
 
-    public static class $2020$3 implements Comparable<$2020$3> {
+    public static class $20$3 implements Comparable<$20$3> {
 
         public List<ResourceUsage> includes = Collections.emptyList();
 
         public List<ResourceUsage> excludes = Collections.emptyList();
 
-        public $2020$3(List<ResourceUsage> includes) {
+        public $20$3(List<ResourceUsage> includes) {
             this.includes = includes;
         }
 
-        public $2020$3() {
+        public $20$3() {
         }
 
         @Override
-        public int compareTo(@NotNull ResourceUsage.$2020$3 o) {
+        public int compareTo(@NotNull ResourceUsage.$20$3 o) {
             return 0;
         }
 
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
-            if (!(o instanceof $2020$3)) return false;
-            $2020$3 $2020$3 = ($2020$3) o;
+            if (!(o instanceof $20$3)) return false;
+            $20$3 $2020$3 = ($20$3) o;
             return includes.equals($2020$3.includes) && excludes.equals($2020$3.excludes);
         }
 
