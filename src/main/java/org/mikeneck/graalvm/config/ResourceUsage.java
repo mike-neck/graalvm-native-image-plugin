@@ -15,10 +15,13 @@
  */
 package org.mikeneck.graalvm.config;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
 
@@ -70,7 +73,7 @@ public class ResourceUsage implements Comparable<ResourceUsage> {
         $20$3 excludes(@NotNull List<String> excludes);
     }
 
-    public static class $20$3 implements Comparable<$20$3> {
+    public static class $20$3 implements Comparable<$20$3>, MergeableConfig<$20$3> {
 
         public static $20$3Builder includes(@NotNull List<String> includes) {
             return excludes -> new $20$3(
@@ -123,6 +126,18 @@ public class ResourceUsage implements Comparable<ResourceUsage> {
             sb.append(", excludes=").append(excludes);
             sb.append('}');
             return sb.toString();
+        }
+
+        @NotNull
+        @Override
+        public $20$3 mergeWith(@NotNull $20$3 other) {
+            Set<ResourceUsage> includes = new TreeSet<>(this.includes);
+            includes.addAll(other.includes);
+
+            $20$3 newValue = new $20$3();
+            newValue.includes = new ArrayList<>(includes);
+
+            return newValue;
         }
     }
 }

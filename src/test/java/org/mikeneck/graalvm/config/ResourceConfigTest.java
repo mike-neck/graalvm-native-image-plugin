@@ -164,5 +164,23 @@ class ResourceConfigTest {
             assertThat(actual)
                     .isEqualTo(new ResourceConfig.$20$3(Collections.emptyList(), Collections.emptyList(), "bundle-bar", "bundle-foo"));
         }
+
+        @Test
+        void mergeIncludes() {
+            ResourceConfig.$20$3 left = new ResourceConfig.$20$3(Arrays.asList("includes-foo", "includes-baz"), Collections.emptyList());
+            ResourceConfig.$20$3 right = new ResourceConfig.$20$3(Arrays.asList("includes-qux", "includes-bar", "includes-quux"), Collections.emptyList());
+
+            ResourceConfig.$20$3 actual = left.mergeWith(right);
+
+            assertThat(actual)
+                    .isEqualTo(new ResourceConfig.$20$3(
+                            Arrays.asList(
+                                    "includes-bar",
+                                    "includes-baz",
+                                    "includes-foo",
+                                    "includes-quux",
+                                    "includes-qux"),
+                            Collections.emptyList()));
+        }
     }
 }

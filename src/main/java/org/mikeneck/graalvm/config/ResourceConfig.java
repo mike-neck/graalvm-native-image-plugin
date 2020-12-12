@@ -154,8 +154,13 @@ public class ResourceConfig implements MergeableConfig<ResourceConfig> {
         public $20$3 mergeWith(@NotNull $20$3 other) {
             Set<BundleUsage> bundles = new TreeSet<>(this.bundles);
             bundles.addAll(other.bundles);
+
+            ResourceUsage.$20$3 resources = this.resources.mergeWith(other.resources);
+
             $20$3 newValue = new $20$3();
             newValue.bundles = new ArrayList<>(bundles);
+            newValue.resources = resources;
+
             return newValue;
         }
     }
