@@ -1,0 +1,5 @@
+{
+  "resources":{
+  "includes":[{"pattern":"\\QMETA-INF/services/com.example.App\\E"}]},
+  "bundles":[]
+}

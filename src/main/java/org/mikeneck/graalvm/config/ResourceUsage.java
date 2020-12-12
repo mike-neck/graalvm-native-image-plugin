@@ -15,6 +15,8 @@
  */
 package org.mikeneck.graalvm.config;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 
@@ -55,5 +57,25 @@ public class ResourceUsage implements Comparable<ResourceUsage> {
     @Override
     public int compareTo(@NotNull ResourceUsage o) {
         return this.pattern.compareTo(o.pattern);
+    }
+
+    public static class $2020$3 implements Comparable<$2020$3> {
+
+        public List<ResourceUsage> includes = Collections.emptyList();
+
+        public List<ResourceUsage> excludes = Collections.emptyList();
+
+        public $2020$3(List<ResourceUsage> includes) {
+            this.includes = includes;
+        }
+
+        public $2020$3() {
+        }
+
+        @Override
+        public int compareTo(@NotNull ResourceUsage.$2020$3 o) {
+            return 0;
+        }
+
     }
 }

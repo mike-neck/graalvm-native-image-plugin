@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class ResourceConfigTest {
 
@@ -119,6 +120,24 @@ class ResourceConfigTest {
             ResourceConfig actual = resourceConfig.mergeWith(new ResourceConfig());
 
             assertThat(actual).isEqualTo(resourceConfig);
+        }
+    }
+
+    @Nested
+    class $2020$3Test {
+
+        @Test
+        void jsonWithInclude1() throws IOException {
+            try (InputStream inputStream = reader.configJsonResource("config/resource-config-2020.3-1.json")) {
+                ResourceConfig.$2020$3 resourceConfig =  objectMapper.readValue(inputStream, ResourceConfig.$2020$3.class);
+                assertAll(
+                        () -> assertThat(resourceConfig).isNotNull(),
+                        () -> assertThat(resourceConfig.resources).isNotNull(),
+                        () -> assertThat(resourceConfig.bundles).isEmpty(),
+                        () -> assertThat(resourceConfig.resources.includes).hasSize(1),
+                        () -> assertThat(resourceConfig.resources.excludes).isEmpty()
+                );
+            }
         }
     }
 }

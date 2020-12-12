@@ -101,4 +101,20 @@ public class ResourceConfig implements MergeableConfig<ResourceConfig> {
                 Collections.unmodifiableList(new ArrayList<>(resources)),
                 Collections.unmodifiableList(new ArrayList<>(bundles)));
     }
+
+    public static class $2020$3 {
+
+        @NotNull
+        public ResourceUsage.$2020$3 resources = new ResourceUsage.$2020$3();
+
+        @NotNull
+        public List<BundleUsage> bundles = Collections.emptyList();
+
+        public $2020$3() {
+        }
+
+        public $2020$3(@NotNull ResourceUsage.$2020$3 resources) {
+            this.resources = resources;
+        }
+    }
 }
