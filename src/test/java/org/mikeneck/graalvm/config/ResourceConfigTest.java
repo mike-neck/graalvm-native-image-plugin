@@ -134,7 +134,7 @@ class ResourceConfigTest {
                         () -> assertThat(resourceConfig).isNotNull(),
                         () -> assertThat(resourceConfig.resources).isNotNull(),
                         () -> assertThat(resourceConfig.bundles).isEmpty(),
-                        () -> assertThat(resourceConfig.resources.includes).hasSize(1),
+                        () -> assertThat(resourceConfig.resources.includes).containsOnly(new ResourceUsage("\\QMETA-INF/services/com.example.App\\E")),
                         () -> assertThat(resourceConfig.resources.excludes).isEmpty()
                 );
             }

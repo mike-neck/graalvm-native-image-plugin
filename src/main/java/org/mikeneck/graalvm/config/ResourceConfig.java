@@ -116,5 +116,28 @@ public class ResourceConfig implements MergeableConfig<ResourceConfig> {
         public $2020$3(@NotNull ResourceUsage.$2020$3 resources) {
             this.resources = resources;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof $2020$3)) return false;
+            $2020$3 $2020$3 = ($2020$3) o;
+            return resources.equals($2020$3.resources) && bundles.equals($2020$3.bundles);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(resources, bundles);
+        }
+
+        @SuppressWarnings("StringBufferReplaceableByString")
+        @Override
+        public String toString() {
+            final StringBuilder sb = new StringBuilder("$2020$3{");
+            sb.append("resources=").append(resources);
+            sb.append(", bundles=").append(bundles);
+            sb.append('}');
+            return sb.toString();
+        }
     }
 }

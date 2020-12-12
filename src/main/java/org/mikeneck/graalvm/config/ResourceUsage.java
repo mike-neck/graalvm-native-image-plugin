@@ -77,5 +77,27 @@ public class ResourceUsage implements Comparable<ResourceUsage> {
             return 0;
         }
 
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof $2020$3)) return false;
+            $2020$3 $2020$3 = ($2020$3) o;
+            return includes.equals($2020$3.includes) && excludes.equals($2020$3.excludes);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(includes, excludes);
+        }
+
+        @SuppressWarnings("StringBufferReplaceableByString")
+        @Override
+        public String toString() {
+            final StringBuilder sb = new StringBuilder("$2020$3{");
+            sb.append("includes=").append(includes);
+            sb.append(", excludes=").append(excludes);
+            sb.append('}');
+            return sb.toString();
+        }
     }
 }
