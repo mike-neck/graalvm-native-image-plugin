@@ -15,9 +15,11 @@
  */
 package org.mikeneck.graalvm.config;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
 
 public class ResourceUsage implements Comparable<ResourceUsage> {
@@ -59,14 +61,37 @@ public class ResourceUsage implements Comparable<ResourceUsage> {
         return this.pattern.compareTo(o.pattern);
     }
 
+    @FunctionalInterface
+    public interface   $20$3Builder {
+        default  $20$3 excludes(String... excludes) {
+            return excludes(Arrays.asList(excludes));
+        }
+
+        $20$3 excludes(@NotNull List<String> excludes);
+    }
+
     public static class $20$3 implements Comparable<$20$3> {
+
+        public static $20$3Builder includes(@NotNull List<String> includes) {
+            return excludes -> new $20$3(
+                    includes.stream().map(ResourceUsage::new).collect(Collectors.toList()), 
+                    excludes.stream().map(ResourceUsage::new).collect(Collectors.toList()));
+        }
+
+        public static $20$3Builder includes(String... includes) {
+            return excludes ->
+                    new $20$3(
+                            Arrays.stream(includes).map(ResourceUsage::new).collect(Collectors.toList()),
+                            excludes.stream().map(ResourceUsage::new).collect(Collectors.toList()));
+        }
 
         public List<ResourceUsage> includes = Collections.emptyList();
 
         public List<ResourceUsage> excludes = Collections.emptyList();
 
-        public $20$3(List<ResourceUsage> includes) {
+        $20$3(@NotNull List<ResourceUsage> includes, @NotNull List<ResourceUsage> excludes) {
             this.includes = includes;
+            this.excludes = excludes;
         }
 
         public $20$3() {

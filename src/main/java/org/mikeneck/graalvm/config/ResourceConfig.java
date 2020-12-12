@@ -113,8 +113,17 @@ public class ResourceConfig implements MergeableConfig<ResourceConfig> {
         public $20$3() {
         }
 
-        public $20$3(@NotNull ResourceUsage.$20$3 resources) {
+        @TestOnly
+        $20$3(@NotNull List<String> includes, @NotNull List<String> excludes, @NotNull String... bundles) {
+            this(ResourceUsage.$20$3.includes(includes).excludes(excludes), bundles);
+        }
+
+        @TestOnly
+        $20$3(@NotNull ResourceUsage.$20$3 resources, @NotNull String... bundles) {
             this.resources = resources;
+            this.bundles = Arrays.stream(bundles)
+                    .map(BundleUsage::new)
+                    .collect(Collectors.toList());
         }
 
         @Override
