@@ -134,9 +134,12 @@ public class ResourceUsage implements Comparable<ResourceUsage> {
             Set<ResourceUsage> includes = new TreeSet<>(this.includes);
             includes.addAll(other.includes);
 
+            Set<ResourceUsage> excludes = new TreeSet<>(this.excludes);
+            excludes.addAll(other.excludes);
+
             $20$3 newValue = new $20$3();
             newValue.includes = new ArrayList<>(includes);
-
+            newValue.excludes = new ArrayList<>(excludes);
             return newValue;
         }
     }

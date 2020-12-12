@@ -182,5 +182,23 @@ class ResourceConfigTest {
                                     "includes-qux"),
                             Collections.emptyList()));
         }
+
+        @Test
+        void mergeExcludes() {
+            ResourceConfig.$20$3 left = new ResourceConfig.$20$3(Collections.emptyList(), Arrays.asList("excludes-foo", "excludes-baz"));
+            ResourceConfig.$20$3 right = new ResourceConfig.$20$3(Collections.emptyList(), Arrays.asList("excludes-qux", "excludes-bar", "excludes-quux"));
+
+            ResourceConfig.$20$3 actual = left.mergeWith(right);
+
+            assertThat(actual)
+                    .isEqualTo(new ResourceConfig.$20$3(
+                            Collections.emptyList(),
+                            Arrays.asList(
+                                    "excludes-bar",
+                                    "excludes-baz",
+                                    "excludes-foo",
+                                    "excludes-quux",
+                                    "excludes-qux")));
+        }
     }
 }
