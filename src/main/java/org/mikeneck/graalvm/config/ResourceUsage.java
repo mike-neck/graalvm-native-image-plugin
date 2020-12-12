@@ -73,7 +73,7 @@ public class ResourceUsage implements Comparable<ResourceUsage> {
         $20$3 excludes(@NotNull List<String> excludes);
     }
 
-    public static class $20$3 implements Comparable<$20$3>, MergeableConfig<$20$3> {
+    public static class $20$3 implements MergeableConfig<$20$3> {
 
         public static $20$3Builder includes(@NotNull List<String> includes) {
             return excludes -> new $20$3(
@@ -98,11 +98,6 @@ public class ResourceUsage implements Comparable<ResourceUsage> {
         }
 
         public $20$3() {
-        }
-
-        @Override
-        public int compareTo(@NotNull ResourceUsage.$20$3 o) {
-            return 0;
         }
 
         @Override
