@@ -10,12 +10,12 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class CollectionProcessorTest {
+class ResourceCollectionTest {
 
     @Test
     void expectedCaseWithSingleCandidate() throws IOException {
         List<String> inputs = Arrays.asList("expected-foo", "expected-bar", "expected-baz", "expected-qux-quux");
-        CollectionProcessor<String> processor = inputs::iterator;
+        ResourceCollection<String> processor = ResourceCollection.create("expected strings", inputs);
         MappingCandidates<String, String> mappingCandidates =
                 MappingCandidates.forTest(
                         input -> {
@@ -33,7 +33,7 @@ class CollectionProcessorTest {
                         }
                 );
 
-        Iterable<String> result = processor.run("expected strings", mappingCandidates);
+        Iterable<String> result = processor.run(mappingCandidates);
 
         assertThat(result)
                 .containsExactly("foo", "bar", "baz", "qux-quux");
@@ -42,7 +42,7 @@ class CollectionProcessorTest {
     @Test
     void hasFailureInputForSingleCandidate() {
         List<String> inputs = Arrays.asList("expected-foo", "expected-bar", "error_baz", "expected-qux-quux");
-        CollectionProcessor<String> processor = inputs::iterator;
+        ResourceCollection<String> processor = ResourceCollection.create("has failure @3", inputs);
         MappingCandidates<String, String> mappingCandidates =
                 MappingCandidates.forTest(
                         input -> {
@@ -62,7 +62,7 @@ class CollectionProcessorTest {
 
         IOException ioException = assertThrows(
                 IOException.class,
-                () -> processor.run("has failure @3", mappingCandidates)
+                () -> processor.run(mappingCandidates)
         );
         assertThat(ioException)
                 .hasMessageContaining("error_baz")
@@ -72,7 +72,7 @@ class CollectionProcessorTest {
     @Test
     void expectedCaseWithSecondCandidate() throws IOException {
         List<String> inputs = Arrays.asList("expected-foo", "expected-bar", "expected-baz", "expected-qux-quux");
-        CollectionProcessor<String> processor = inputs::iterator;
+        ResourceCollection<String> processor = ResourceCollection.create("expected strings", inputs);
         MappingCandidates<String, String> mappingCandidates =
                 MappingCandidates.forTest(
                         input -> {
@@ -103,7 +103,7 @@ class CollectionProcessorTest {
                         }
                 );
 
-        Iterable<String> result = processor.run("expected strings", mappingCandidates);
+        Iterable<String> result = processor.run(mappingCandidates);
 
         assertThat(result)
                 .containsExactly("foo", "bar", "baz", "qux-quux");
@@ -112,7 +112,7 @@ class CollectionProcessorTest {
     @Test
     void expectedCaseEmptyInput() throws IOException {
         List<String> inputs = Collections.emptyList();
-        CollectionProcessor<String> processor = inputs::iterator;
+        ResourceCollection<String> processor = ResourceCollection.create("expected strings", inputs);
         MappingCandidates<String, String> mappingCandidates =
                 MappingCandidates.forTest(
                         input -> {
@@ -130,7 +130,7 @@ class CollectionProcessorTest {
                         }
                 );
 
-        Iterable<String> result = processor.run("expected strings", mappingCandidates);
+        Iterable<String> result = processor.run(mappingCandidates);
 
         assertThat(result).isEmpty();
     }

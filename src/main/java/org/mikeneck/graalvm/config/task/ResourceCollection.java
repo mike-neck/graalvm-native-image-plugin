@@ -23,11 +23,29 @@ import java.util.List;
 import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 
-public interface CollectionProcessor<T> extends Iterable<T> {
+public interface ResourceCollection<T> extends Iterable<T> {
+
+    @NotNull String resourceName();
+
+    @NotNull
+    static <T> ResourceCollection<T> create(@NotNull String resourceName, @NotNull Iterable<T> resources) {
+        return new ResourceCollection<T>() {
+            @Override
+            public @NotNull String resourceName() {
+                return resourceName;
+            }
+
+            @NotNull
+            @Override
+            public Iterator<T> iterator() {
+                return resources.iterator();
+            }
+        };
+    }
 
     default @NotNull <P> Iterable<P> run(
-            @NotNull String resourceName,
             @NotNull MappingCandidates<T, P> candidates) throws IOException {
+        @NotNull String resourceName = resourceName();
         Iterator<T> iterator = this.iterator();
         if (!iterator.hasNext()) {
             return Collections.emptyList();
