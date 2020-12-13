@@ -40,6 +40,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
     implementation configurations.jackson
 
+    testCompileOnly 'org.jetbrains:annotations:20.1.0'
     testImplementation "org.junit.jupiter:junit-jupiter:$junitJupiterVersion"
     testImplementation 'org.assertj:assertj-core:3.17.2'
 
