@@ -25,6 +25,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ResourceConfigTest {
 
@@ -200,5 +202,16 @@ class ResourceConfigTest {
                                     "excludes-quux",
                                     "excludes-qux")));
         }
+    }
+
+    @Test
+    void canBeMerge() {
+        ResourceConfig resourceConfig = new ResourceConfig();
+        ResourceConfig.$20$3 typeOfVersion20Minor3 = new ResourceConfig.$20$3();
+
+        assertAll(()-> assertFalse(resourceConfig.canBeMergeWith(typeOfVersion20Minor3), "resourceConfig vs 20-3"),
+                ()->assertFalse(typeOfVersion20Minor3.canBeMergeWith(resourceConfig), "20-3 vs resourceConfig"),
+                ()->assertTrue(resourceConfig.canBeMergeWith(new ResourceConfig()), "resourceConfig vs resourceConfig"),
+                ()->assertTrue(typeOfVersion20Minor3.canBeMergeWith(new ResourceConfig.$20$3()), "20-3 vs 20-3"));
     }
 }

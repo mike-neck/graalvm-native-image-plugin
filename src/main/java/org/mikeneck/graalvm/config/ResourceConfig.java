@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.TestOnly;
 
-public class ResourceConfig implements MergeableConfig<ResourceConfig> {
+public class ResourceConfig implements SelectableMergeableConfig<ResourceConfig> {
 
     @NotNull
     public List<ResourceUsage> resources = Collections.emptyList();
@@ -102,7 +102,12 @@ public class ResourceConfig implements MergeableConfig<ResourceConfig> {
                 Collections.unmodifiableList(new ArrayList<>(bundles)));
     }
 
-    public static class $20$3 implements MergeableConfig<$20$3> {
+    @Override
+    public <T extends SelectableMergeableConfig<T>> boolean canBeMergeWith(@NotNull T other) {
+        return other.getClass().equals(ResourceConfig.class);
+    }
+
+    public static class $20$3 implements SelectableMergeableConfig<$20$3> {
 
         @NotNull
         public ResourceUsage.$20$3 resources = new ResourceUsage.$20$3();
@@ -162,6 +167,11 @@ public class ResourceConfig implements MergeableConfig<ResourceConfig> {
             newValue.resources = resources;
 
             return newValue;
+        }
+
+        @Override
+        public <T extends SelectableMergeableConfig<T>> boolean canBeMergeWith(@NotNull T other) {
+            return other.getClass().equals($20$3.class);
         }
     }
 }
