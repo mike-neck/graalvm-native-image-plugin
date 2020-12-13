@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
-class CandidatesTest {
+class MappingCandidatesTest {
 
     static <@NotNull I, @NotNull P> Outcome<I, P> outcome(
             @NotNull P product,
@@ -27,7 +27,7 @@ class CandidatesTest {
 
     @Test
     void foundFirst() {
-        Candidates<String, String> candidates = Candidates.forTest(
+        MappingCandidates<String, String> mappingCandidates = MappingCandidates.forTest(
                 input -> Optional.of(
                         outcome(
                                 "Foo",
@@ -36,7 +36,7 @@ class CandidatesTest {
                 input -> Optional.of(Outcome.forTest("3", string -> "" + string.length()))
         );
 
-        Optional<Outcome<String, String>> optional = candidates.findOut("foo");
+        Optional<Outcome<String, String>> optional = mappingCandidates.findOut("foo");
         if (!optional.isPresent()) {
             fail("expected outcome to be present");
         }
@@ -50,13 +50,13 @@ class CandidatesTest {
 
     @Test
     void foundSecond() {
-        Candidates<String, String> candidates = Candidates.forTest(
-                Candidate.empty(),
-                Candidate.present(string -> outcome("3", str -> str.contains("/"), str -> "" + str.length())),
-                Candidate.empty()
+        MappingCandidates<String, String> mappingCandidates = MappingCandidates.forTest(
+                MappingCandidate.empty(),
+                MappingCandidate.present(string -> outcome("3", str -> str.contains("/"), str -> "" + str.length())),
+                MappingCandidate.empty()
         );
 
-        Optional<@NotNull Outcome<String, String>> optional = candidates.findOut("foo");
+        Optional<@NotNull Outcome<String, String>> optional = mappingCandidates.findOut("foo");
 
         if (!optional.isPresent()) {
             fail("expected outcome to be present");
@@ -72,9 +72,9 @@ class CandidatesTest {
 
     @Test
     void allEmpty() {
-        Candidates<String, URL> candidates = Candidates.forTest(Candidate.empty(), Candidate.empty(), Candidate.empty());
+        MappingCandidates<String, URL> mappingCandidates = MappingCandidates.forTest(MappingCandidate.empty(), MappingCandidate.empty(), MappingCandidate.empty());
 
-        Optional<@NotNull Outcome<String, URL>> optional = candidates.findOut("foo");
+        Optional<@NotNull Outcome<String, URL>> optional = mappingCandidates.findOut("foo");
 
         assertThat(optional).isEmpty();
     }
