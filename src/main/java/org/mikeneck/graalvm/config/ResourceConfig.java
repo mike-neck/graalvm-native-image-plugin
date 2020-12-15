@@ -82,7 +82,7 @@ public class ResourceConfig implements SelectableMergeableConfig<ResourceConfig>
     @SuppressWarnings("StringBufferReplaceableByString")
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("ResourceUsage{");
+        final StringBuilder sb = new StringBuilder("ResourceConfig{");
         sb.append("resources=").append(resources);
         sb.append(", bundles=").append(bundles);
         sb.append('}');
@@ -119,12 +119,12 @@ public class ResourceConfig implements SelectableMergeableConfig<ResourceConfig>
         }
 
         @TestOnly
-        $20$3(@NotNull List<String> includes, @NotNull List<String> excludes, @NotNull String... bundles) {
+        public  $20$3(@NotNull List<String> includes, @NotNull List<String> excludes, @NotNull String... bundles) {
             this(ResourceUsage.$20$3.includes(includes).excludes(excludes), bundles);
         }
 
         @TestOnly
-        $20$3(@NotNull ResourceUsage.$20$3 resources, @NotNull String... bundles) {
+        public  $20$3(@NotNull ResourceUsage.$20$3 resources, @NotNull String... bundles) {
             this.resources = resources;
             this.bundles = Arrays.stream(bundles)
                     .map(BundleUsage::new)
@@ -147,7 +147,7 @@ public class ResourceConfig implements SelectableMergeableConfig<ResourceConfig>
         @SuppressWarnings("StringBufferReplaceableByString")
         @Override
         public String toString() {
-            final StringBuilder sb = new StringBuilder("$2020$3{");
+            final StringBuilder sb = new StringBuilder("$20$3{");
             sb.append("resources=").append(resources);
             sb.append(", bundles=").append(bundles);
             sb.append('}');
