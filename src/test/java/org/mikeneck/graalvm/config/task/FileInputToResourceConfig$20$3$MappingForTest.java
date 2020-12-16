@@ -16,7 +16,9 @@
 package org.mikeneck.graalvm.config.task;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.io.StringReader;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.StringJoiner;
@@ -43,8 +45,18 @@ public class FileInputToResourceConfig$20$3$MappingForTest implements MappingCan
 
     @NotNull
     static FileInput $20$3ResourceConfig(@NotNull String includes, @NotNull String excludes, @NotNull String bundles) {
-        return (cs) ->
-                new StringReader(new StringJoiner("/", "20-3:", "").add(includes).add(excludes).add(bundles).toString());
+        String inputText = new StringJoiner("/", "20-3:", "").add(includes).add(excludes).add(bundles).toString();
+        return new FileInput() {
+            @Override
+            public Reader newReader(Charset charset) {
+                return new StringReader(inputText);
+            }
+
+            @Override
+            public String toString() {
+                return "$20$3Resource[" + inputText + "]";
+            }
+        };
     }
 
     @NotNull

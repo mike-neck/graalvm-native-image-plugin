@@ -16,7 +16,9 @@
 package org.mikeneck.graalvm.config.task;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.io.StringReader;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Optional;
 import java.util.StringJoiner;
@@ -48,8 +50,18 @@ public class FileInputToResourceConfigMappingForTest implements MappingCandidate
 
     @NotNull
     static FileInput oldResourceConfig(@NotNull String resources, @NotNull String bundles) {
-        return (cs) ->
-                new StringReader(new StringJoiner("/", "old:", "").add(resources).add(bundles).toString());
+        String inputText = new StringJoiner("/", "old:", "").add(resources).add(bundles).toString();
+        return new FileInput() {
+            @Override
+            public Reader newReader(Charset charset) {
+                return new StringReader(inputText);
+            }
+
+            @Override
+            public String toString() {
+                return "OldResource[" + inputText + "]";
+            }
+        };
     }
 
     @NotNull
