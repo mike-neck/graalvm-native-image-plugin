@@ -51,7 +51,7 @@ public class SelectorMergeConfigFileWork<C extends SelectableMergeableConfig<C>>
 
     @Override
     public void run() throws IOException {
-        Iterable<C> objects = inputsFiles.run(mappingCandidates);
+        Iterable<C> objects = inputsFiles.applyAll(mappingCandidates);
         if (objects.spliterator().estimateSize() == 0) {
             return;
         }

@@ -33,7 +33,7 @@ class ResourceCollectionTest {
                         }
                 );
 
-        Iterable<String> result = processor.run(mappingCandidates);
+        Iterable<String> result = processor.applyAll(mappingCandidates);
 
         assertThat(result)
                 .containsExactly("foo", "bar", "baz", "qux-quux");
@@ -62,7 +62,7 @@ class ResourceCollectionTest {
 
         IOException ioException = assertThrows(
                 IOException.class,
-                () -> processor.run(mappingCandidates)
+                () -> processor.applyAll(mappingCandidates)
         );
         assertThat(ioException)
                 .hasMessageContaining("error_baz")
@@ -103,7 +103,7 @@ class ResourceCollectionTest {
                         }
                 );
 
-        Iterable<String> result = processor.run(mappingCandidates);
+        Iterable<String> result = processor.applyAll(mappingCandidates);
 
         assertThat(result)
                 .containsExactly("foo", "bar", "baz", "qux-quux");
@@ -130,7 +130,7 @@ class ResourceCollectionTest {
                         }
                 );
 
-        Iterable<String> result = processor.run(mappingCandidates);
+        Iterable<String> result = processor.applyAll(mappingCandidates);
 
         assertThat(result).isEmpty();
     }

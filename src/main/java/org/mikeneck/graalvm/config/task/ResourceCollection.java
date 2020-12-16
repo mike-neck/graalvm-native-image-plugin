@@ -43,7 +43,7 @@ public interface ResourceCollection<T> extends Iterable<T> {
         };
     }
 
-    default @NotNull <P> Iterable<P> run(
+    default @NotNull <P> Iterable<P> applyAll(
             @NotNull MappingCandidates<T, P> candidates) throws IOException {
         @NotNull String resourceName = resourceName();
         Iterator<T> iterator = this.iterator();
