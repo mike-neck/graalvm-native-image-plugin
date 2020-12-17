@@ -22,7 +22,7 @@ import org.mikeneck.graalvm.config.SelectableMergeableConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SelectorMergeConfigFileWork<C extends SelectableMergeableConfig<C>> implements MergeConfigFileWork<C> {
+class SelectorMergeConfigFileWork<C extends SelectableMergeableConfig<C>> implements MergeConfigFileWork<C> {
 
     private static final Logger logger = LoggerFactory.getLogger(SelectorMergeConfigFileWork.class);
 
