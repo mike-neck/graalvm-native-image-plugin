@@ -20,6 +20,7 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import org.gradle.api.InvalidUserDataException;
 import org.jetbrains.annotations.NotNull;
 
 class GraalVmHome {
@@ -44,6 +45,15 @@ class GraalVmHome {
                 .stream()
                 .filter(Files::exists)
                 .findFirst();
+    }
+
+    @NotNull
+    GraalVmVersion graalVmVersion() {
+        try {
+            return GraalVmVersion.findFromPath(graalVmHome);
+        } catch (IllegalArgumentException e) {
+            throw new InvalidUserDataException("Invalid graalVmHome, release file not found", e);
+        }
     }
 
     private List<Path> graalVmUpdaterCandidates() {
