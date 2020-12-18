@@ -49,6 +49,9 @@ jobs:
         nativeImage:
           - installed
           - "uninstalled"
+        exclude:
+          - graal: 20.3.0
+            javaVersion: java8
     name: "test ${{ matrix.graal }}.${{ matrix.javaVersion }}(native-image: ${{ matrix.nativeImage }})"
     if: contains( github.ref , 'refs/heads/release' ) == false
 

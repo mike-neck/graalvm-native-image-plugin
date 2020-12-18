@@ -29,6 +29,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public enum GraalVmVersion {
+    GRAAL_19_3_3_JAVA_8("19.3.3-java8", new GraalVm19Matcher("19.3.3", "java8")),
+    GRAAL_19_3_3_JAVA_11("19.3.3-java11", new GraalVm19Matcher("19.3.3", "java11")),
     GRAAL_19_3_4_JAVA_8("19.3.4-java8", new GraalVm19Matcher("19.3.4", "java8")),
     GRAAL_19_3_4_JAVA_11("19.3.4-java11", new GraalVm19Matcher("19.3.4", "java11")),
     GRAAL_20_0_0_JAVA_8("20.0.0-java8", new GraalVm20Matcher("20.0.0", "java8")),
@@ -83,9 +85,9 @@ public enum GraalVmVersion {
         try (BufferedReader reader = Files.newBufferedReader(release, StandardCharsets.UTF_8)) {
             return findFromReader(reader);
         } catch (IOException e) {
-            throw new IllegalArgumentException(String.format("release file(%s) is not found", release), e);
+            throw new IllegalArgumentException(String.format("release file(%s) is not found\nPlease report the issue at https://github.com/mike-neck/graalvm-native-image-plugin/issues/new?template=bug_report.md .", release), e);
         } catch (IllegalStateException e) {
-            throw new IllegalArgumentException(String.format("cannot read version from %s", release), e);
+            throw new IllegalArgumentException(String.format("cannot read version from %s\nPlease report the issue at https://github.com/mike-neck/graalvm-native-image-plugin/issues/new?template=bug_report.md .", release), e);
         }
     }
 
@@ -102,9 +104,10 @@ public enum GraalVmVersion {
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException(
                         String.format(
-                                "cannot found appropriate GraalVM version[java=%s,graalvm=%s]",
+                                "cannot found appropriate GraalVM version[java=%s,graalvm=%s,catalog=%s]",
                                 map.get(JAVA_VERSION),
-                                map.get(GRAALVM_VERSION))));
+                                map.get(GRAALVM_VERSION),
+                                map.get(COMPONENT_CATALOG))));
     }
 
     interface Matcher {
