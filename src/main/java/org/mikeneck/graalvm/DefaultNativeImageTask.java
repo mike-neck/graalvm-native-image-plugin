@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 import org.gradle.api.Action;
 import org.gradle.api.DefaultTask;
@@ -46,6 +47,8 @@ import org.jetbrains.annotations.NotNull;
 import org.mikeneck.graalvm.nativeimage.ConfigurationFiles;
 import org.mikeneck.graalvm.nativeimage.NativeImageArguments;
 import org.mikeneck.graalvm.nativeimage.NativeImageArgumentsFactory;
+import org.mikeneck.graalvm.nativeimage.options.DefaultOptions;
+import org.mikeneck.graalvm.nativeimage.options.Options;
 import org.slf4j.LoggerFactory;
 
 public class DefaultNativeImageTask extends DefaultTask implements NativeImageTask {
@@ -113,6 +116,20 @@ public class DefaultNativeImageTask extends DefaultTask implements NativeImageTa
     @Internal
     public Property<GraalVmHome> getGraalVmHome() {
         return graalVmHome;
+    }
+
+    @Override
+    @NotNull
+    @Internal
+    public Provider<GraalVmVersion> getGraalVmVersion() {
+        return graalVmHome.map(GraalVmHome::graalVmVersion);
+    }
+
+    @Override
+    @NotNull
+    @Internal
+    public Options getOptions() {
+        return new DefaultOptions(getGraalVmVersion());
     }
 
     public File outputDirectory() {
@@ -202,6 +219,24 @@ public class DefaultNativeImageTask extends DefaultTask implements NativeImageTa
     @Override
     public void arguments(String... arguments) {
         Project project = getProject();
-        nativeImageArguments.addArguments(project.provider(() -> Arrays.asList(arguments)));
+        nativeImageArguments.addArguments(
+                project.provider(() -> 
+                        Arrays.stream(arguments)
+                                .filter(it -> !it.isEmpty())
+                                .collect(Collectors.toList())));
+    }
+
+    @SafeVarargs
+    @Override
+    public final void arguments(Provider<String>... arguments) {
+        Project project = getProject();
+        ListProperty<String> listProperty = project.getObjects().listProperty(String.class);
+        for (Provider<String> argument : arguments) {
+            listProperty.add(argument);
+        }
+        nativeImageArguments.addArguments(listProperty.map(list -> 
+                list.stream()
+                        .filter(it -> !it.isEmpty())
+                        .collect(Collectors.toList())));
     }
 }
