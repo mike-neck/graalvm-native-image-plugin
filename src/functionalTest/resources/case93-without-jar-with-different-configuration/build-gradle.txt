@@ -22,12 +22,12 @@ nativeImage {
   classpath = sourceSets.main.output
   executableName = 'test-app'
   runtimeClasspath = configurations.app
-  arguments(
-    '--no-fallback',
-    '-H:+TraceClassInitialization',
-    '--initialize-at-build-time=com.example.Printer',
-    '-H:+ReportExceptionStackTraces',
-  )
+  arguments {
+    add '--no-fallback'
+    add options.traceClassInitialization('com.example.MessageProvider')
+    add '--initialize-at-build-time=com.example.Printer'
+    add '-H:+ReportExceptionStackTraces'
+  }
 }
 
 project(':child') {

@@ -26,12 +26,22 @@ import org.gradle.api.file.Directory;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.provider.Provider;
+import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.bundling.Jar;
 import org.jetbrains.annotations.NotNull;
 import org.mikeneck.graalvm.nativeimage.NativeImageArguments;
+import org.mikeneck.graalvm.nativeimage.options.Options;
 
 public interface NativeImageTask extends Task, NativeImageConfig {
+
+    @NotNull
+    @Internal
+    Provider<GraalVmVersion> getGraalVmVersion();
+
+    @NotNull
+    @Internal
+    Options getOptions();
 
     @NotNull
     @Nested
@@ -96,4 +106,8 @@ public interface NativeImageTask extends Task, NativeImageConfig {
 
     @Override
     void arguments(String... arguments);
+
+    @SuppressWarnings("unchecked")
+    @Override
+    void arguments(Provider<String>... arguments);
 }

@@ -42,9 +42,11 @@ import org.mikeneck.graalvm.config.ReflectConfig;
 import org.mikeneck.graalvm.config.ResourceConfig;
 import org.mikeneck.graalvm.config.task.ConfigFileConfiguration;
 import org.mikeneck.graalvm.config.task.ConfigFileProviders;
+import org.mikeneck.graalvm.config.task.DefaultMergeConfigFileWork;
 import org.mikeneck.graalvm.config.task.FileInput;
 import org.mikeneck.graalvm.config.task.FileOutput;
 import org.mikeneck.graalvm.config.task.MergeConfigFileWork;
+import org.mikeneck.graalvm.config.task.SelectorMergeConfigFileWorkFactory.TypeProvider;
 
 public class DefaultMergeNativeImageConfigTask extends DefaultTask implements MergeNativeImageConfigTask {
 
@@ -86,34 +88,53 @@ public class DefaultMergeNativeImageConfigTask extends DefaultTask implements Me
 
     @NotNull
     List<MergeConfigFileWork<? extends MergeableConfig<? extends MergeableConfig<?>>>> createWorks(Path destinationDir) {
-        return Arrays.asList(jniConfigs.map(files ->
-                            new MergeConfigFileWork<>(
-                                    JniConfig.class,
-                                    JniConfig::new,
-                                    FileInput.from("jniConfig", files),
-                                    FileOutput.to(destinationDir.resolve(JNI_CONFIG_JSON))))
-                            .get(),
-                    proxyConfigs.map(files ->
-                            new MergeConfigFileWork<>(
-                                    ProxyConfig.class,
-                                    ProxyConfig::new,
-                                    FileInput.from("proxyConfig", files),
-                                    FileOutput.to(destinationDir.resolve(PROXY_CONFIG_JSON))))
-                            .get(),
-                    reflectConfigs.map(files ->
-                            new MergeConfigFileWork<>(
-                                    ReflectConfig.class,
-                                    ReflectConfig::new,
-                                    FileInput.from("reflectConfig", files),
-                                    FileOutput.to(destinationDir.resolve(REFLECT_CONFIG_JSON))))
-                            .get(),
-                    resourceConfigs.map(files ->
-                            new MergeConfigFileWork<>(
-                                    ResourceConfig.class,
-                                    ResourceConfig::new,
-                                    FileInput.from("resourceConfig", files),
-                                    FileOutput.to(destinationDir.resolve(RESOURCE_CONFIG_JSON))))
-                            .get());
+        return Arrays.asList(
+                jniConfigs
+                        .map(files -> FileInput.from("jniConfig", files))
+                        .map(files -> jniConfigFileWork(destinationDir, files))                         
+                        .get(), 
+                proxyConfigs
+                        .map(files -> FileInput.from("proxyConfig", files))
+                        .map(files -> proxyConfigFileWork(destinationDir, files))
+                        .get(),
+                reflectConfigs
+                        .map(files -> FileInput.from("reflectConfig", files))
+                        .map (files -> reflectConfigFileWork(destinationDir, files))
+                        .get(),
+                resourceConfigs
+                        .map(files -> FileInput.from("resourceConfig", files))
+                        .map(files ->
+                            MergeConfigFileWork.ofSelector()
+                                .resource("resourceConfig")
+                                .files(files)
+                                .resourceCandidateTypes(TypeProvider.of(ResourceConfig.class), TypeProvider.of(ResourceConfig.$20$3.class))
+                                .writeTo(FileOutput.to(destinationDir.resolve(RESOURCE_CONFIG_JSON))))
+                .get()
+        );
+    }
+
+    private static MergeConfigFileWork<JniConfig> jniConfigFileWork(@NotNull Path destinationDir, @NotNull List<FileInput> files) {
+        return new DefaultMergeConfigFileWork<>(
+                JniConfig.class,
+                JniConfig::new,
+                files,
+                FileOutput.to(destinationDir.resolve(JNI_CONFIG_JSON)));
+    }
+
+    private static MergeConfigFileWork<ProxyConfig> proxyConfigFileWork(@NotNull Path destinationDir, @NotNull List<FileInput> files) {
+        return new DefaultMergeConfigFileWork<>(
+                ProxyConfig.class,
+                ProxyConfig::new,
+                files,
+                FileOutput.to(destinationDir.resolve(PROXY_CONFIG_JSON)));
+    }
+
+    private static MergeConfigFileWork<ReflectConfig> reflectConfigFileWork(@NotNull Path destinationDir, @NotNull List<FileInput> files) {
+        return new DefaultMergeConfigFileWork<>(
+                ReflectConfig.class,
+                ReflectConfig::new,
+                files,
+                FileOutput.to(destinationDir.resolve(REFLECT_CONFIG_JSON)));
     }
 
     @Override

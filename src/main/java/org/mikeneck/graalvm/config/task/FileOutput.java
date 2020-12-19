@@ -28,6 +28,14 @@ public interface FileOutput {
 
     OutputStream newOutputStream() throws IOException;
 
+    default void withOutputStream(@NotNull OutputStreamOperation operation) throws IOException {
+        try (OutputStream outputStream = newOutputStream()) {
+            UnCloseableOutputStream unCloseableOutputStream = 
+                    UnCloseableOutputStream.delegateTo(outputStream);
+            operation.consume(unCloseableOutputStream);
+        }
+    }
+
     @NotNull
     static FileOutput to(@NotNull File file) {
         return to(file.toPath());
