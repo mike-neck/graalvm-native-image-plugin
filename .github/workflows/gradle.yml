@@ -41,7 +41,7 @@ jobs:
     strategy:
       matrix:
         graal:
-          - 19.3.3
+          - 19.3.4
           - 20.2.0
           - 20.3.0
         javaVersion:
