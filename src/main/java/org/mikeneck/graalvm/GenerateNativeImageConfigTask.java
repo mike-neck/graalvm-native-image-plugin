@@ -1,18 +1,3 @@
-/*
- * Copyright 2020 Shinya Mochida
- *
- * Licensed under the Apache License,Version2.0(the"License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,software
- * Distributed under the License is distributed on an"AS IS"BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.mikeneck.graalvm;
 
 import java.io.File;
@@ -30,43 +15,46 @@ import org.jetbrains.annotations.NotNull;
 
 public interface GenerateNativeImageConfigTask extends ShareEnabledState {
 
-    default void setGraalVmHome(@NotNull String path) {
-        setGraalVmHome(getProject().file(path));
-    }
+  default void setGraalVmHome(@NotNull String path) {
+    setGraalVmHome(getProject().file(path));
+  }
 
-    default void setGraalVmHome(@NotNull File path) {
-        setGraalVmHome(path.toPath());
-    }
+  default void setGraalVmHome(@NotNull File path) {
+    setGraalVmHome(path.toPath());
+  }
 
-    default void setGraalVmHome(@NotNull Path path) {
-        Project project = getProject();
-        setGraalVmHome(project.provider(() -> new GraalVmHome(path)));
-    }
+  default void setGraalVmHome(@NotNull Path path) {
+    Project project = getProject();
+    setGraalVmHome(project.provider(() -> new GraalVmHome(path)));
+  }
 
-    void setGraalVmHome(@NotNull Provider<GraalVmHome> graalVmHome);
+  void setGraalVmHome(@NotNull Provider<GraalVmHome> graalVmHome);
 
-    void setExitOnApplicationError(boolean exitOnApplicationError);
+  void setExitOnApplicationError(boolean exitOnApplicationError);
 
-    @Internal
-    @NotNull Property<GraalVmHome> getGraalVmHome();
+  @Internal
+  @NotNull
+  Property<GraalVmHome> getGraalVmHome();
 
-    @Internal
-    boolean getExitOnApplicationError();
+  @Internal
+  boolean getExitOnApplicationError();
 
-    @Input
-    @NotNull Provider<String> getMainClass();
+  @Input
+  @NotNull
+  Provider<String> getMainClass();
 
-    void resumeOnApplicationError();
+  void resumeOnApplicationError();
 
-    @NotNull
-    @Nested
-    List<JavaExecutionImpl> getJavaExecutions();
+  @NotNull
+  @Nested
+  List<JavaExecutionImpl> getJavaExecutions();
 
-    @Deprecated
-    @OutputDirectory
-    @NotNull File getTemporaryDirectory();
+  @Deprecated
+  @OutputDirectory
+  @NotNull
+  File getTemporaryDirectory();
 
-    void byRunningApplicationWithoutArguments();
+  void byRunningApplicationWithoutArguments();
 
-    void byRunningApplication(Action<JavaExecution> argumentsConfiguration);
+  void byRunningApplication(Action<JavaExecution> argumentsConfiguration);
 }

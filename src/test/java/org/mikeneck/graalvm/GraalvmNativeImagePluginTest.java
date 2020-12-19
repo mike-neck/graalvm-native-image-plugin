@@ -3,49 +3,48 @@
  */
 package org.mikeneck.graalvm;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.tasks.TaskCollection;
 import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-/**
- * A simple unit test for the 'org.mikeneck.graalvm.greeting' plugin.
- */
+/** A simple unit test for the 'org.mikeneck.graalvm.greeting' plugin. */
 class GraalvmNativeImagePluginTest {
 
-    @Test void pluginRegistersNativeImageTask() {
-        Project project = ProjectBuilder.builder().build();
-        project.getPlugins().apply("java");
+  @Test
+  void pluginRegistersNativeImageTask() {
+    Project project = ProjectBuilder.builder().build();
+    project.getPlugins().apply("java");
 
-        project.getPlugins().apply("org.mikeneck.graalvm-native-image");
+    project.getPlugins().apply("org.mikeneck.graalvm-native-image");
 
-        Task nativeImageTask = project.getTasks().getByName("nativeImage");
-        assertNotNull(nativeImageTask);
-        assertThat(nativeImageTask).isInstanceOf(DefaultNativeImageTask.class);
-    }
+    Task nativeImageTask = project.getTasks().getByName("nativeImage");
+    assertNotNull(nativeImageTask);
+    assertThat(nativeImageTask).isInstanceOf(DefaultNativeImageTask.class);
+  }
 
-    @Test
-    void generateNativeImageConfigTasksAreDisabled() {
-        Project project = ProjectBuilder.builder().build();
-        project.getPlugins().apply("java");
-        project.getPlugins().apply("org.mikeneck.graalvm-native-image");
+  @Test
+  void generateNativeImageConfigTasksAreDisabled() {
+    Project project = ProjectBuilder.builder().build();
+    project.getPlugins().apply("java");
+    project.getPlugins().apply("org.mikeneck.graalvm-native-image");
 
-        TaskCollection<GenerateNativeImageConfigTask> generateNativeImageConfigTasks =
-                project.getTasks().withType(GenerateNativeImageConfigTask.class);
-        assertThat(generateNativeImageConfigTasks)
-                .describedAs("generateNativeTasks")
-                .hasSize(1)
-                .allSatisfy(task -> assertThat(task.getEnabled()).isFalse());
+    TaskCollection<GenerateNativeImageConfigTask> generateNativeImageConfigTasks =
+        project.getTasks().withType(GenerateNativeImageConfigTask.class);
+    assertThat(generateNativeImageConfigTasks)
+        .describedAs("generateNativeTasks")
+        .hasSize(1)
+        .allSatisfy(task -> assertThat(task.getEnabled()).isFalse());
 
-        TaskCollection<MergeNativeImageConfigTask> mergeNativeImageConfigTasks =
-                project.getTasks().withType(MergeNativeImageConfigTask.class);
-        assertThat(mergeNativeImageConfigTasks)
-                .describedAs("mergeNativeImageConfigTasks")
-                .hasSize(1)
-                .allSatisfy(task -> assertThat(task.getEnabled()).isFalse());
-    }
+    TaskCollection<MergeNativeImageConfigTask> mergeNativeImageConfigTasks =
+        project.getTasks().withType(MergeNativeImageConfigTask.class);
+    assertThat(mergeNativeImageConfigTasks)
+        .describedAs("mergeNativeImageConfigTasks")
+        .hasSize(1)
+        .allSatisfy(task -> assertThat(task.getEnabled()).isFalse());
+  }
 }

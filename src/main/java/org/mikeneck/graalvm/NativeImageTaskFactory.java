@@ -1,18 +1,3 @@
-/*
- * Copyright 2020 Shinya Mochida
- *
- * Licensed under the Apache License,Version2.0(the"License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,software
- * Distributed under the License is distributed on an"AS IS"BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.mikeneck.graalvm;
 
 import java.nio.file.Paths;
@@ -30,96 +15,91 @@ import org.jetbrains.annotations.NotNull;
 
 public class NativeImageTaskFactory {
 
-    @NotNull
-    private final Project project;
-    @NotNull
-    private final Property<GraalVmHome> graalVmHome;
-    @NotNull
-    private final Property<Configuration> runtimeClasspath;
-    @NotNull
-    private final ConfigurableFileCollection jarFile;
-    @NotNull
-    private final Property<String> mainClass;
+  @NotNull private final Project project;
+  @NotNull private final Property<GraalVmHome> graalVmHome;
+  @NotNull private final Property<Configuration> runtimeClasspath;
+  @NotNull private final ConfigurableFileCollection jarFile;
+  @NotNull private final Property<String> mainClass;
 
-    @SuppressWarnings("UnstableApiUsage")
-    NativeImageTaskFactory(@NotNull Project project) {
-        ObjectFactory objectFactory = project.getObjects();
-        ProviderFactory providerFactory = project.getProviders();
+  @SuppressWarnings("UnstableApiUsage")
+  NativeImageTaskFactory(@NotNull Project project) {
+    ObjectFactory objectFactory = project.getObjects();
+    ProviderFactory providerFactory = project.getProviders();
 
-        this.project = project;
-        this.graalVmHome = objectFactory
-                .property(GraalVmHome.class)
-                .convention(
-                        providerFactory
-                                .environmentVariable("JAVA_HOME")
-                                .map(Paths::get)
-                                .map(GraalVmHome::new));
-        this.runtimeClasspath = objectFactory
-                .property(Configuration.class)
-                .convention(project.provider(
-                        () -> project
-                                .getConfigurations()
-                                .getByName("runtimeClasspath")));
-        this.jarFile = objectFactory.fileCollection();
-        this.jarFile.builtBy("jar");
-        this.jarFile.setFrom(project.provider(() -> project
-                .getTasks()
-                .getByName("jar")
-                .getOutputs()
-                .getFiles()));
-        this.mainClass = objectFactory.property(String.class);
-    }
+    this.project = project;
+    this.graalVmHome =
+        objectFactory
+            .property(GraalVmHome.class)
+            .convention(
+                providerFactory
+                    .environmentVariable("JAVA_HOME")
+                    .map(Paths::get)
+                    .map(GraalVmHome::new));
+    this.runtimeClasspath =
+        objectFactory
+            .property(Configuration.class)
+            .convention(
+                project.provider(() -> project.getConfigurations().getByName("runtimeClasspath")));
+    this.jarFile = objectFactory.fileCollection();
+    this.jarFile.builtBy("jar");
+    this.jarFile.setFrom(
+        project.provider(() -> project.getTasks().getByName("jar").getOutputs().getFiles()));
+    this.mainClass = objectFactory.property(String.class);
+  }
 
-    NativeImageTask nativeImageTask(@NotNull Action<NativeImageTask> config) {
-        NativeImageTask nativeImage = project.getTasks()
-                .create(
-                        "nativeImage",
-                        DefaultNativeImageTask.class,
-                        project,
-                        graalVmHome,
-                        mainClass,
-                        runtimeClasspath,
-                        jarFile);
-        ProjectLayout projectLayout = project.getLayout();
-        Provider<Directory> outputDirectory = 
-                projectLayout.getBuildDirectory()
-                        .dir(DefaultNativeImageTask.DEFAULT_OUTPUT_DIRECTORY_NAME);
-        nativeImage.setOutputDirectory(outputDirectory);
-        config.execute(nativeImage);
-        return nativeImage;
-    }
+  NativeImageTask nativeImageTask(@NotNull Action<NativeImageTask> config) {
+    NativeImageTask nativeImage =
+        project
+            .getTasks()
+            .create(
+                "nativeImage",
+                DefaultNativeImageTask.class,
+                project,
+                graalVmHome,
+                mainClass,
+                runtimeClasspath,
+                jarFile);
+    ProjectLayout projectLayout = project.getLayout();
+    Provider<Directory> outputDirectory =
+        projectLayout.getBuildDirectory().dir(DefaultNativeImageTask.DEFAULT_OUTPUT_DIRECTORY_NAME);
+    nativeImage.setOutputDirectory(outputDirectory);
+    config.execute(nativeImage);
+    return nativeImage;
+  }
 
-    InstallNativeImageTask installNativeImageTask(@NotNull Action<InstallNativeImageTask> config) {
-        InstallNativeImageTask installNativeImage = project.getTasks()
-                .create(
-                        "installNativeImage",
-                        DefaultInstallNativeImageTask.class,
-                        graalVmHome);
-        config.execute(installNativeImage);
-        return installNativeImage;
-    }
+  InstallNativeImageTask installNativeImageTask(@NotNull Action<InstallNativeImageTask> config) {
+    InstallNativeImageTask installNativeImage =
+        project
+            .getTasks()
+            .create("installNativeImage", DefaultInstallNativeImageTask.class, graalVmHome);
+    config.execute(installNativeImage);
+    return installNativeImage;
+  }
 
-    GenerateNativeImageConfigTask nativeImageConfigFilesTask(@NotNull Action<GenerateNativeImageConfigTask> config) {
-        GenerateNativeImageConfigTask generateNativeImageConfigTask = project.getTasks()
-                .create(
-                        "generateNativeImageConfig",
-                        DefaultGenerateNativeImageConfigTask.class,
-                        project,
-                        graalVmHome,
-                        mainClass,
-                        runtimeClasspath,
-                        jarFile);
-        config.execute(generateNativeImageConfigTask);
-        return generateNativeImageConfigTask;
-    }
+  GenerateNativeImageConfigTask nativeImageConfigFilesTask(
+      @NotNull Action<GenerateNativeImageConfigTask> config) {
+    GenerateNativeImageConfigTask generateNativeImageConfigTask =
+        project
+            .getTasks()
+            .create(
+                "generateNativeImageConfig",
+                DefaultGenerateNativeImageConfigTask.class,
+                project,
+                graalVmHome,
+                mainClass,
+                runtimeClasspath,
+                jarFile);
+    config.execute(generateNativeImageConfigTask);
+    return generateNativeImageConfigTask;
+  }
 
-    MergeNativeImageConfigTask mergeNativeImageConfigTask(@NotNull Action<MergeNativeImageConfigTask> config) {
-        DefaultMergeNativeImageConfigTask mergeNativeImageConfigTask = project.getTasks()
-                .create(
-                        "mergeNativeImageConfig",
-                        DefaultMergeNativeImageConfigTask.class,
-                        project);
-        config.execute(mergeNativeImageConfigTask);
-        return mergeNativeImageConfigTask;
-    }
+  MergeNativeImageConfigTask mergeNativeImageConfigTask(
+      @NotNull Action<MergeNativeImageConfigTask> config) {
+    DefaultMergeNativeImageConfigTask mergeNativeImageConfigTask =
+        project
+            .getTasks()
+            .create("mergeNativeImageConfig", DefaultMergeNativeImageConfigTask.class, project);
+    config.execute(mergeNativeImageConfigTask);
+    return mergeNativeImageConfigTask;
+  }
 }

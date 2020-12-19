@@ -1,19 +1,6 @@
-/*
- * Copyright 2020 Shinya Mochida
- *
- * Licensed under the Apache License,Version2.0(the"License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,software
- * Distributed under the License is distributed on an"AS IS"BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.mikeneck.graalvm.config;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,81 +9,82 @@ import java.util.List;
 import java.util.function.Function;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 class MethodUsageTest {
 
-    static List<MethodUsage> sorted(MethodUsage... methods) {
-        List<MethodUsage> list = new ArrayList<>(Arrays.asList(methods));
-        list.sort(Comparator.comparing((MethodUsage m) -> m));
-        return list;
-    }
+  static List<MethodUsage> sorted(MethodUsage... methods) {
+    List<MethodUsage> list = new ArrayList<>(Arrays.asList(methods));
+    list.sort(Comparator.comparing((MethodUsage m) -> m));
+    return list;
+  }
 
-    @Test
-    void compareToSmallName() {
-        MethodUsage foo = MethodUsage.of("foo");
-        MethodUsage bar = MethodUsage.of("bar");
+  @Test
+  void compareToSmallName() {
+    MethodUsage foo = MethodUsage.of("foo");
+    MethodUsage bar = MethodUsage.of("bar");
 
-        List<MethodUsage> sorted = sorted(foo, bar);
+    List<MethodUsage> sorted = sorted(foo, bar);
 
-        assertThat(sorted).isEqualTo(Arrays.asList(bar, foo));
-    }
+    assertThat(sorted).isEqualTo(Arrays.asList(bar, foo));
+  }
 
-    @Test
-    void compareToLargeName() {
-        MethodUsage bar = MethodUsage.of("bar");
-        MethodUsage baz = MethodUsage.of("baz");
+  @Test
+  void compareToLargeName() {
+    MethodUsage bar = MethodUsage.of("bar");
+    MethodUsage baz = MethodUsage.of("baz");
 
-        List<MethodUsage> sorted = sorted(bar, baz);
+    List<MethodUsage> sorted = sorted(bar, baz);
 
-        assertThat(sorted).isEqualTo(Arrays.asList(bar, baz));
-    }
+    assertThat(sorted).isEqualTo(Arrays.asList(bar, baz));
+  }
 
-    @Test
-    void compareToSameNameWithSingleLargeParameterType() {
-        MethodUsage fooInteger = MethodUsage.of("foo", Integer.class);
-        MethodUsage fooLong = MethodUsage.of("foo", Long.class);
+  @Test
+  void compareToSameNameWithSingleLargeParameterType() {
+    MethodUsage fooInteger = MethodUsage.of("foo", Integer.class);
+    MethodUsage fooLong = MethodUsage.of("foo", Long.class);
 
-        List<MethodUsage> sorted = sorted(fooInteger, fooLong);
+    List<MethodUsage> sorted = sorted(fooInteger, fooLong);
 
-        assertThat(sorted).isEqualTo(Arrays.asList(fooInteger, fooLong));
-    }
+    assertThat(sorted).isEqualTo(Arrays.asList(fooInteger, fooLong));
+  }
 
-    @Test
-    void compareToSameNameWithSingleSmallParameterType() {
-        MethodUsage fooLong = MethodUsage.of("foo", Long.class);
-        MethodUsage fooInteger = MethodUsage.of("foo", Integer.class);
+  @Test
+  void compareToSameNameWithSingleSmallParameterType() {
+    MethodUsage fooLong = MethodUsage.of("foo", Long.class);
+    MethodUsage fooInteger = MethodUsage.of("foo", Integer.class);
 
-        List<MethodUsage> sorted = sorted(fooLong, fooInteger);
+    List<MethodUsage> sorted = sorted(fooLong, fooInteger);
 
-        assertThat(sorted).isEqualTo(Arrays.asList(fooInteger, fooLong));
-    }
+    assertThat(sorted).isEqualTo(Arrays.asList(fooInteger, fooLong));
+  }
 
-    @Test
-    void compareToSameNameWithManyParameterType() {
-        MethodUsage fooWith3Params = MethodUsage.of("foo", String.class, String.class, int.class);
-        MethodUsage fooWith4Params = MethodUsage.of("foo", String.class, String.class, int.class, Function.class);
+  @Test
+  void compareToSameNameWithManyParameterType() {
+    MethodUsage fooWith3Params = MethodUsage.of("foo", String.class, String.class, int.class);
+    MethodUsage fooWith4Params =
+        MethodUsage.of("foo", String.class, String.class, int.class, Function.class);
 
-        List<MethodUsage> sorted = sorted(fooWith3Params, fooWith4Params);
+    List<MethodUsage> sorted = sorted(fooWith3Params, fooWith4Params);
 
-        assertThat(sorted).isEqualTo(Arrays.asList(fooWith3Params, fooWith4Params));
-    }
+    assertThat(sorted).isEqualTo(Arrays.asList(fooWith3Params, fooWith4Params));
+  }
 
-    @Test
-    void compareToSameNameWithLessParameterType() {
-        MethodUsage fooWith4Params = MethodUsage.of("foo", String.class, String.class, int.class, Function.class);
-        MethodUsage fooWith3Params = MethodUsage.of("foo", String.class, String.class, int.class);
+  @Test
+  void compareToSameNameWithLessParameterType() {
+    MethodUsage fooWith4Params =
+        MethodUsage.of("foo", String.class, String.class, int.class, Function.class);
+    MethodUsage fooWith3Params = MethodUsage.of("foo", String.class, String.class, int.class);
 
-        List<MethodUsage> sorted = sorted(fooWith4Params, fooWith3Params);
+    List<MethodUsage> sorted = sorted(fooWith4Params, fooWith3Params);
 
-        assertThat(sorted).isEqualTo(Arrays.asList(fooWith3Params, fooWith4Params));
-    }
+    assertThat(sorted).isEqualTo(Arrays.asList(fooWith3Params, fooWith4Params));
+  }
 
-    @Test
-    void compareToSelf() {
-        MethodUsage methodUsage = MethodUsage.of("foo", String.class, String.class, int.class, Function.class);
-        MethodUsage self = MethodUsage.of("foo", String.class, String.class, int.class, Function.class);
+  @Test
+  void compareToSelf() {
+    MethodUsage methodUsage =
+        MethodUsage.of("foo", String.class, String.class, int.class, Function.class);
+    MethodUsage self = MethodUsage.of("foo", String.class, String.class, int.class, Function.class);
 
-        assertThat(methodUsage.compareTo(self)).isEqualTo(0);
-    }
+    assertThat(methodUsage.compareTo(self)).isEqualTo(0);
+  }
 }

@@ -26,7 +26,7 @@ jobs:
           restore-keys: gradle-
 
       - name: Run Tests with Gradle
-        run: ./gradlew clean test
+        run: ./gradlew clean spotlessCheck test --continue
 
       - name: Store reports
         uses: actions/upload-artifact@v1
