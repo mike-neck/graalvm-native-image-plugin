@@ -21,7 +21,15 @@ You can configure options via `nativeImage {}`.
 * `runtimeClasspath` - A configuration of runtime classpath.(default: `runtimeClasspath` Configuration)
 * `outputDirectory` - An output directory under which the native image will be generated.(default: `$buildDir/native-image`)
 
-And you can configure arguments to be passed to GraalVM via `arguments(String...)` method.
+You can configure arguments to be passed to GraalVM via `arguments(String...)` method.
+
+- `arguments(String...)` - `native-image` command's arguments.
+- `arguments(Provider<String>...)` - `native-image` command's arguments with `Provider<String>` type.
+- `arguments {}` - Configure `native-image` command's arguments in configuration block.
+  - `add(String)` - Equivalent to `arguments(String...)`.
+  - `add(Provider<String>)` - Equivalent to `arguments(Provider<String>...)`.
+
+For more information, please see appendix at the bottom of this README.
 
 ### GenerateNativeImageConfigTask
 
@@ -42,7 +50,7 @@ Example
 ```groovy
 plugins {
   id 'java'
-  id 'org.mikeneck.graalvm-native-image' version 'v0.8.0'
+  id 'org.mikeneck.graalvm-native-image' version 'v1.0.0'
 }
 
 repositories {
@@ -58,12 +66,13 @@ nativeImage {
   mainClass = 'com.example.App'
   executableName = 'my-native-application'
   outputDirectory = file("$buildDir/bin")
-  arguments(
-      '--no-fallback',
-      '--enable-all-security-services',
-      '--initialize-at-run-time=com.example.runtime',
-      '--report-unsupported-elements-at-runtime'
-  )
+  arguments {
+    add '--no-fallback'
+    add '--enable-all-security-services'
+    add options.traceClassInitialization('com.example.MyDataProvider,com.example.MyDataConsumer')
+    add '--initialize-at-run-time=com.example.runtime'
+    add '--report-unsupported-elements-at-runtime'
+  }
 }
 
 generateNativeImageConfig {
@@ -89,7 +98,7 @@ import org.mikeneck.graalvm.GenerateNativeImageConfigTask
 
 plugins {
   kotlin("jvm") version "1.3.72"
-  id("org.mikeneck.graalvm-native-image") version "v0.8.0"
+  id("org.mikeneck.graalvm-native-image") version "v1.0.0"
 }
 
 repositories {
@@ -108,6 +117,7 @@ nativeImage {
     arguments(
         "--no-fallback",
         "--enable-all-security-services",
+        options.traceClassInitialization('com.example.MyDataProvider,com.example.MyDataConsumer'),
         "--initialize-at-run-time=com.example.runtime",
         "--report-unsupported-elements-at-runtime"
     )
@@ -163,3 +173,26 @@ If you are planning releasing both MacOS X and Linux applications, please refer 
 
 This task requires `native-image` command. If your machine has no `native-image` command,
 run `gu` command or `installNativeImage` task before running `generateNativeImageConfig` task.
+
+---
+
+`nativeImage` task configuration appendix
+---
+
+### `TraceClassInitialization` option
+
+As of GraalVM 20.3.0, the way to pass `TraceClassInitialization` option is changed.
+So we offer a convenient way to create `TraceClassInitialization` option.
+In this way you can create the option via an `options` object available from `nativeImageTask`.
+
+```groovy
+nativeImage {
+  arguments {
+    // When used with GraalVM 20.3.0 or later
+    // -H:TraceClassInitialization=com.example.WantTracingInInitializationClass,com.example.Another
+    // When used with GraalVM 20.2.0 or earlier
+    // -H:+TraceClassInitialization
+    add options.traceClassInitialization { 'com.example.WantTracingInInitializationClass,com.example.Another' }
+  }
+}
+```
