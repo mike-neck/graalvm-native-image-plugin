@@ -5,7 +5,6 @@ import org.gradle.api.tasks.bundling.Jar
 import org.mikeneck.graalvm.GenerateNativeImageConfigTask
 import org.mikeneck.graalvm.GenerateNativeImageConfigTaskWrapper
 import org.mikeneck.graalvm.NativeImageTask
-import org.mikeneck.graalvm.nativeimage.options.Options
 import java.io.File
 
 fun Project.nativeImage(configuration: NativeImageTask.() -> Unit): Unit =
