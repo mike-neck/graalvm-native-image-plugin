@@ -39,6 +39,7 @@ public enum GraalVmVersion {
     GRAAL_20_1_0_JAVA_11("20.1.0-java11", new GraalVm20Matcher("20.1.0", "java11")),
     GRAAL_20_2_0_JAVA_8("20.2.0-java8", new GraalVm20Matcher("20.2.0", "java8")),
     GRAAL_20_2_0_JAVA_11("20.2.0-java11", new GraalVm20Matcher("20.2.0", "java11")),
+    MANDREL_20_2_0_0("mandrel-20.2.0.0", new Mandrel20Matcher("20.2.0")),
     GRAAL_20_3_0_JAVA_8("20.3.0-java8", new GraalVm20Matcher("20.3.0", "java8")),
     GRAAL_20_3_0_JAVA_11("20.3.0-java11", new GraalVm20Matcher("20.3.0", "java11")),
     ;
@@ -67,16 +68,16 @@ public enum GraalVmVersion {
         return "java11".equals(this.matcher.getJavaVersion());
     }
 
-    int halfOrdinal() {
-        return ordinal() / 2;
+    public boolean isTheSameJavaVersionAs(@NotNull GraalVmVersion another) {
+        return this.matcher.getJavaVersion().equals(another.matcher.getJavaVersion());
     }
 
     public boolean lessThan(@NotNull GraalVmVersion another) {
-        return this.halfOrdinal() < another.halfOrdinal();
+        return this.ordinal() < another.ordinal();
     }
 
     public boolean greaterThan(@NotNull GraalVmVersion another) {
-        return this.halfOrdinal() > another.halfOrdinal();
+        return this.ordinal() > another.ordinal();
     }
 
     @NotNull
@@ -99,6 +100,11 @@ public enum GraalVmVersion {
         for (String propertyName : properties.stringPropertyNames()) {
             map.put(propertyName, properties.getProperty(propertyName));
         }
+        return findFromMap(map);
+    }
+
+    @NotNull
+    static GraalVmVersion findFromMap(Map<String, String> map) {
         return Arrays.stream(values())
                 .filter(version -> version.matchesVersion(map))
                 .findFirst()
@@ -113,7 +119,9 @@ public enum GraalVmVersion {
     interface Matcher {
         boolean matchesVersion(@NotNull Map<String, String> properties);
 
+        @NotNull
         String getGraalVmVersion();
+        @NotNull
         String getJavaVersion();
     }
 
@@ -147,12 +155,12 @@ public enum GraalVmVersion {
         }
 
         @Override
-        public String getGraalVmVersion() {
+        public @NotNull String getGraalVmVersion() {
             return graalVmVersion;
         }
 
         @Override
-        public String getJavaVersion() {
+        public @NotNull String getJavaVersion() {
             return javaVersion;
         }
     }
@@ -192,13 +200,42 @@ public enum GraalVmVersion {
         }
 
         @Override
-        public String getGraalVmVersion() {
+        public @NotNull String getGraalVmVersion() {
             return graalVmVersion;
         }
 
         @Override
-        public String getJavaVersion() {
+        public @NotNull String getJavaVersion() {
             return simplifiedJavaVersion;
+        }
+    }
+
+    static class Mandrel20Matcher implements Matcher {
+
+        @NotNull
+        private final String graalVmVersion;
+
+        Mandrel20Matcher(@NotNull String graalVmVersion) {
+            this.graalVmVersion = graalVmVersion;
+        }
+
+        @Override
+        public boolean matchesVersion(@NotNull Map<String, String> properties) {
+            @Nullable String javaVersion = properties.get(JAVA_VERSION);
+            if (javaVersion == null) {
+                return false;
+            }
+            return properties.containsKey("IMPLEMENTOR") && properties.containsKey("IMPLEMENTOR_VERSION") && properties.containsKey("JAVA_VERSION_DATE");
+        }
+
+        @Override
+        public @NotNull String getGraalVmVersion() {
+            return graalVmVersion;
+        }
+
+        @Override
+        public @NotNull String getJavaVersion() {
+            return "java11";
         }
     }
 }
