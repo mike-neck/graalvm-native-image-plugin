@@ -1,15 +1,11 @@
 #!/usr/bin/env bash
 
-readonly githubToken="${TOKEN}"
-readonly gradleVersion="${GRADLE_VERSION}"
+set -eu
 
-readonly latestVersion=$(
-  curl --request GET -sL \
-    --url  'https://api.github.com/repos/mike-neck/graalvm-native-image-plugin/tags?per_page=1'  \
-    -H 'accept:application/vnd.github.v3+json' \
-    -H "authorization: ${githubToken}" | \
-  jq -r '.[] | .name'
-)
+readonly gradleVersion="${GRADLE_VERSION}"
+echo "test on ${gradleVersion}"
+
+./gradlew replaceJar
 
 readonly testDirectory="version-tests"
 readonly originalSource="src/functionalTest/resources/config-project"
@@ -36,9 +32,17 @@ do
 done < <(find "${originalSource}" -print0)
 
 mv "${testDirectory}/build.gradle" "${testDirectory}/build.gradle-tmp"
-# shellcheck disable=SC2002
-cat "${testDirectory}/build.gradle-tmp" |
-  sed "s/graalvm-native-image'/graalvm-native-image' version '${latestVersion}'/g" >"${testDirectory}/build.gradle"
+
+cat <<EOF > "${testDirectory}/build.gradle"                                        
+buildscript {
+  dependencies {
+    classpath files('../build/libs/graalvm-native-image-plugin-snapshot.jar')
+  }
+}
+apply plugin: 'java'
+apply plugin: 'org.mikeneck.graalvm-native-image'
+EOF
+tail -n +5 "${testDirectory}/build.gradle-tmp" >> "${testDirectory}/build.gradle"
 rm "${testDirectory}/build.gradle-tmp"
 
 cp -r ./gradle "${testDirectory}/gradle"
@@ -47,6 +51,7 @@ mv "${testDirectory}/gradle/wrapper/gradle-wrapper.properties" "${testDirectory}
 cat "${testDirectory}/gradle/wrapper/gradle-wrapper.properties-tmp" | \
   sed -e  "s/[0-9]\{1,\}\.[0-9]\{1,\}\.\([0-9]\{1,\}\)\{0,\}-all/${gradleVersion}-bin/g" > \
   "${testDirectory}/gradle/wrapper/gradle-wrapper.properties"
+diff "${testDirectory}/gradle/wrapper/gradle-wrapper.properties-tmp" "${testDirectory}/gradle/wrapper/gradle-wrapper.properties"
 rm "${testDirectory}/gradle/wrapper/gradle-wrapper.properties-tmp"
 
 cp gradlew "${testDirectory}/"
