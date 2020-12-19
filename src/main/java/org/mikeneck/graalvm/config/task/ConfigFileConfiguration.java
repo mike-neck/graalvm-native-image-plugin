@@ -4,11 +4,11 @@ import java.io.File;
 
 public interface ConfigFileConfiguration {
 
-    void addJniConfig(File jniConfig);
+  void addJniConfig(File jniConfig);
 
-    void addProxyConfig(File proxyConfig);
+  void addProxyConfig(File proxyConfig);
 
-    void addReflectConfig(File reflectConfig);
+  void addReflectConfig(File reflectConfig);
 
-    void addResourceConfig(File resourceConfig);
+  void addResourceConfig(File resourceConfig);
 }

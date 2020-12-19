@@ -11,30 +11,30 @@ import org.jetbrains.annotations.NotNull;
 
 public class UnixLikeOsArgumentsFactory implements NativeImageArgumentsFactory {
 
-    private static final Collection<OperatingSystem> SUPPORTING_OS =
-            Arrays.asList(OperatingSystem.LINUX, OperatingSystem.MACOSX);
+  private static final Collection<OperatingSystem> SUPPORTING_OS =
+      Arrays.asList(OperatingSystem.LINUX, OperatingSystem.MACOSX);
 
-    @Override
-    public boolean supports(@NotNull OperatingSystem os) {
-        return SUPPORTING_OS.contains(os);
-    }
+  @Override
+  public boolean supports(@NotNull OperatingSystem os) {
+    return SUPPORTING_OS.contains(os);
+  }
 
-    @Override
-    public @NotNull NativeImageArguments create(
-            @NotNull Property<Configuration> runtimeClasspath,
-            @NotNull Property<String> mainClass,
-            @NotNull ConfigurableFileCollection jarFile,
-            @NotNull DirectoryProperty outputDirectory,
-            @NotNull Property<String> executableName,
-            @NotNull ListProperty<String> additionalArguments,
-            @NotNull ConfigurationFiles configurationFiles) {
-        return new UnixLikeOsArguments(
-                runtimeClasspath, 
-                mainClass, 
-                jarFile, 
-                outputDirectory, 
-                executableName, 
-                additionalArguments,
-                configurationFiles);
-    }
+  @Override
+  public @NotNull NativeImageArguments create(
+      @NotNull Property<Configuration> runtimeClasspath,
+      @NotNull Property<String> mainClass,
+      @NotNull ConfigurableFileCollection jarFile,
+      @NotNull DirectoryProperty outputDirectory,
+      @NotNull Property<String> executableName,
+      @NotNull ListProperty<String> additionalArguments,
+      @NotNull ConfigurationFiles configurationFiles) {
+    return new UnixLikeOsArguments(
+        runtimeClasspath,
+        mainClass,
+        jarFile,
+        outputDirectory,
+        executableName,
+        additionalArguments,
+        configurationFiles);
+  }
 }

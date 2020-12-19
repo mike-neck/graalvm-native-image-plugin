@@ -9,13 +9,9 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface TestProject {
 
-    /**
-     * @return The path from test resource route.
-     */
-    String value();
+  /** @return The path from test resource route. */
+  String value();
 
-    /**
-     * @return The subprojects of the test project.
-     */
-    String[] subprojects() default {};
+  /** @return The subprojects of the test project. */
+  String[] subprojects() default {};
 }

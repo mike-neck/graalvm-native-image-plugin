@@ -6,5 +6,5 @@ import org.jetbrains.annotations.NotNull;
 @FunctionalInterface
 public interface OutputStreamOperation {
 
-    void consume(@NotNull UnCloseableOutputStream outputStream) throws IOException;
+  void consume(@NotNull UnCloseableOutputStream outputStream) throws IOException;
 }

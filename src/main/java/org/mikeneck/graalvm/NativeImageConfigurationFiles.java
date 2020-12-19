@@ -11,38 +11,41 @@ import org.mikeneck.graalvm.config.task.ConfigFileConfiguration;
 
 public interface NativeImageConfigurationFiles extends ConfigFileConfiguration {
 
-    void fromMergeTask(@NotNull String mergeNativeImageConfigTask);
+  void fromMergeTask(@NotNull String mergeNativeImageConfigTask);
 
-    default void fromMergeTask(@NotNull MergeNativeImageConfigTask mergeNativeImageConfigTask) {
-        getJniConfigs().builtBy(mergeNativeImageConfigTask);
-        getProxyConfigs().builtBy(mergeNativeImageConfigTask);
-        getReflectConfigs().builtBy(mergeNativeImageConfigTask);
-        getResourceConfigs().builtBy(mergeNativeImageConfigTask);
+  default void fromMergeTask(@NotNull MergeNativeImageConfigTask mergeNativeImageConfigTask) {
+    getJniConfigs().builtBy(mergeNativeImageConfigTask);
+    getProxyConfigs().builtBy(mergeNativeImageConfigTask);
+    getReflectConfigs().builtBy(mergeNativeImageConfigTask);
+    getResourceConfigs().builtBy(mergeNativeImageConfigTask);
 
-        DirectoryProperty directory = mergeNativeImageConfigTask.getDestinationDir();
+    DirectoryProperty directory = mergeNativeImageConfigTask.getDestinationDir();
 
-        addJniConfig(traverse(directory.file(MergeNativeImageConfigTask.JNI_CONFIG_JSON)));
-        addProxyConfig(traverse(directory.file(MergeNativeImageConfigTask.PROXY_CONFIG_JSON)));
-        addReflectConfig(traverse(directory.file(MergeNativeImageConfigTask.REFLECT_CONFIG_JSON)));
-        addResourceConfig(traverse(directory.file(MergeNativeImageConfigTask.RESOURCE_CONFIG_JSON)));
-    }
+    addJniConfig(traverse(directory.file(MergeNativeImageConfigTask.JNI_CONFIG_JSON)));
+    addProxyConfig(traverse(directory.file(MergeNativeImageConfigTask.PROXY_CONFIG_JSON)));
+    addReflectConfig(traverse(directory.file(MergeNativeImageConfigTask.REFLECT_CONFIG_JSON)));
+    addResourceConfig(traverse(directory.file(MergeNativeImageConfigTask.RESOURCE_CONFIG_JSON)));
+  }
 
-    void addJniConfig(@NotNull RegularFileProperty file);
-    void addProxyConfig(@NotNull RegularFileProperty file);
-    void addReflectConfig(@NotNull RegularFileProperty file);
-    void addResourceConfig(@NotNull RegularFileProperty file);
+  void addJniConfig(@NotNull RegularFileProperty file);
 
-    RegularFileProperty traverse(@NotNull Provider<RegularFile> provider);
+  void addProxyConfig(@NotNull RegularFileProperty file);
 
-    @InputFiles
-    ConfigurableFileCollection getJniConfigs();
+  void addReflectConfig(@NotNull RegularFileProperty file);
 
-    @InputFiles
-    ConfigurableFileCollection getProxyConfigs();
+  void addResourceConfig(@NotNull RegularFileProperty file);
 
-    @InputFiles
-    ConfigurableFileCollection getReflectConfigs();
+  RegularFileProperty traverse(@NotNull Provider<RegularFile> provider);
 
-    @InputFiles
-    ConfigurableFileCollection getResourceConfigs();
+  @InputFiles
+  ConfigurableFileCollection getJniConfigs();
+
+  @InputFiles
+  ConfigurableFileCollection getProxyConfigs();
+
+  @InputFiles
+  ConfigurableFileCollection getReflectConfigs();
+
+  @InputFiles
+  ConfigurableFileCollection getResourceConfigs();
 }

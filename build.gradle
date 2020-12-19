@@ -5,6 +5,7 @@ plugins {
     id "org.jetbrains.kotlin.jvm" version "1.3.21"
     id 'com.gradle.plugin-publish' version '0.12.0'
     id 'com.github.johnrengelman.shadow' version '5.2.0'
+    id "com.diffplug.spotless" version "5.8.2"
 }
 
 ext {
@@ -99,6 +100,8 @@ configurations.functionalTestImplementation.extendsFrom(configurations.testImple
 
 // Add a task to run the functional tests
 task functionalTest(type: Test) {
+    group = 'verification'
+    description = 'Run functional tests using GraalVM'
     testClassesDirs = sourceSets.functionalTest.output.classesDirs
     classpath = sourceSets.functionalTest.runtimeClasspath
 }
@@ -108,6 +111,12 @@ tasks.withType(Test) {
 }
 
 tasks.compileFunctionalTestJava.dependsOn('pluginDescriptors')
+
+spotless {
+    java {
+        googleJavaFormat()
+    }
+}
 
 check {
     dependsOn(tasks.functionalTest)

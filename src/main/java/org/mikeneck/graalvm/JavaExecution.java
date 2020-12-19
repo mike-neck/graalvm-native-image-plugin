@@ -7,21 +7,21 @@ import java.util.Map;
 
 public interface JavaExecution {
 
-    default void arguments(String... args) {
-        arguments(Arrays.asList(args));
-    }
+  default void arguments(String... args) {
+    arguments(Arrays.asList(args));
+  }
 
-    void arguments(Iterable<String> args);
+  void arguments(Iterable<String> args);
 
-    void stdIn(byte[] input);
+  void stdIn(byte[] input);
 
-    default void stdIn(String utf8StringInput) {
-        stdIn(StandardCharsets.UTF_8, utf8StringInput);
-    }
+  default void stdIn(String utf8StringInput) {
+    stdIn(StandardCharsets.UTF_8, utf8StringInput);
+  }
 
-    default void stdIn(Charset charset, String input) {
-        stdIn(input.getBytes(charset));
-    }
+  default void stdIn(Charset charset, String input) {
+    stdIn(input.getBytes(charset));
+  }
 
-    void environment(Map<String, String> env);
+  void environment(Map<String, String> env);
 }

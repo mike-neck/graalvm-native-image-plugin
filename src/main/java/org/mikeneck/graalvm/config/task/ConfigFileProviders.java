@@ -11,17 +11,19 @@ import org.jetbrains.annotations.NotNull;
 
 public class ConfigFileProviders extends DefaultProvider<List<File>> {
 
-    ConfigFileProviders(Callable<? extends List<File>> value) {
-        super(value);
-    }
+  ConfigFileProviders(Callable<? extends List<File>> value) {
+    super(value);
+  }
 
-    @NotNull
-    public static ConfigFileProviders resolving(@NotNull FileCollection files, @NotNull String fileName) {
-        return new ConfigFileProviders(() -> files.getFiles()
-                .stream()
+  @NotNull
+  public static ConfigFileProviders resolving(
+      @NotNull FileCollection files, @NotNull String fileName) {
+    return new ConfigFileProviders(
+        () ->
+            files.getFiles().stream()
                 .map(File::toPath)
                 .map(path -> path.resolve(fileName))
                 .map(Path::toFile)
                 .collect(Collectors.toList()));
-    }
+  }
 }

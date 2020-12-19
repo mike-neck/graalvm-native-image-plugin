@@ -38,190 +38,193 @@ import org.slf4j.LoggerFactory;
 
 public class DefaultNativeImageTask extends DefaultTask implements NativeImageTask {
 
-    public static final String DEFAULT_OUTPUT_DIRECTORY_NAME = "native-image";
+  public static final String DEFAULT_OUTPUT_DIRECTORY_NAME = "native-image";
 
+  @NotNull private final Property<GraalVmHome> graalVmHome;
+
+  @NotNull private final NativeImageArguments nativeImageArguments;
+
+  @SuppressWarnings("UnstableApiUsage")
+  @Inject
+  public DefaultNativeImageTask(
+      @NotNull Project project,
+      @NotNull Property<GraalVmHome> graalVmHome,
+      @NotNull Property<String> mainClass,
+      @NotNull Property<Configuration> runtimeClasspath,
+      @NotNull ConfigurableFileCollection jarFile) {
+    ObjectFactory objectFactory = project.getObjects();
+    ProjectLayout projectLayout = project.getLayout();
+    this.graalVmHome = graalVmHome;
+    @NotNull Property<String> executableName = objectFactory.property(String.class);
+    @NotNull ListProperty<String> additionalArguments = objectFactory.listProperty(String.class);
     @NotNull
-    private final Property<GraalVmHome> graalVmHome;
+    DirectoryProperty outputDirectory =
+        objectFactory
+            .directoryProperty()
+            .value(projectLayout.getBuildDirectory().dir(DEFAULT_OUTPUT_DIRECTORY_NAME));
+    NativeImageArgumentsFactory nativeImageArgumentsFactory =
+        NativeImageArgumentsFactory.getInstance();
+    this.nativeImageArguments =
+        nativeImageArgumentsFactory.create(
+            runtimeClasspath,
+            mainClass,
+            jarFile,
+            outputDirectory,
+            executableName,
+            additionalArguments,
+            new ConfigurationFiles(project));
+  }
 
-    @NotNull
-    private final NativeImageArguments nativeImageArguments;
+  @TaskAction
+  public void createNativeImage() {
+    createOutputDirectoryIfNotExisting();
+    Path nativeImageCommand = nativeImageCommand();
+    getProject()
+        .exec(
+            execSpec -> {
+              getLogger().info("run native-image binary.");
+              execSpec.setExecutable(nativeImageCommand);
+              execSpec.args(arguments());
+            });
+  }
 
-    @SuppressWarnings("UnstableApiUsage")
-    @Inject
-    public DefaultNativeImageTask(
-            @NotNull Project project,
-            @NotNull Property<GraalVmHome> graalVmHome,
-            @NotNull Property<String> mainClass,
-            @NotNull Property<Configuration> runtimeClasspath,
-            @NotNull ConfigurableFileCollection jarFile) {
-        ObjectFactory objectFactory = project.getObjects();
-        ProjectLayout projectLayout = project.getLayout();
-        this.graalVmHome = graalVmHome;
-        @NotNull Property<String> executableName = objectFactory.property(String.class);
-        @NotNull ListProperty<String> additionalArguments = objectFactory.listProperty(String.class);
-        @NotNull DirectoryProperty outputDirectory = objectFactory.directoryProperty()
-                .value(projectLayout.getBuildDirectory().dir(DEFAULT_OUTPUT_DIRECTORY_NAME));
-        NativeImageArgumentsFactory nativeImageArgumentsFactory = NativeImageArgumentsFactory.getInstance();
-        this.nativeImageArguments = nativeImageArgumentsFactory.create(
-                runtimeClasspath,
-                mainClass,
-                jarFile,
-                outputDirectory,
-                executableName,
-                additionalArguments,
-                new ConfigurationFiles(project));
+  private Path nativeImageCommand() {
+    GraalVmHome graalVmHome = graalVmHome();
+    Optional<Path> nativeImage = graalVmHome.nativeImage();
+    if (!nativeImage.isPresent()) {
+      getLogger().warn("native-image not found in graalVmHome({})", graalVmHome);
+      throw new InvalidUserDataException(
+          "native-image not found in graalVmHome(" + graalVmHome + ")");
     }
+    return nativeImage.get();
+  }
 
-    @TaskAction
-    public void createNativeImage() {
-        createOutputDirectoryIfNotExisting();
-        Path nativeImageCommand = nativeImageCommand();
-        getProject().exec(execSpec -> {
-            getLogger().info("run native-image binary.");
-            execSpec.setExecutable(nativeImageCommand);
-            execSpec.args(arguments());
-        });
-    }
+  private GraalVmHome graalVmHome() {
+    return graalVmHome.get();
+  }
 
-    private Path nativeImageCommand() {
-        GraalVmHome graalVmHome = graalVmHome();
-        Optional<Path> nativeImage = graalVmHome.nativeImage();
-        if (!nativeImage.isPresent()) {
-            getLogger().warn("native-image not found in graalVmHome({})", graalVmHome);
-            throw new InvalidUserDataException("native-image not found in graalVmHome(" + graalVmHome + ")");
-        }
-        return nativeImage.get();
-    }
+  @NotNull
+  @Internal
+  public Property<GraalVmHome> getGraalVmHome() {
+    return graalVmHome;
+  }
 
-    private GraalVmHome graalVmHome() {
-        return graalVmHome.get();
-    }
+  @Override
+  @NotNull
+  @Internal
+  public Provider<GraalVmVersion> getGraalVmVersion() {
+    return graalVmHome.map(GraalVmHome::graalVmVersion);
+  }
 
-    @NotNull
-    @Internal
-    public Property<GraalVmHome> getGraalVmHome() {
-        return graalVmHome;
-    }
+  @Override
+  @NotNull
+  @Internal
+  public Options getOptions() {
+    return new DefaultOptions(getGraalVmVersion());
+  }
 
-    @Override
-    @NotNull
-    @Internal
-    public Provider<GraalVmVersion> getGraalVmVersion() {
-        return graalVmHome.map(GraalVmHome::graalVmVersion);
-    }
+  public File outputDirectory() {
+    return nativeImageArguments.getOutputDirectory().getAsFile().get();
+  }
 
-    @Override
-    @NotNull
-    @Internal
-    public Options getOptions() {
-        return new DefaultOptions(getGraalVmVersion());
+  @SuppressWarnings("ResultOfMethodCallIgnored")
+  private void createOutputDirectoryIfNotExisting() {
+    File outputDir = outputDirectory();
+    getLogger().info("create output directory if not exists: {}", outputDir);
+    if (!outputDir.exists()) {
+      outputDir.mkdirs();
     }
+  }
 
-    public File outputDirectory() {
-        return nativeImageArguments.getOutputDirectory().getAsFile().get();
-    }
+  private List<String> arguments() {
+    return getArguments().getOrElse(Collections.emptyList());
+  }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    private void createOutputDirectoryIfNotExisting() {
-        File outputDir = outputDirectory();
-        getLogger().info("create output directory if not exists: {}", outputDir);
-        if (!outputDir.exists()) {
-            outputDir.mkdirs();
-        }
-    }
+  @Input
+  public ListProperty<String> getArguments() {
+    Project project = getProject();
+    ObjectFactory objects = project.getObjects();
+    ListProperty<String> listProperty = objects.listProperty(String.class);
+    listProperty.set(project.provider(nativeImageArguments::getArguments));
+    return listProperty;
+  }
 
-    private List<String> arguments() {
-        return getArguments().getOrElse(Collections.emptyList());
-    }
+  @Override
+  @NotNull
+  @Nested
+  public NativeImageArguments getNativeImageArguments() {
+    return nativeImageArguments;
+  }
 
-    @Input
-    public ListProperty<String> getArguments() {
-        Project project = getProject();
-        ObjectFactory objects = project.getObjects();
-        ListProperty<String> listProperty = objects.listProperty(String.class);
-        listProperty.set(project.provider(nativeImageArguments::getArguments));
-        return listProperty;
-    }
+  @Override
+  public void setGraalVmHome(String graalVmHome) {
+    this.graalVmHome.set(getProject().provider(() -> new GraalVmHome(Paths.get(graalVmHome))));
+  }
 
-    @Override
-    @NotNull
-    @Nested
-    public NativeImageArguments getNativeImageArguments() {
-        return nativeImageArguments;
-    }
+  @Deprecated
+  @Override
+  public void setJarTask(Jar jarTask) {
+    LoggerFactory.getLogger(NativeImageTask.class)
+        .warn("jarTask is deprecated. Please use setClasspath(Jar) instead.");
+    nativeImageArguments.setClasspath(jarTask);
+  }
 
-    @Override
-    public void setGraalVmHome(String graalVmHome) {
-        this.graalVmHome.set(
-                getProject().provider(
-                        () -> new GraalVmHome(Paths.get(graalVmHome))));
-    }
+  @Override
+  public void setClasspath(FileCollection files) {
+    nativeImageArguments.setClasspath(files);
+  }
 
-    @Deprecated
-    @Override
-    public void setJarTask(Jar jarTask) {
-        LoggerFactory.getLogger(NativeImageTask.class).warn("jarTask is deprecated. Please use setClasspath(Jar) instead.");
-        nativeImageArguments.setClasspath(jarTask);
-    }
+  @Override
+  public void setClasspath(Jar jarTask) {
+    nativeImageArguments.setClasspath(jarTask);
+  }
 
-    @Override
-    public void setClasspath(FileCollection files) {
-        nativeImageArguments.setClasspath(files);
-    }
+  @Override
+  public void setMainClass(String mainClass) {
+    Project project = getProject();
+    nativeImageArguments.setMainClass(project.provider(() -> mainClass));
+  }
 
-    @Override
-    public void setClasspath(Jar jarTask) {
-        nativeImageArguments.setClasspath(jarTask);
-    }
+  @Override
+  public void setExecutableName(String name) {
+    nativeImageArguments.setExecutableName(getProject().provider(() -> name));
+  }
 
-    @Override
-    public void setMainClass(String mainClass) {
-        Project project = getProject();
-        nativeImageArguments.setMainClass(project.provider(() -> mainClass));
-    }
+  @Override
+  public void setRuntimeClasspath(Configuration configuration) {
+    Project project = getProject();
+    nativeImageArguments.setRuntimeClasspath(project.provider(() -> configuration));
+  }
 
-    @Override
-    public void setExecutableName(String name) {
-        nativeImageArguments.setExecutableName(getProject().provider(() -> name));
-    }
+  @Override
+  public void setOutputDirectory(Provider<Directory> directory) {
+    nativeImageArguments.setOutputDirectory(directory);
+  }
 
-    @Override
-    public void setRuntimeClasspath(Configuration configuration) {
-        Project project = getProject();
-        nativeImageArguments.setRuntimeClasspath(project.provider(() -> configuration));
-    }
+  @Override
+  public void withConfigFiles(@NotNull Action<NativeImageConfigurationFiles> configuration) {
+    nativeImageArguments.configureConfigFiles(configuration);
+  }
 
-    @Override
-    public void setOutputDirectory(Provider<Directory> directory) {
-        nativeImageArguments.setOutputDirectory(directory);
-    }
+  @Override
+  public void arguments(String... arguments) {
+    Project project = getProject();
+    nativeImageArguments.addArguments(
+        project.provider(
+            () ->
+                Arrays.stream(arguments).filter(it -> !it.isEmpty()).collect(Collectors.toList())));
+  }
 
-    @Override
-    public void withConfigFiles(@NotNull Action<NativeImageConfigurationFiles> configuration) {
-        nativeImageArguments.configureConfigFiles(configuration);
+  @SafeVarargs
+  @Override
+  public final void arguments(Provider<String>... arguments) {
+    Project project = getProject();
+    ListProperty<String> listProperty = project.getObjects().listProperty(String.class);
+    for (Provider<String> argument : arguments) {
+      listProperty.add(argument);
     }
-
-    @Override
-    public void arguments(String... arguments) {
-        Project project = getProject();
-        nativeImageArguments.addArguments(
-                project.provider(() -> 
-                        Arrays.stream(arguments)
-                                .filter(it -> !it.isEmpty())
-                                .collect(Collectors.toList())));
-    }
-
-    @SafeVarargs
-    @Override
-    public final void arguments(Provider<String>... arguments) {
-        Project project = getProject();
-        ListProperty<String> listProperty = project.getObjects().listProperty(String.class);
-        for (Provider<String> argument : arguments) {
-            listProperty.add(argument);
-        }
-        nativeImageArguments.addArguments(listProperty.map(list -> 
-                list.stream()
-                        .filter(it -> !it.isEmpty())
-                        .collect(Collectors.toList())));
-    }
+    nativeImageArguments.addArguments(
+        listProperty.map(
+            list -> list.stream().filter(it -> !it.isEmpty()).collect(Collectors.toList())));
+  }
 }

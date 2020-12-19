@@ -18,43 +18,43 @@ import org.mikeneck.graalvm.config.task.ConfigFileConfiguration;
 
 public interface MergeNativeImageConfigTask extends Task {
 
-    Function<Project, Provider<Directory>> DEFAULT_DESTINATION_DIR =
-            project -> project.getLayout().getBuildDirectory().dir("native-image-config");
+  Function<Project, Provider<Directory>> DEFAULT_DESTINATION_DIR =
+      project -> project.getLayout().getBuildDirectory().dir("native-image-config");
 
-    String JNI_CONFIG_JSON = "jni-config.json";
-    String PROXY_CONFIG_JSON = "proxy-config.json";
-    String REFLECT_CONFIG_JSON = "reflect-config.json";
-    String RESOURCE_CONFIG_JSON = "resource-config.json";
+  String JNI_CONFIG_JSON = "jni-config.json";
+  String PROXY_CONFIG_JSON = "proxy-config.json";
+  String REFLECT_CONFIG_JSON = "reflect-config.json";
+  String RESOURCE_CONFIG_JSON = "resource-config.json";
 
-    void destinationDir(@NotNull String destinationDir);
+  void destinationDir(@NotNull String destinationDir);
 
-    void destinationDir(@NotNull File destinationDir);
+  void destinationDir(@NotNull File destinationDir);
 
-    void destinationDir(@NotNull Path destinationDir);
+  void destinationDir(@NotNull Path destinationDir);
 
-    void destinationDir(@NotNull Provider<Directory> destinationDir);
+  void destinationDir(@NotNull Provider<Directory> destinationDir);
 
-    void fromDirectories(@NotNull Provider<FileCollection> directories);
+  void fromDirectories(@NotNull Provider<FileCollection> directories);
 
-    void configFiles(@NotNull Action<ConfigFileConfiguration> action);
+  void configFiles(@NotNull Action<ConfigFileConfiguration> action);
 
-    @NotNull 
-    @OutputDirectory
-    DirectoryProperty getDestinationDir();
+  @NotNull
+  @OutputDirectory
+  DirectoryProperty getDestinationDir();
 
-    @NotNull
-    @InputFiles
-    ListProperty<File> getJniConfigs();
+  @NotNull
+  @InputFiles
+  ListProperty<File> getJniConfigs();
 
-    @NotNull
-    @InputFiles
-    ListProperty<File> getProxyConfigs();
+  @NotNull
+  @InputFiles
+  ListProperty<File> getProxyConfigs();
 
-    @NotNull
-    @InputFiles
-    ListProperty<File> getReflectConfigs();
+  @NotNull
+  @InputFiles
+  ListProperty<File> getReflectConfigs();
 
-    @NotNull
-    @InputFiles
-    ListProperty<File> getResourceConfigs();
+  @NotNull
+  @InputFiles
+  ListProperty<File> getResourceConfigs();
 }

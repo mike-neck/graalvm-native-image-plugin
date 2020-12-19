@@ -6,6 +6,6 @@ import org.gradle.api.tasks.Internal;
 
 public interface InstallNativeImageTask extends Task {
 
-    @Internal
-    Provider<GraalVmHome> getGraalVmHome();
+  @Internal
+  Provider<GraalVmHome> getGraalVmHome();
 }

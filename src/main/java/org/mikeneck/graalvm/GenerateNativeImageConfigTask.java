@@ -15,43 +15,46 @@ import org.jetbrains.annotations.NotNull;
 
 public interface GenerateNativeImageConfigTask extends ShareEnabledState {
 
-    default void setGraalVmHome(@NotNull String path) {
-        setGraalVmHome(getProject().file(path));
-    }
+  default void setGraalVmHome(@NotNull String path) {
+    setGraalVmHome(getProject().file(path));
+  }
 
-    default void setGraalVmHome(@NotNull File path) {
-        setGraalVmHome(path.toPath());
-    }
+  default void setGraalVmHome(@NotNull File path) {
+    setGraalVmHome(path.toPath());
+  }
 
-    default void setGraalVmHome(@NotNull Path path) {
-        Project project = getProject();
-        setGraalVmHome(project.provider(() -> new GraalVmHome(path)));
-    }
+  default void setGraalVmHome(@NotNull Path path) {
+    Project project = getProject();
+    setGraalVmHome(project.provider(() -> new GraalVmHome(path)));
+  }
 
-    void setGraalVmHome(@NotNull Provider<GraalVmHome> graalVmHome);
+  void setGraalVmHome(@NotNull Provider<GraalVmHome> graalVmHome);
 
-    void setExitOnApplicationError(boolean exitOnApplicationError);
+  void setExitOnApplicationError(boolean exitOnApplicationError);
 
-    @Internal
-    @NotNull Property<GraalVmHome> getGraalVmHome();
+  @Internal
+  @NotNull
+  Property<GraalVmHome> getGraalVmHome();
 
-    @Internal
-    boolean getExitOnApplicationError();
+  @Internal
+  boolean getExitOnApplicationError();
 
-    @Input
-    @NotNull Provider<String> getMainClass();
+  @Input
+  @NotNull
+  Provider<String> getMainClass();
 
-    void resumeOnApplicationError();
+  void resumeOnApplicationError();
 
-    @NotNull
-    @Nested
-    List<JavaExecutionImpl> getJavaExecutions();
+  @NotNull
+  @Nested
+  List<JavaExecutionImpl> getJavaExecutions();
 
-    @Deprecated
-    @OutputDirectory
-    @NotNull File getTemporaryDirectory();
+  @Deprecated
+  @OutputDirectory
+  @NotNull
+  File getTemporaryDirectory();
 
-    void byRunningApplicationWithoutArguments();
+  void byRunningApplicationWithoutArguments();
 
-    void byRunningApplication(Action<JavaExecution> argumentsConfiguration);
+  void byRunningApplication(Action<JavaExecution> argumentsConfiguration);
 }

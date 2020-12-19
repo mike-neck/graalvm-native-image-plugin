@@ -5,5 +5,5 @@ import org.gradle.testkit.runner.BuildResult;
 @FunctionalInterface
 public interface Gradlew {
 
-    BuildResult invoke(String... params);
+  BuildResult invoke(String... params);
 }

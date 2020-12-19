@@ -17,130 +17,129 @@ import org.mikeneck.graalvm.NativeImageConfigurationFiles;
 
 class WindowsNativeImageArguments implements NativeImageArguments {
 
-    private static final char DOUBLE_QUOT = '"';
+  private static final char DOUBLE_QUOT = '"';
 
-    private final NativeImageArguments delegate;
+  private final NativeImageArguments delegate;
 
-    WindowsNativeImageArguments(NativeImageArguments delegate) {
-        this.delegate = delegate;
-    }
+  WindowsNativeImageArguments(NativeImageArguments delegate) {
+    this.delegate = delegate;
+  }
 
-    @NotNull
-    private String wrapValue(String value) {
-        return String.format("%s%s%s", DOUBLE_QUOT, value, DOUBLE_QUOT);
-    }
+  @NotNull
+  private String wrapValue(String value) {
+    return String.format("%s%s%s", DOUBLE_QUOT, value, DOUBLE_QUOT);
+  }
 
-    @NotNull
-    @Override
-    public String classpath() {
-        return wrapValue(delegate.classpath());
-    }
+  @NotNull
+  @Override
+  public String classpath() {
+    return wrapValue(delegate.classpath());
+  }
 
-    @NotNull
-    @Override
-    public String outputPath() {
-        return wrapValue(delegate.outputPath());
-    }
+  @NotNull
+  @Override
+  public String outputPath() {
+    return wrapValue(delegate.outputPath());
+  }
 
-    @NotNull
-    @Override
-    public Optional<String> executableName() {
-        return delegate.executableName().map(this::wrapValue);
-    }
+  @NotNull
+  @Override
+  public Optional<String> executableName() {
+    return delegate.executableName().map(this::wrapValue);
+  }
 
-    @NotNull
-    @Override
-    public List<String> additionalArguments() {
-        return delegate.additionalArguments()
-                .stream()
-                .map(this::wrapValue)
-                .collect(Collectors.toList());
-    }
+  @NotNull
+  @Override
+  public List<String> additionalArguments() {
+    return delegate.additionalArguments().stream()
+        .map(this::wrapValue)
+        .collect(Collectors.toList());
+  }
 
-    @NotNull
-    @Override
-    public String mainClass() {
-        return wrapValue(delegate.mainClass());
-    }
+  @NotNull
+  @Override
+  public String mainClass() {
+    return wrapValue(delegate.mainClass());
+  }
 
-    @Override
-    public void setRuntimeClasspath(@NotNull Provider<Configuration> runtimeClasspath) {
-        delegate.setRuntimeClasspath(runtimeClasspath);
-    }
+  @Override
+  public void setRuntimeClasspath(@NotNull Provider<Configuration> runtimeClasspath) {
+    delegate.setRuntimeClasspath(runtimeClasspath);
+  }
 
-    @Override
-    public void setMainClass(@NotNull Provider<String> mainClass) {
-        delegate.setMainClass(mainClass);
-    }
+  @Override
+  public void setMainClass(@NotNull Provider<String> mainClass) {
+    delegate.setMainClass(mainClass);
+  }
 
-    @Override
-    public void addClasspath(@NotNull File jarFile) {
-        delegate.addClasspath(jarFile);
-    }
+  @Override
+  public void addClasspath(@NotNull File jarFile) {
+    delegate.addClasspath(jarFile);
+  }
 
-    @Override
-    public void addClasspath(@NotNull Provider<File> jarFile) {
-        delegate.addClasspath(jarFile);
-    }
+  @Override
+  public void addClasspath(@NotNull Provider<File> jarFile) {
+    delegate.addClasspath(jarFile);
+  }
 
-    @Override
-    public void addClasspath(@NotNull FileCollection files) {
-        delegate.addClasspath(files);
-    }
+  @Override
+  public void addClasspath(@NotNull FileCollection files) {
+    delegate.addClasspath(files);
+  }
 
-    @Override
-    public void addClasspath(@NotNull Jar jar) {
-        delegate.addClasspath(jar);
-    }
+  @Override
+  public void addClasspath(@NotNull Jar jar) {
+    delegate.addClasspath(jar);
+  }
 
-    @Override
-    public void setClasspath(@NotNull File jarFile) {
-        delegate.setClasspath(jarFile);
-    }
+  @Override
+  public void setClasspath(@NotNull File jarFile) {
+    delegate.setClasspath(jarFile);
+  }
 
-    @Override
-    public void setClasspath(@NotNull Provider<File> jarFile) {
-        delegate.setClasspath(jarFile);
-    }
+  @Override
+  public void setClasspath(@NotNull Provider<File> jarFile) {
+    delegate.setClasspath(jarFile);
+  }
 
-    @Override
-    public void setClasspath(@NotNull FileCollection files) {
-        delegate.setClasspath(files);
-    }
+  @Override
+  public void setClasspath(@NotNull FileCollection files) {
+    delegate.setClasspath(files);
+  }
 
-    @Override
-    public void setClasspath(@NotNull Jar jar) {
-        delegate.setClasspath(jar);
-    }
+  @Override
+  public void setClasspath(@NotNull Jar jar) {
+    delegate.setClasspath(jar);
+  }
 
-    @Override
-    public @NotNull DirectoryProperty getOutputDirectory() {
-        return delegate.getOutputDirectory();
-    }
+  @Override
+  public @NotNull DirectoryProperty getOutputDirectory() {
+    return delegate.getOutputDirectory();
+  }
 
-    @Override
-    public void setOutputDirectory(@NotNull Provider<Directory> outputDirectory) {
-        delegate.setOutputDirectory(outputDirectory);
-    }
+  @Override
+  public void setOutputDirectory(@NotNull Provider<Directory> outputDirectory) {
+    delegate.setOutputDirectory(outputDirectory);
+  }
 
-    @Override
-    public void setExecutableName(@NotNull Provider<String> executableName) {
-        delegate.setExecutableName(executableName);
-    }
+  @Override
+  public void setExecutableName(@NotNull Provider<String> executableName) {
+    delegate.setExecutableName(executableName);
+  }
 
-    @Override
-    public void addArguments(@NotNull Provider<Iterable<String>> arguments) {
-        delegate.addArguments(arguments);
-    }
+  @Override
+  public void addArguments(@NotNull Provider<Iterable<String>> arguments) {
+    delegate.addArguments(arguments);
+  }
 
-    @Override
-    public void configureConfigFiles(@NotNull Action<NativeImageConfigurationFiles> configuration) {
-        delegate.configureConfigFiles(configuration);
-    }
+  @Override
+  public void configureConfigFiles(@NotNull Action<NativeImageConfigurationFiles> configuration) {
+    delegate.configureConfigFiles(configuration);
+  }
 
-    @NotNull
-    @Nested
-    public NativeImageArguments getDelegate() {
-        return delegate;
-    }
+  @NotNull
+  @Nested
+  public NativeImageArguments getDelegate() {
+    return delegate;
+  }
 }

@@ -19,62 +19,62 @@ import org.mikeneck.graalvm.NativeImageConfigurationFiles;
 
 public interface NativeImageArguments {
 
-    @Internal
-    default List<String> getArguments() {
-        List<String> args = new ArrayList<>();
-        args.add("-cp");
-        args.add(classpath());
-        args.add(outputPath());
-        executableName().ifPresent(args::add);
-        args.addAll(additionalArguments());
-        args.add(mainClass());
-        return Collections.unmodifiableList(args);
-    }
+  @Internal
+  default List<String> getArguments() {
+    List<String> args = new ArrayList<>();
+    args.add("-cp");
+    args.add(classpath());
+    args.add(outputPath());
+    executableName().ifPresent(args::add);
+    args.addAll(additionalArguments());
+    args.add(mainClass());
+    return Collections.unmodifiableList(args);
+  }
 
-    @NotNull
-    String classpath();
+  @NotNull
+  String classpath();
 
-    @NotNull
-    String outputPath();
+  @NotNull
+  String outputPath();
 
-    @NotNull
-    Optional<String> executableName();
+  @NotNull
+  Optional<String> executableName();
 
-    @NotNull
-    List<String> additionalArguments();
+  @NotNull
+  List<String> additionalArguments();
 
-    @NotNull
-    String mainClass();
+  @NotNull
+  String mainClass();
 
-    void setRuntimeClasspath(@NotNull Provider<Configuration> runtimeClasspath);
+  void setRuntimeClasspath(@NotNull Provider<Configuration> runtimeClasspath);
 
-    void setMainClass(@NotNull Provider<String> mainClass);
+  void setMainClass(@NotNull Provider<String> mainClass);
 
-    void addClasspath(@NotNull File jarFile);
+  void addClasspath(@NotNull File jarFile);
 
-    void addClasspath(@NotNull Provider<File> jarFile);
+  void addClasspath(@NotNull Provider<File> jarFile);
 
-    void addClasspath(@NotNull FileCollection files);
+  void addClasspath(@NotNull FileCollection files);
 
-    void addClasspath(@NotNull Jar jar);
+  void addClasspath(@NotNull Jar jar);
 
-    void setClasspath(@NotNull File jarFile);
+  void setClasspath(@NotNull File jarFile);
 
-    void setClasspath(@NotNull Provider<File> jarFile);
+  void setClasspath(@NotNull Provider<File> jarFile);
 
-    void setClasspath(@NotNull FileCollection files);
+  void setClasspath(@NotNull FileCollection files);
 
-    void setClasspath(@NotNull Jar jar);
+  void setClasspath(@NotNull Jar jar);
 
-    @NotNull
-    @OutputDirectory
-    DirectoryProperty getOutputDirectory();
+  @NotNull
+  @OutputDirectory
+  DirectoryProperty getOutputDirectory();
 
-    void setOutputDirectory(@NotNull Provider<Directory> outputDirectory);
+  void setOutputDirectory(@NotNull Provider<Directory> outputDirectory);
 
-    void setExecutableName(@NotNull Provider<String> executableName);
+  void setExecutableName(@NotNull Provider<String> executableName);
 
-    void addArguments(@NotNull Provider<Iterable<String>> arguments);
+  void addArguments(@NotNull Provider<Iterable<String>> arguments);
 
-    void configureConfigFiles(@NotNull Action<NativeImageConfigurationFiles> configuration);
+  void configureConfigFiles(@NotNull Action<NativeImageConfigurationFiles> configuration);
 }

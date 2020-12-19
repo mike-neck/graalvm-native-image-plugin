@@ -20,79 +20,79 @@ import org.mikeneck.graalvm.nativeimage.options.Options;
 
 public interface NativeImageTask extends Task, NativeImageConfig {
 
-    @NotNull
-    @Internal
-    Provider<GraalVmVersion> getGraalVmVersion();
+  @NotNull
+  @Internal
+  Provider<GraalVmVersion> getGraalVmVersion();
 
-    @NotNull
-    @Internal
-    Options getOptions();
+  @NotNull
+  @Internal
+  Options getOptions();
 
-    @NotNull
-    @Nested
-    NativeImageArguments getNativeImageArguments();
+  @NotNull
+  @Nested
+  NativeImageArguments getNativeImageArguments();
 
-    @Override
-    void setGraalVmHome(String graalVmHome);
+  @Override
+  void setGraalVmHome(String graalVmHome);
 
-    /**
-     * @param jarTask - jarTask which builds application.
-     * @deprecated use {@link #setClasspath} instead.
-     */
-    @Deprecated
-    @Override
-    void setJarTask(Jar jarTask);
+  /**
+   * @param jarTask - jarTask which builds application.
+   * @deprecated use {@link #setClasspath} instead.
+   */
+  @Deprecated
+  @Override
+  void setJarTask(Jar jarTask);
 
-    @Override
-    void setClasspath(FileCollection files);
+  @Override
+  void setClasspath(FileCollection files);
 
-    default void setClasspath(File file) {
-        ConfigurableFileCollection files = getProject().files(file);
-        this.setClasspath(files);
-    }
+  default void setClasspath(File file) {
+    ConfigurableFileCollection files = getProject().files(file);
+    this.setClasspath(files);
+  }
 
-    default void setClasspath(Provider<File> file) {
-        ConfigurableFileCollection files = getProject().files(file);
-        this.setClasspath(files);
-    }
+  default void setClasspath(Provider<File> file) {
+    ConfigurableFileCollection files = getProject().files(file);
+    this.setClasspath(files);
+  }
 
-    @Override
-    void setMainClass(String mainClass);
+  @Override
+  void setMainClass(String mainClass);
 
-    @Override
-    void setExecutableName(String name);
+  @Override
+  void setExecutableName(String name);
 
-    @Override
-    void setRuntimeClasspath(Configuration configuration);
+  @Override
+  void setRuntimeClasspath(Configuration configuration);
 
-    @Override
-    default void setOutputDirectory(File directory) {
-        Project project = getProject();
-        ProjectLayout projectLayout = project.getLayout();
-        Provider<Directory> dir = projectLayout.dir(project.provider(() -> directory));
-        setOutputDirectory(dir);
-    }
+  @Override
+  default void setOutputDirectory(File directory) {
+    Project project = getProject();
+    ProjectLayout projectLayout = project.getLayout();
+    Provider<Directory> dir = projectLayout.dir(project.provider(() -> directory));
+    setOutputDirectory(dir);
+  }
 
-    @Override
-    default void setOutputDirectory(Path directory) {
-        setOutputDirectory(directory.toFile());
-    }
+  @Override
+  default void setOutputDirectory(Path directory) {
+    setOutputDirectory(directory.toFile());
+  }
 
-    @Override
-    default void setOutputDirectory(String directory) {
-        File dir = getProject().file(directory);
-        setOutputDirectory(dir);
-    }
+  @Override
+  default void setOutputDirectory(String directory) {
+    File dir = getProject().file(directory);
+    setOutputDirectory(dir);
+  }
 
-    @Override
-    void setOutputDirectory(Provider<Directory> directory);
+  @Override
+  void setOutputDirectory(Provider<Directory> directory);
 
-    void withConfigFiles(@NotNull Action<NativeImageConfigurationFiles> configuration);
+  void withConfigFiles(@NotNull Action<NativeImageConfigurationFiles> configuration);
 
-    @Override
-    void arguments(String... arguments);
+  @Override
+  void arguments(String... arguments);
 
-    @SuppressWarnings("unchecked")
-    @Override
-    void arguments(Provider<String>... arguments);
+  @SuppressWarnings("unchecked")
+  @Override
+  void arguments(Provider<String>... arguments);
 }
