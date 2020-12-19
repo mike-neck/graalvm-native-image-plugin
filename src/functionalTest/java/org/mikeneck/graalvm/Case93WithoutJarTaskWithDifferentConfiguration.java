@@ -1,12 +1,12 @@
 package org.mikeneck.graalvm;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.TaskOutcome;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class Case93WithoutJarTaskWithDifferentConfiguration {
 

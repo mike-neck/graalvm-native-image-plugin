@@ -1,5 +1,8 @@
 package org.mikeneck.graalvm;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import org.gradle.testkit.runner.BuildResult;
@@ -7,9 +10,6 @@ import org.gradle.testkit.runner.BuildTask;
 import org.gradle.testkit.runner.GradleRunner;
 import org.gradle.testkit.runner.TaskOutcome;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class Case60ProxyUsageArrayTest {
 
