@@ -51,7 +51,6 @@ mv "${testDirectory}/gradle/wrapper/gradle-wrapper.properties" "${testDirectory}
 cat "${testDirectory}/gradle/wrapper/gradle-wrapper.properties-tmp" | \
   sed -e  "s/[0-9]\{1,\}\.[0-9]\{1,\}\.\([0-9]\{1,\}\)\{0,\}-all/${gradleVersion}-bin/g" > \
   "${testDirectory}/gradle/wrapper/gradle-wrapper.properties"
-diff "${testDirectory}/gradle/wrapper/gradle-wrapper.properties-tmp" "${testDirectory}/gradle/wrapper/gradle-wrapper.properties" || :
 rm "${testDirectory}/gradle/wrapper/gradle-wrapper.properties-tmp"
 
 cp gradlew "${testDirectory}/"
