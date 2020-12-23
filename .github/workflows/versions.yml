@@ -11,7 +11,7 @@ name: version availability test
 jobs:
   test:
     name: Gradle-${{ matrix.version }} nativeImage
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         version:
@@ -27,14 +27,17 @@ jobs:
       - name: Setup GraalVM
         uses: DeLaGuardo/setup-graalvm@8bbfe44ef9c6f5c07e5af036a1bffd561c037d18
         with:
-          graalvm-version: 20.2.0.java11
+          graalvm-version: 20.3.0.java11
       - name: Install GraalVM native image
         run: gu install native-image
       - name: Cache Gradle Wrapper
         id: gradle
         uses: actions/cache@v1
         with:
-          path: ~/.gradle/caches
+          path: |-
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            .cache
           key: wrapper-${{ matrix.version }}
           restore-keys: wrapper-
       - name: Run Test
