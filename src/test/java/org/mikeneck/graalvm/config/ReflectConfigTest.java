@@ -7,10 +7,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 class ReflectConfigTest {
 
@@ -186,6 +193,65 @@ class ReflectConfigTest {
       assertThat(reflectConfig).isNotNull();
     } catch (IOException e) {
       fail("failed to parse allPublicMethods", e);
+    }
+  }
+
+  @ParameterizedTest(name = "{index}: {0} + {1} -> {2}")
+  @MethodSource("mergeBooleanParams")
+  void mergeBoolean(
+      @Nullable Boolean thisBoolean, @Nullable Boolean otherBoolean, @Nullable Boolean expected) {
+    Boolean actual = ClassUsage.mergeBoolean(thisBoolean, otherBoolean);
+    assertThat(actual).isEqualTo(expected);
+  }
+
+  static Iterable<Arguments> mergeBooleanParams() {
+    return Arrays.asList(
+        Arguments.arguments(null, null, null),
+        Arguments.arguments(null, Boolean.TRUE, Boolean.TRUE),
+        Arguments.arguments(null, Boolean.FALSE, Boolean.FALSE),
+        Arguments.arguments(Boolean.FALSE, null, Boolean.FALSE),
+        Arguments.arguments(Boolean.FALSE, Boolean.FALSE, Boolean.FALSE),
+        Arguments.arguments(Boolean.FALSE, Boolean.TRUE, Boolean.TRUE),
+        Arguments.arguments(Boolean.TRUE, null, Boolean.TRUE),
+        Arguments.arguments(Boolean.TRUE, Boolean.FALSE, Boolean.TRUE),
+        Arguments.arguments(Boolean.TRUE, Boolean.TRUE, Boolean.TRUE));
+  }
+
+  @DisplayName("test-case109(https://github.com/mike-neck/graalvm-native-image-plugin/issues/109)")
+  @TestFactory
+  Iterable<DynamicTest> case109() {
+    try (InputStream inputStream =
+        reader.configJsonResource("config/reflect-config-case-109.json")) {
+      ReflectConfig reflectConfig = objectMapper.readValue(inputStream, ReflectConfig.class);
+
+      return Arrays.asList(
+          DynamicTest.dynamicTest(
+              "reflectConfig is not null", () -> assertThat(reflectConfig).isNotNull()),
+          DynamicTest.dynamicTest(
+              "There are 7 allPublicConstructors.",
+              () ->
+                  assertThat(
+                          reflectConfig.stream()
+                              .filter(
+                                  cu ->
+                                      cu.allPublicConstructors != null
+                                          && cu.allPublicConstructors.equals(Boolean.TRUE)))
+                      .hasSize(7)),
+          DynamicTest.dynamicTest(
+              "There are 2 allPublicFields",
+              () ->
+                  assertThat(
+                          reflectConfig.stream()
+                              .filter(
+                                  cu ->
+                                      cu.allPublicFields != null
+                                          && cu.allPublicFields.equals(Boolean.TRUE)))
+                      .hasSize(2)));
+    } catch (IOException e) {
+      return Collections.singleton(
+          DynamicTest.dynamicTest(
+              "failed to parse allPublicConstructors",
+              () -> fail("failed to parse allPublicConstructors", e)));
     }
   }
 }
