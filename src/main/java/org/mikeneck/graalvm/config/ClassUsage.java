@@ -37,6 +37,14 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
   @JsonInclude(JsonInclude.Include.NON_NULL)
   public Boolean allPublicMethods;
 
+  @Nullable
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  public Boolean allPublicConstructors;
+
+  @Nullable
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  public Boolean allPublicFields;
+
   public ClassUsage() {}
 
   public ClassUsage(
@@ -46,7 +54,9 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
       @Nullable Boolean allDeclaredFields,
       @Nullable Boolean allDeclaredMethods,
       @Nullable Boolean allDeclaredConstructors,
-      @Nullable Boolean allPublicMethods) {
+      @Nullable Boolean allPublicMethods,
+      @Nullable Boolean allPublicConstructors,
+      @Nullable Boolean allPublicFields) {
     this.name = name;
     this.methods = methods;
     this.fields = fields;
@@ -117,7 +127,9 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
         && Objects.equals(allDeclaredFields, that.allDeclaredFields)
         && Objects.equals(allDeclaredMethods, that.allDeclaredMethods)
         && Objects.equals(allDeclaredConstructors, that.allDeclaredConstructors)
-        && Objects.equals(allPublicMethods, that.allPublicMethods);
+        && Objects.equals(allPublicMethods, that.allPublicMethods)
+        && Objects.equals(allPublicConstructors, that.allPublicConstructors)
+        && Objects.equals(allPublicFields, that.allPublicFields);
   }
 
   @Override
@@ -129,7 +141,9 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
         allDeclaredFields,
         allDeclaredMethods,
         allDeclaredConstructors,
-        allPublicMethods);
+        allPublicMethods,
+        allPublicConstructors,
+        allPublicFields);
   }
 
   @SuppressWarnings("StringBufferReplaceableByString")
@@ -143,6 +157,8 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
     sb.append(", allDeclaredMethods=").append(allDeclaredMethods);
     sb.append(", allDeclaredConstructors=").append(allDeclaredConstructors);
     sb.append(", allPublicMethods=").append(allPublicMethods);
+    sb.append(", allPublicConstructors=").append(allPublicConstructors);
+    sb.append(", allPublicFields=").append(allPublicFields);
     sb.append('}');
     return sb.toString();
   }
@@ -158,16 +174,15 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
       throw new IllegalArgumentException(
           "A parameter has the same name with this[" + this.name + "], but [" + other.name + "].");
     }
-    Boolean declaredFields =
-        this.allDeclaredFields == null ? other.allDeclaredFields : this.allDeclaredFields;
+    Boolean declaredFields = mergeBoolean(this.allDeclaredFields, other.allDeclaredFields);
     Boolean declaredConstructors =
-        this.allDeclaredConstructors == null
-            ? other.allDeclaredConstructors
-            : this.allDeclaredConstructors;
-    Boolean declaredMethods =
-        this.allDeclaredMethods == null ? other.allDeclaredMethods : this.allDeclaredMethods;
-    Boolean publicMethods =
-        this.allPublicMethods == null ? other.allPublicMethods : this.allPublicMethods;
+        mergeBoolean(this.allDeclaredConstructors, other.allDeclaredConstructors);
+    Boolean declaredMethods = mergeBoolean(this.allDeclaredMethods, other.allDeclaredMethods);
+    Boolean publicMethods = mergeBoolean(this.allPublicMethods, other.allPublicMethods);
+    Boolean publicConstructors =
+        mergeBoolean(this.allPublicConstructors, other.allPublicConstructors);
+    Boolean publicFields = mergeBoolean(this.allPublicFields, other.allPublicFields);
+
     TreeSet<MethodUsage> newMethods = new TreeSet<>(this.methods);
     newMethods.addAll(other.methods);
     TreeSet<FieldUsage> newFields = new TreeSet<>(this.fields);
@@ -179,6 +194,19 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
         declaredFields,
         declaredMethods,
         declaredConstructors,
-        publicMethods);
+        publicMethods,
+        publicConstructors,
+        publicFields);
+  }
+
+  @Nullable
+  static Boolean mergeBoolean(@Nullable Boolean fromThis, @Nullable Boolean fromOther) {
+    if (fromThis == null) {
+      return fromOther;
+    }
+    if (fromOther == null) {
+      return fromThis;
+    }
+    return fromThis || fromOther;
   }
 }
