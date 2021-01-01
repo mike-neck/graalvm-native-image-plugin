@@ -1,8 +1,10 @@
 package org.mikeneck.graalvm.config;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -19,7 +21,7 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
 
   @NotNull
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
-  public SortedSet<FieldUsage> fields = Collections.emptySortedSet();
+  private SortedSet<FieldUsage> fields = Collections.emptySortedSet();
 
   @Nullable
   @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -128,6 +130,14 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
     this.allDeclaredFields = allDeclaredFields;
     this.allDeclaredMethods = allDeclaredMethods;
     this.allDeclaredConstructors = allDeclaredConstructors;
+  }
+
+  public List<FieldUsage> getFields() {
+    return new ArrayList<>(fields);
+  }
+
+  public void setFields(List<FieldUsage> fields) {
+    this.fields = new TreeSet<>(fields);
   }
 
   @Override
