@@ -1,13 +1,15 @@
 package org.mikeneck.graalvm.config;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,7 +23,7 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
 
   @NotNull
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
-  private SortedSet<FieldUsage> fields = Collections.emptySortedSet();
+  private FieldUsages fields = new FieldUsages(Collections.emptySortedSet());
 
   @Nullable
   @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -55,12 +57,13 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
   @JsonInclude(JsonInclude.Include.NON_NULL)
   public Boolean allPublicClasses;
 
+  @SuppressWarnings("unused")
   public ClassUsage() {}
 
-  public ClassUsage(
+  private ClassUsage(
       @NotNull String name,
       @NotNull SortedSet<MethodUsage> methods,
-      @NotNull SortedSet<FieldUsage> fields,
+      @NotNull FieldUsages fields,
       @Nullable Boolean allDeclaredFields,
       @Nullable Boolean allDeclaredMethods,
       @Nullable Boolean allDeclaredConstructors,
@@ -91,7 +94,7 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
       @Nullable Boolean allDeclaredConstructors) {
     this.name = name;
     this.methods = methods;
-    this.fields = fields;
+    this.fields = new FieldUsages(fields);
     this.allDeclaredFields = allDeclaredFields;
     this.allDeclaredMethods = allDeclaredMethods;
     this.allDeclaredConstructors = allDeclaredConstructors;
@@ -112,7 +115,7 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
 
   ClassUsage(@NotNull String name, FieldUsage... fields) {
     this.name = name;
-    this.fields = new TreeSet<>(Arrays.asList(fields));
+    this.fields = new FieldUsages(new TreeSet<>(Arrays.asList(fields)));
   }
 
   ClassUsage(@NotNull String name, boolean allDeclaredMethods, boolean allDeclaredConstructors) {
@@ -132,12 +135,34 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
     this.allDeclaredConstructors = allDeclaredConstructors;
   }
 
+  @SuppressWarnings("unused")
   public List<FieldUsage> getFields() {
-    return new ArrayList<>(fields);
+    return StreamSupport.stream(fields.spliterator(), false).collect(Collectors.toList());
   }
 
+  @SuppressWarnings("unused")
   public void setFields(List<FieldUsage> fields) {
-    this.fields = new TreeSet<>(fields);
+    if (fields.isEmpty()) {
+      this.fields = new FieldUsages(Collections.emptySortedSet());
+      return;
+    }
+    Iterator<FieldUsage> usages = new TreeSet<>(fields).iterator();
+    SortedSet<FieldUsage> newFieldUsages = new TreeSet<>();
+    FieldUsage fieldUsage = usages.next();
+    while (true) {
+      if (!usages.hasNext()) {
+        newFieldUsages.add(fieldUsage);
+        break;
+      }
+      FieldUsage next = usages.next();
+      if (fieldUsage.name.equals(next.name)) {
+        fieldUsage = fieldUsage.mergeWith(next);
+      } else {
+        newFieldUsages.add(fieldUsage);
+        fieldUsage = next;
+      }
+    }
+    this.fields = new FieldUsages(newFieldUsages);
   }
 
   @Override
@@ -206,8 +231,7 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
     }
     TreeSet<MethodUsage> newMethods = new TreeSet<>(this.methods);
     newMethods.addAll(other.methods);
-    TreeSet<FieldUsage> newFields = new TreeSet<>(this.fields);
-    newFields.addAll(other.fields);
+    FieldUsages newFields = this.fields.mergeWith(other.fields);
     return new ClassUsage(
         this.name,
         newMethods,
