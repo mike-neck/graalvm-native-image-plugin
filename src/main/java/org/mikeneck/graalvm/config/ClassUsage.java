@@ -3,9 +3,13 @@ package org.mikeneck.graalvm.config;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,7 +23,7 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
 
   @NotNull
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
-  public SortedSet<FieldUsage> fields = Collections.emptySortedSet();
+  private FieldUsages fields = new FieldUsages(Collections.emptySortedSet());
 
   @Nullable
   @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -45,18 +49,29 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
   @JsonInclude(JsonInclude.Include.NON_NULL)
   public Boolean allPublicFields;
 
+  @Nullable
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  public Boolean allDeclaredClasses;
+
+  @Nullable
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  public Boolean allPublicClasses;
+
+  @SuppressWarnings("unused")
   public ClassUsage() {}
 
-  public ClassUsage(
+  private ClassUsage(
       @NotNull String name,
       @NotNull SortedSet<MethodUsage> methods,
-      @NotNull SortedSet<FieldUsage> fields,
+      @NotNull FieldUsages fields,
       @Nullable Boolean allDeclaredFields,
       @Nullable Boolean allDeclaredMethods,
       @Nullable Boolean allDeclaredConstructors,
       @Nullable Boolean allPublicMethods,
       @Nullable Boolean allPublicConstructors,
-      @Nullable Boolean allPublicFields) {
+      @Nullable Boolean allPublicFields,
+      @Nullable Boolean allDeclaredClasses,
+      @Nullable Boolean allPublicClasses) {
     this.name = name;
     this.methods = methods;
     this.fields = fields;
@@ -64,6 +79,10 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
     this.allDeclaredMethods = allDeclaredMethods;
     this.allDeclaredConstructors = allDeclaredConstructors;
     this.allPublicMethods = allPublicMethods;
+    this.allPublicConstructors = allPublicConstructors;
+    this.allPublicFields = allPublicFields;
+    this.allDeclaredClasses = allDeclaredClasses;
+    this.allPublicClasses = allPublicClasses;
   }
 
   public ClassUsage(
@@ -75,7 +94,7 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
       @Nullable Boolean allDeclaredConstructors) {
     this.name = name;
     this.methods = methods;
-    this.fields = fields;
+    this.fields = new FieldUsages(fields);
     this.allDeclaredFields = allDeclaredFields;
     this.allDeclaredMethods = allDeclaredMethods;
     this.allDeclaredConstructors = allDeclaredConstructors;
@@ -96,7 +115,7 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
 
   ClassUsage(@NotNull String name, FieldUsage... fields) {
     this.name = name;
-    this.fields = new TreeSet<>(Arrays.asList(fields));
+    this.fields = new FieldUsages(new TreeSet<>(Arrays.asList(fields)));
   }
 
   ClassUsage(@NotNull String name, boolean allDeclaredMethods, boolean allDeclaredConstructors) {
@@ -116,6 +135,36 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
     this.allDeclaredConstructors = allDeclaredConstructors;
   }
 
+  @SuppressWarnings("unused")
+  public List<FieldUsage> getFields() {
+    return StreamSupport.stream(fields.spliterator(), false).collect(Collectors.toList());
+  }
+
+  @SuppressWarnings("unused")
+  public void setFields(List<FieldUsage> fields) {
+    if (fields.isEmpty()) {
+      this.fields = new FieldUsages(Collections.emptySortedSet());
+      return;
+    }
+    Iterator<FieldUsage> usages = new TreeSet<>(fields).iterator();
+    SortedSet<FieldUsage> newFieldUsages = new TreeSet<>();
+    FieldUsage fieldUsage = usages.next();
+    while (true) {
+      if (!usages.hasNext()) {
+        newFieldUsages.add(fieldUsage);
+        break;
+      }
+      FieldUsage next = usages.next();
+      if (fieldUsage.name.equals(next.name)) {
+        fieldUsage = fieldUsage.mergeWith(next);
+      } else {
+        newFieldUsages.add(fieldUsage);
+        fieldUsage = next;
+      }
+    }
+    this.fields = new FieldUsages(newFieldUsages);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -129,7 +178,9 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
         && Objects.equals(allDeclaredConstructors, that.allDeclaredConstructors)
         && Objects.equals(allPublicMethods, that.allPublicMethods)
         && Objects.equals(allPublicConstructors, that.allPublicConstructors)
-        && Objects.equals(allPublicFields, that.allPublicFields);
+        && Objects.equals(allPublicFields, that.allPublicFields)
+        && Objects.equals(allDeclaredClasses, that.allDeclaredClasses)
+        && Objects.equals(allPublicClasses, that.allPublicClasses);
   }
 
   @Override
@@ -143,7 +194,9 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
         allDeclaredConstructors,
         allPublicMethods,
         allPublicConstructors,
-        allPublicFields);
+        allPublicFields,
+        allDeclaredClasses,
+        allPublicClasses);
   }
 
   @SuppressWarnings("StringBufferReplaceableByString")
@@ -159,6 +212,8 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
     sb.append(", allPublicMethods=").append(allPublicMethods);
     sb.append(", allPublicConstructors=").append(allPublicConstructors);
     sb.append(", allPublicFields=").append(allPublicFields);
+    sb.append(", allDeclaredClasses=").append(allDeclaredClasses);
+    sb.append(", allPublicClasses=").append(allPublicClasses);
     sb.append('}');
     return sb.toString();
   }
@@ -174,39 +229,20 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
       throw new IllegalArgumentException(
           "A parameter has the same name with this[" + this.name + "], but [" + other.name + "].");
     }
-    Boolean declaredFields = mergeBoolean(this.allDeclaredFields, other.allDeclaredFields);
-    Boolean declaredConstructors =
-        mergeBoolean(this.allDeclaredConstructors, other.allDeclaredConstructors);
-    Boolean declaredMethods = mergeBoolean(this.allDeclaredMethods, other.allDeclaredMethods);
-    Boolean publicMethods = mergeBoolean(this.allPublicMethods, other.allPublicMethods);
-    Boolean publicConstructors =
-        mergeBoolean(this.allPublicConstructors, other.allPublicConstructors);
-    Boolean publicFields = mergeBoolean(this.allPublicFields, other.allPublicFields);
-
     TreeSet<MethodUsage> newMethods = new TreeSet<>(this.methods);
     newMethods.addAll(other.methods);
-    TreeSet<FieldUsage> newFields = new TreeSet<>(this.fields);
-    newFields.addAll(other.fields);
+    FieldUsages newFields = this.fields.mergeWith(other.fields);
     return new ClassUsage(
         this.name,
         newMethods,
         newFields,
-        declaredFields,
-        declaredMethods,
-        declaredConstructors,
-        publicMethods,
-        publicConstructors,
-        publicFields);
-  }
-
-  @Nullable
-  static Boolean mergeBoolean(@Nullable Boolean fromThis, @Nullable Boolean fromOther) {
-    if (fromThis == null) {
-      return fromOther;
-    }
-    if (fromOther == null) {
-      return fromThis;
-    }
-    return fromThis || fromOther;
+        BooleanMergeable.mergeBoolean(this.allDeclaredFields, other.allDeclaredFields),
+        BooleanMergeable.mergeBoolean(this.allDeclaredMethods, other.allDeclaredMethods),
+        BooleanMergeable.mergeBoolean(this.allDeclaredConstructors, other.allDeclaredConstructors),
+        BooleanMergeable.mergeBoolean(this.allPublicMethods, other.allPublicMethods),
+        BooleanMergeable.mergeBoolean(this.allPublicConstructors, other.allPublicConstructors),
+        BooleanMergeable.mergeBoolean(this.allPublicFields, other.allPublicFields),
+        BooleanMergeable.mergeBoolean(this.allDeclaredClasses, other.allDeclaredClasses),
+        BooleanMergeable.mergeBoolean(this.allPublicClasses, other.allPublicClasses));
   }
 }
