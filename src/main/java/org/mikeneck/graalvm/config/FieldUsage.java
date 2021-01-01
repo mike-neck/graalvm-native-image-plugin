@@ -13,6 +13,10 @@ public class FieldUsage implements Comparable<FieldUsage> {
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
   public Boolean allowUnsafeAccess;
 
+  @Nullable
+  @JsonInclude(JsonInclude.Include.NON_EMPTY)
+  public Boolean allowWrite;
+
   public FieldUsage() {}
 
   public FieldUsage(@NotNull String name) {
@@ -25,6 +29,7 @@ public class FieldUsage implements Comparable<FieldUsage> {
     final StringBuilder sb = new StringBuilder("FieldUsage{");
     sb.append("name='").append(name).append('\'');
     sb.append(", allowUnsafeAccess=").append(allowUnsafeAccess);
+    sb.append(", allowWrite=").append(allowWrite);
     sb.append('}');
     return sb.toString();
   }
@@ -34,12 +39,14 @@ public class FieldUsage implements Comparable<FieldUsage> {
     if (this == o) return true;
     if (!(o instanceof FieldUsage)) return false;
     FieldUsage that = (FieldUsage) o;
-    return name.equals(that.name) && Objects.equals(allowUnsafeAccess, that.allowUnsafeAccess);
+    return name.equals(that.name)
+        && Objects.equals(allowUnsafeAccess, that.allowUnsafeAccess)
+        && Objects.equals(allowWrite, that.allowWrite);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(name, allowUnsafeAccess);
+    return Objects.hash(name, allowUnsafeAccess, allowWrite);
   }
 
   @Override

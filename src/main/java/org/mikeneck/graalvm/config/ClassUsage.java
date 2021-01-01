@@ -45,6 +45,14 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
   @JsonInclude(JsonInclude.Include.NON_NULL)
   public Boolean allPublicFields;
 
+  @Nullable
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  public Boolean allDeclaredClasses;
+
+  @Nullable
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  public Boolean allPublicClasses;
+
   public ClassUsage() {}
 
   public ClassUsage(
@@ -56,7 +64,9 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
       @Nullable Boolean allDeclaredConstructors,
       @Nullable Boolean allPublicMethods,
       @Nullable Boolean allPublicConstructors,
-      @Nullable Boolean allPublicFields) {
+      @Nullable Boolean allPublicFields,
+      @Nullable Boolean allDeclaredClasses,
+      @Nullable Boolean allPublicClasses) {
     this.name = name;
     this.methods = methods;
     this.fields = fields;
@@ -64,6 +74,10 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
     this.allDeclaredMethods = allDeclaredMethods;
     this.allDeclaredConstructors = allDeclaredConstructors;
     this.allPublicMethods = allPublicMethods;
+    this.allPublicConstructors = allPublicConstructors;
+    this.allPublicFields = allPublicFields;
+    this.allDeclaredClasses = allDeclaredClasses;
+    this.allPublicClasses = allPublicClasses;
   }
 
   public ClassUsage(
@@ -129,7 +143,9 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
         && Objects.equals(allDeclaredConstructors, that.allDeclaredConstructors)
         && Objects.equals(allPublicMethods, that.allPublicMethods)
         && Objects.equals(allPublicConstructors, that.allPublicConstructors)
-        && Objects.equals(allPublicFields, that.allPublicFields);
+        && Objects.equals(allPublicFields, that.allPublicFields)
+        && Objects.equals(allDeclaredClasses, that.allDeclaredClasses)
+        && Objects.equals(allPublicClasses, that.allPublicClasses);
   }
 
   @Override
@@ -143,7 +159,9 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
         allDeclaredConstructors,
         allPublicMethods,
         allPublicConstructors,
-        allPublicFields);
+        allPublicFields,
+        allDeclaredClasses,
+        allPublicClasses);
   }
 
   @SuppressWarnings("StringBufferReplaceableByString")
@@ -159,6 +177,8 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
     sb.append(", allPublicMethods=").append(allPublicMethods);
     sb.append(", allPublicConstructors=").append(allPublicConstructors);
     sb.append(", allPublicFields=").append(allPublicFields);
+    sb.append(", allDeclaredClasses=").append(allDeclaredClasses);
+    sb.append(", allPublicClasses=").append(allPublicClasses);
     sb.append('}');
     return sb.toString();
   }
@@ -174,15 +194,6 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
       throw new IllegalArgumentException(
           "A parameter has the same name with this[" + this.name + "], but [" + other.name + "].");
     }
-    Boolean declaredFields = mergeBoolean(this.allDeclaredFields, other.allDeclaredFields);
-    Boolean declaredConstructors =
-        mergeBoolean(this.allDeclaredConstructors, other.allDeclaredConstructors);
-    Boolean declaredMethods = mergeBoolean(this.allDeclaredMethods, other.allDeclaredMethods);
-    Boolean publicMethods = mergeBoolean(this.allPublicMethods, other.allPublicMethods);
-    Boolean publicConstructors =
-        mergeBoolean(this.allPublicConstructors, other.allPublicConstructors);
-    Boolean publicFields = mergeBoolean(this.allPublicFields, other.allPublicFields);
-
     TreeSet<MethodUsage> newMethods = new TreeSet<>(this.methods);
     newMethods.addAll(other.methods);
     TreeSet<FieldUsage> newFields = new TreeSet<>(this.fields);
@@ -191,12 +202,14 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
         this.name,
         newMethods,
         newFields,
-        declaredFields,
-        declaredMethods,
-        declaredConstructors,
-        publicMethods,
-        publicConstructors,
-        publicFields);
+        mergeBoolean(this.allDeclaredFields, other.allDeclaredFields),
+        mergeBoolean(this.allDeclaredMethods, other.allDeclaredMethods),
+        mergeBoolean(this.allDeclaredConstructors, other.allDeclaredConstructors),
+        mergeBoolean(this.allPublicMethods, other.allPublicMethods),
+        mergeBoolean(this.allPublicConstructors, other.allPublicConstructors),
+        mergeBoolean(this.allPublicFields, other.allPublicFields),
+        mergeBoolean(this.allDeclaredClasses, other.allDeclaredClasses),
+        mergeBoolean(this.allPublicClasses, other.allPublicClasses));
   }
 
   @Nullable

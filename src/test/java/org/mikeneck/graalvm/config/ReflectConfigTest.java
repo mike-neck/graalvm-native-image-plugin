@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
@@ -252,6 +253,27 @@ class ReflectConfigTest {
           DynamicTest.dynamicTest(
               "failed to parse allPublicConstructors",
               () -> fail("failed to parse allPublicConstructors", e)));
+    }
+  }
+
+  @TestFactory
+  Iterable<DynamicTest> case111() throws IOException {
+    try (InputStream inputStream =
+        reader.configJsonResource("config/reflect-config-case-111.json")) {
+      ReflectConfig reflectConfig = objectMapper.readValue(inputStream, ReflectConfig.class);
+
+      List<DynamicTest> tests = new ArrayList<>();
+      tests.add(
+          DynamicTest.dynamicTest("has 3 elements", () -> assertThat(reflectConfig).hasSize(3)));
+      tests.add(
+          DynamicTest.dynamicTest(
+              "has String",
+              () ->
+                  assertThat(reflectConfig)
+                      .anySatisfy(
+                          classUsage ->
+                              assertThat(classUsage.name).isEqualTo("java.lang.String"))));
+      return tests;
     }
   }
 }
