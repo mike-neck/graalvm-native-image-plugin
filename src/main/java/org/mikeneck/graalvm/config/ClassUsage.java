@@ -202,24 +202,13 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
         this.name,
         newMethods,
         newFields,
-        mergeBoolean(this.allDeclaredFields, other.allDeclaredFields),
-        mergeBoolean(this.allDeclaredMethods, other.allDeclaredMethods),
-        mergeBoolean(this.allDeclaredConstructors, other.allDeclaredConstructors),
-        mergeBoolean(this.allPublicMethods, other.allPublicMethods),
-        mergeBoolean(this.allPublicConstructors, other.allPublicConstructors),
-        mergeBoolean(this.allPublicFields, other.allPublicFields),
-        mergeBoolean(this.allDeclaredClasses, other.allDeclaredClasses),
-        mergeBoolean(this.allPublicClasses, other.allPublicClasses));
-  }
-
-  @Nullable
-  static Boolean mergeBoolean(@Nullable Boolean fromThis, @Nullable Boolean fromOther) {
-    if (fromThis == null) {
-      return fromOther;
-    }
-    if (fromOther == null) {
-      return fromThis;
-    }
-    return fromThis || fromOther;
+        BooleanMergeable.mergeBoolean(this.allDeclaredFields, other.allDeclaredFields),
+        BooleanMergeable.mergeBoolean(this.allDeclaredMethods, other.allDeclaredMethods),
+        BooleanMergeable.mergeBoolean(this.allDeclaredConstructors, other.allDeclaredConstructors),
+        BooleanMergeable.mergeBoolean(this.allPublicMethods, other.allPublicMethods),
+        BooleanMergeable.mergeBoolean(this.allPublicConstructors, other.allPublicConstructors),
+        BooleanMergeable.mergeBoolean(this.allPublicFields, other.allPublicFields),
+        BooleanMergeable.mergeBoolean(this.allDeclaredClasses, other.allDeclaredClasses),
+        BooleanMergeable.mergeBoolean(this.allPublicClasses, other.allPublicClasses));
   }
 }

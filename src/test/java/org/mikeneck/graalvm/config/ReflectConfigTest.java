@@ -201,7 +201,7 @@ class ReflectConfigTest {
   @MethodSource("mergeBooleanParams")
   void mergeBoolean(
       @Nullable Boolean thisBoolean, @Nullable Boolean otherBoolean, @Nullable Boolean expected) {
-    Boolean actual = ClassUsage.mergeBoolean(thisBoolean, otherBoolean);
+    Boolean actual = BooleanMergeable.mergeBoolean(thisBoolean, otherBoolean);
     assertThat(actual).isEqualTo(expected);
   }
 

@@ -1,11 +1,13 @@
 package org.mikeneck.graalvm.config;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import java.util.Comparator;
 import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.TestOnly;
 
-public class FieldUsage implements Comparable<FieldUsage> {
+public class FieldUsage implements Comparable<FieldUsage>, SelectableMergeableConfig<FieldUsage> {
 
   @NotNull public String name = "";
 
@@ -13,14 +15,41 @@ public class FieldUsage implements Comparable<FieldUsage> {
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
   public Boolean allowUnsafeAccess;
 
+  @TestOnly
+  FieldUsage withAllowUnsafeAccess() {
+    return new FieldUsage(this.name, true, allowWrite);
+  }
+
+  @TestOnly
+  FieldUsage withoutAllowUnsafeAccess() {
+    return new FieldUsage(this.name, false, allowWrite);
+  }
+
   @Nullable
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
   public Boolean allowWrite;
+
+  @TestOnly
+  FieldUsage withAllowWrite() {
+    return new FieldUsage(this.name, allowUnsafeAccess, true);
+  }
+
+  @TestOnly
+  FieldUsage withoutAllowWrite() {
+    return new FieldUsage(this.name, allowUnsafeAccess, false);
+  }
 
   public FieldUsage() {}
 
   public FieldUsage(@NotNull String name) {
     this.name = name;
+  }
+
+  private FieldUsage(
+      @NotNull String name, @Nullable Boolean allowUnsafeAccess, @Nullable Boolean allowWrite) {
+    this.name = name;
+    this.allowUnsafeAccess = allowUnsafeAccess;
+    this.allowWrite = allowWrite;
   }
 
   @SuppressWarnings("StringBufferReplaceableByString")
@@ -51,6 +80,34 @@ public class FieldUsage implements Comparable<FieldUsage> {
 
   @Override
   public int compareTo(@NotNull FieldUsage o) {
-    return this.name.compareTo(o.name);
+    Comparator<FieldUsage> comparator = Comparator.comparing(fieldUsage -> fieldUsage.name);
+    Comparator<Boolean> nullFirst = Comparator.nullsFirst(Boolean::compareTo);
+
+    int nameCompare = comparator.compare(this, o);
+    if (nameCompare != 0) {
+      return nameCompare;
+    }
+    int unsafe = nullFirst.compare(this.allowUnsafeAccess, o.allowUnsafeAccess);
+    if (unsafe != 0) {
+      return unsafe;
+    }
+    return nullFirst.compare(this.allowWrite, o.allowWrite);
+  }
+
+  @Override
+  public FieldUsage mergeWith(FieldUsage other) {
+    return new FieldUsage(
+        this.name,
+        BooleanMergeable.mergeBoolean(this.allowUnsafeAccess, other.allowUnsafeAccess),
+        BooleanMergeable.mergeBoolean(this.allowWrite, other.allowWrite));
+  }
+
+  @Override
+  public <T extends SelectableMergeableConfig<T>> boolean canBeMergeWith(@NotNull T other) {
+    if (!(other instanceof FieldUsage)) {
+      return false;
+    }
+    FieldUsage that = (FieldUsage) other;
+    return this.name.equals(that.name);
   }
 }
