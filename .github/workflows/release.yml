@@ -6,9 +6,6 @@ on:
       release-level:
         description: 'Release level available values: major, minor, patch'
         required: true
-      password:
-        description: 'Password'
-        required: true
 
 jobs:
   build:
@@ -17,13 +14,6 @@ jobs:
     if: contains(github.event.ref, 'master')
 
     steps:
-      - name: test password
-        run: |
-          echo "::add-mask::${INPUT_PASSWORD}"
-          [[ "${INPUT_PASSWORD}" == "${RELEASE_PASSWORD}" ]]
-        env:
-          INPUT_PASSWORD: ${{ github.event.inputs.password }}
-          RELEASE_PASSWORD: ${{ secrets.RELEASE_PASSWORD }}
 
       - name: verify inputs
         run: echo "${LEVEL}" | grep -E -q '(major|minor|patch)'
