@@ -40,7 +40,7 @@ public class GraalvmNativeImagePlugin implements Plugin<Project> {
                       () -> {
                         List<File> directories =
                             nativeImageConfigFiles.getJavaExecutions().stream()
-                                .map(JavaExecutionImpl::getOutputDirectory)
+                                .map(JavaExecutionOutput::getOutputDirectory)
                                 .collect(Collectors.toList());
                         ConfigurableFileCollection collection =
                             project.getObjects().fileCollection();

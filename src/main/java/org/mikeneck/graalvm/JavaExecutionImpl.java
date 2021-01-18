@@ -5,10 +5,12 @@ import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import org.gradle.api.Action;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.ConfigurableFileCollection;
@@ -21,7 +23,7 @@ import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.process.JavaExecSpec;
 import org.jetbrains.annotations.NotNull;
 
-public class JavaExecutionImpl implements JavaExecution, Action<JavaExecSpec> {
+public class JavaExecutionImpl implements JavaExecution, JavaExecutionOutput, Action<JavaExecSpec> {
 
   final int index;
   private final ConfigurableFileCollection jarFile;
@@ -31,6 +33,7 @@ public class JavaExecutionImpl implements JavaExecution, Action<JavaExecSpec> {
   final File outputDirectory;
   private final Property<byte[]> inputStream;
   final List<String> arguments;
+  final List<Supplier<String>> jvmArguments;
   final Map<String, String> env;
 
   JavaExecutionImpl(
@@ -49,6 +52,14 @@ public class JavaExecutionImpl implements JavaExecution, Action<JavaExecSpec> {
     this.outputDirectory = outputDirectory;
     this.inputStream = inputStream;
     this.arguments = new ArrayList<>();
+    this.jvmArguments =
+        new ArrayList<>(
+            Collections.singleton(
+                () -> {
+                  Path outputDir = this.outputDirectory.toPath();
+                  return String.format(
+                      "-agentlib:native-image-agent=config-output-dir=%s", outputDir);
+                }));
     this.env = new HashMap<>();
   }
 
@@ -56,6 +67,13 @@ public class JavaExecutionImpl implements JavaExecution, Action<JavaExecSpec> {
   public void arguments(Iterable<String> args) {
     for (String arg : args) {
       arguments.add(arg);
+    }
+  }
+
+  @Override
+  public void jvmArguments(Iterable<String> jvmArgs) {
+    for (String jvmArg : jvmArgs) {
+      this.jvmArguments.add(() -> jvmArg);
     }
   }
 
@@ -84,10 +102,13 @@ public class JavaExecutionImpl implements JavaExecution, Action<JavaExecSpec> {
     javaExecSpec.setMain(mainClass.get());
     javaExecSpec.classpath(jarFile, runtimeClasspath.get());
     javaExecSpec.environment(env);
-    Path outputDir = outputDirectory.toPath();
-    javaExecSpec.jvmArgs(
-        String.format("-agentlib:native-image-agent=config-output-dir=%s", outputDir));
+    javaExecSpec.jvmArgs(jvmArgs());
     javaExecSpec.setStandardInput(inputStream());
+  }
+
+  @NotNull
+  private List<String> jvmArgs() {
+    return jvmArguments.stream().map(Supplier::get).collect(Collectors.toList());
   }
 
   private InputStream inputStream() {
@@ -125,6 +146,7 @@ public class JavaExecutionImpl implements JavaExecution, Action<JavaExecSpec> {
     return graalVmHome;
   }
 
+  @Override
   @OutputDirectory
   public File getOutputDirectory() {
     return outputDirectory;
