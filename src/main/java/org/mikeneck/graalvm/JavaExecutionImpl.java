@@ -21,7 +21,7 @@ import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.process.JavaExecSpec;
 import org.jetbrains.annotations.NotNull;
 
-public class JavaExecutionImpl implements JavaExecution, Action<JavaExecSpec> {
+public class JavaExecutionImpl implements JavaExecution, JavaExecutionOutput, Action<JavaExecSpec> {
 
   final int index;
   private final ConfigurableFileCollection jarFile;
@@ -125,6 +125,7 @@ public class JavaExecutionImpl implements JavaExecution, Action<JavaExecSpec> {
     return graalVmHome;
   }
 
+  @Override
   @OutputDirectory
   public File getOutputDirectory() {
     return outputDirectory;

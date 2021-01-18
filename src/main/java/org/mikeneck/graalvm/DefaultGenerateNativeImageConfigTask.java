@@ -175,7 +175,7 @@ public class DefaultGenerateNativeImageConfigTask extends DefaultTask
   @Override
   @NotNull
   @Nested
-  public List<JavaExecutionImpl> getJavaExecutions() {
+  public List<? extends JavaExecutionOutput> getJavaExecutions() {
     return javaExecutions;
   }
 

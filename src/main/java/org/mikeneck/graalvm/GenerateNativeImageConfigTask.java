@@ -47,7 +47,7 @@ public interface GenerateNativeImageConfigTask extends ShareEnabledState {
 
   @NotNull
   @Nested
-  List<JavaExecutionImpl> getJavaExecutions();
+  List<? extends JavaExecutionOutput> getJavaExecutions();
 
   @Deprecated
   @OutputDirectory
