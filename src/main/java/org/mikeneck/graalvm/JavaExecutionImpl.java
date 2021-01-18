@@ -102,9 +102,13 @@ public class JavaExecutionImpl implements JavaExecution, JavaExecutionOutput, Ac
     javaExecSpec.setMain(mainClass.get());
     javaExecSpec.classpath(jarFile, runtimeClasspath.get());
     javaExecSpec.environment(env);
-    List<String> jvmArgs = jvmArguments.stream().map(Supplier::get).collect(Collectors.toList());
-    javaExecSpec.jvmArgs(jvmArgs);
+    javaExecSpec.jvmArgs(jvmArgs());
     javaExecSpec.setStandardInput(inputStream());
+  }
+
+  @NotNull
+  private List<String> jvmArgs() {
+    return jvmArguments.stream().map(Supplier::get).collect(Collectors.toList());
   }
 
   private InputStream inputStream() {
