@@ -27,7 +27,10 @@ public class TestProjectSetup implements ParameterResolver, BeforeEachCallback {
     String[] subprojects = testProject.subprojects();
     List<SubProject> subProjects =
         Arrays.stream(subprojects).<SubProject>map(path -> () -> path).collect(Collectors.toList());
-    FunctionalTestContext ctx = new FunctionalTestContext(resourceName, subProjects);
+    FunctionalTestContext ctx =
+        subProjects.isEmpty()
+            ? new FunctionalTestContext(resourceName)
+            : new FunctionalTestContext(resourceName, subProjects);
     ctx.setup();
 
     ExtensionContext.Store store =

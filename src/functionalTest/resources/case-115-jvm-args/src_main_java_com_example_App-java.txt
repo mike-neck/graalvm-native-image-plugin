@@ -1,0 +1,22 @@
+package com.example;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.IOException;
+
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.stream.Stream;
+
+class App {
+  public static void main(String[] args) throws IOException {
+    ClassLoader loader = Thread.currentThread().getContextClassLoader();
+    try (Stream<String> stream = new BufferedReader(new InputStreamReader(Objects.requireNonNull(loader.getResourceAsStream("test.txt")))).lines()) {
+      stream
+        .map(str -> str.replace(" ", ""))
+        .map(str -> str.replace(" / ", "-"))
+        .flatMap(str -> Arrays.stream(str.split("-")))
+        .forEach(System.out::println);
+    }
+  }
+}

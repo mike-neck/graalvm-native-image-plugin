@@ -13,6 +13,12 @@ public interface JavaExecution {
 
   void arguments(Iterable<String> args);
 
+  default void jvmArguments(String... jvmArgs) {
+    jvmArguments(Arrays.asList(jvmArgs));
+  }
+
+  void jvmArguments(Iterable<String> jvmArgs);
+
   void stdIn(byte[] input);
 
   default void stdIn(String utf8StringInput) {
