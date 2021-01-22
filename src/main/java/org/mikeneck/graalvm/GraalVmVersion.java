@@ -27,6 +27,8 @@ public enum GraalVmVersion {
   MANDREL_20_2_0_0("mandrel-20.2.0.0", new Mandrel20Matcher("20.2.0")),
   GRAAL_20_3_0_JAVA_8("20.3.0-java8", new GraalVm20Matcher("20.3.0", "java8")),
   GRAAL_20_3_0_JAVA_11("20.3.0-java11", new GraalVm20Matcher("20.3.0", "java11")),
+  GRAAL_21_0_0_JAVA_8("21.0.0-java8", new GraalVm21Matcher("21.0.0", "java8")),
+  GRAAL_21_0_0_JAVA_11("21.0.0-java11", new GraalVm21Matcher("21.0.0", "java11")),
   ;
 
   @NotNull final String version;
@@ -232,6 +234,47 @@ public enum GraalVmVersion {
     @Override
     public @NotNull String getJavaVersion() {
       return "java11";
+    }
+  }
+
+  static class GraalVm21Matcher implements Matcher {
+
+    final String graalVmVersion;
+    final String simplifiedJavaVersion;
+    final String javaVersion;
+    final GraalVm20Matcher delegate;
+
+    GraalVm21Matcher(String graalVmVersion, String javaVersion) {
+      this.graalVmVersion = graalVmVersion;
+      this.simplifiedJavaVersion = javaVersion;
+      this.javaVersion = "java8".equals(javaVersion) ? "1.8.0" : "11.0";
+      this.delegate = new GraalVm20Matcher(graalVmVersion, javaVersion);
+    }
+
+    @Override
+    public String toString() {
+      @SuppressWarnings("StringBufferReplaceableByString")
+      final StringBuilder sb = new StringBuilder("GraalVm21Matcher{");
+      sb.append("graalVmVersion='").append(graalVmVersion).append('\'');
+      sb.append(", simplifiedJavaVersion='").append(simplifiedJavaVersion).append('\'');
+      sb.append(", javaVersion='").append(javaVersion).append('\'');
+      sb.append('}');
+      return sb.toString();
+    }
+
+    @Override
+    public boolean matchesVersion(@NotNull Map<String, String> properties) {
+      return delegate.matchesVersion(properties);
+    }
+
+    @Override
+    public @NotNull String getGraalVmVersion() {
+      return delegate.getGraalVmVersion();
+    }
+
+    @Override
+    public @NotNull String getJavaVersion() {
+      return delegate.getJavaVersion();
     }
   }
 }

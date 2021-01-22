@@ -40,7 +40,9 @@ class GraalVmVersionTest {
         "GRAAL_20_2_0_JAVA_8",
         "GRAAL_20_2_0_JAVA_11",
         "GRAAL_20_3_0_JAVA_8",
-        "GRAAL_20_3_0_JAVA_11"
+        "GRAAL_20_3_0_JAVA_11",
+        "GRAAL_21_0_0_JAVA_8",
+        "GRAAL_21_0_0_JAVA_11"
       })
   void loading(GraalVmVersion graalVmVersion) throws IOException {
     try (Reader reader = new InputStreamReader(loadPropertiesFile(graalVmVersion))) {
