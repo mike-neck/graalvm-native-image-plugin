@@ -21,7 +21,7 @@ group = 'org.mikeneck'
 version = thisPluginVersion
 
 repositories {
-    jcenter()
+    mavenCentral()
 }
 
 sourceSets {
