@@ -1,15 +1,18 @@
 package com.example.object;
 
-public class Foo implements java.io.Serializable {
-  public static final long serialVersionUID = 2000L;
+public class Foo
+    extends Bar
+    implements java.io.Serializable {
 
   private int value;
-  private String name;
 
-  public Foo() {}
+  public Foo() {
+    super();
+  }
+
   public Foo(int value, String name) {
+    super(name);
     this.value = value;
-    this.name = name;
   }
 
   @Override
