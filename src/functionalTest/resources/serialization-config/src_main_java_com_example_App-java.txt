@@ -1,0 +1,28 @@
+package com.example;
+
+import com.example.object.Foo;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
+public class App {
+  public static void main(String[] args) throws IOException {
+    Path file = Files.createTempFile("object", ".ser");
+    Foo foo = new Foo(20, "foo");
+    try (ObjectOutputStream out = new ObjectOutputStream(Files.newOutputStream(file))) {
+      out.writeObject(foo);
+    }
+    try (ObjectInputStream input = new ObjectInputStream(Files.newInputStream(file))) {
+      Foo load = (Foo)input.readObject();
+      System.out.println(foo);
+      System.out.println(load);
+      System.out.println(foo.equals(load));
+    } catch (ClassNotFoundException e) {
+      throw new IOException("Foo not found", e);
+    }
+  }
+}

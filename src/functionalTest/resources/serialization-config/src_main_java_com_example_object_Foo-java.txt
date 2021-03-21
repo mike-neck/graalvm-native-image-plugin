@@ -1,0 +1,19 @@
+package com.example.object;
+
+public class Foo implements java.io.Serializable {
+  public static final long serialVersionUID = 2000L;
+
+  private int value;
+  private String name;
+
+  public Foo() {}
+  public Foo(int value, String name) {
+    this.value = value;
+    this.name = name;
+  }
+
+  @Override
+  public String toString() {
+    return "Foo[" + value + ", " + name + "]";
+  }
+}
