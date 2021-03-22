@@ -25,6 +25,7 @@ import org.mikeneck.graalvm.config.MergeableConfig;
 import org.mikeneck.graalvm.config.ProxyConfig;
 import org.mikeneck.graalvm.config.ReflectConfig;
 import org.mikeneck.graalvm.config.ResourceConfig;
+import org.mikeneck.graalvm.config.SerializationConfig;
 import org.mikeneck.graalvm.config.task.ConfigFileConfiguration;
 import org.mikeneck.graalvm.config.task.ConfigFileProviders;
 import org.mikeneck.graalvm.config.task.DefaultMergeConfigFileWork;
@@ -41,6 +42,7 @@ public class DefaultMergeNativeImageConfigTask extends DefaultTask
   @NotNull private final ListProperty<File> proxyConfigs;
   @NotNull private final ListProperty<File> reflectConfigs;
   @NotNull private final ListProperty<File> resourceConfigs;
+  @NotNull private final ListProperty<File> serializationConfigs;
 
   @Inject
   @SuppressWarnings("UnstableApiUsage")
@@ -54,6 +56,7 @@ public class DefaultMergeNativeImageConfigTask extends DefaultTask
     this.proxyConfigs = objects.listProperty(File.class);
     this.reflectConfigs = objects.listProperty(File.class);
     this.resourceConfigs = objects.listProperty(File.class);
+    this.serializationConfigs = objects.listProperty(File.class);
   }
 
   @TaskAction
@@ -85,6 +88,10 @@ public class DefaultMergeNativeImageConfigTask extends DefaultTask
         reflectConfigs
             .map(files -> FileInput.from("reflectConfig", files))
             .map(files -> reflectConfigFileWork(destinationDir, files))
+            .get(),
+        serializationConfigs
+            .map(files -> FileInput.from("serializationConfig", files))
+            .map(files -> serializationConfigFileWork(destinationDir, files))
             .get(),
         resourceConfigs
             .map(files -> FileInput.from("resourceConfig", files))
@@ -127,6 +134,15 @@ public class DefaultMergeNativeImageConfigTask extends DefaultTask
         FileOutput.to(destinationDir.resolve(REFLECT_CONFIG_JSON)));
   }
 
+  private static MergeConfigFileWork<SerializationConfig> serializationConfigFileWork(
+      @NotNull Path destinationDir, @NotNull List<FileInput> files) {
+    return new DefaultMergeConfigFileWork<>(
+        SerializationConfig.class,
+        SerializationConfig::new,
+        files,
+        FileOutput.to(destinationDir.resolve(SERIALIZATION_CONFIG_JSON)));
+  }
+
   @Override
   public void destinationDir(@NotNull String destinationDir) {
     File dir = getProject().file(destinationDir);
@@ -159,6 +175,9 @@ public class DefaultMergeNativeImageConfigTask extends DefaultTask
         directories.flatMap(files -> ConfigFileProviders.resolving(files, REFLECT_CONFIG_JSON)));
     this.resourceConfigs.addAll(
         directories.flatMap(files -> ConfigFileProviders.resolving(files, RESOURCE_CONFIG_JSON)));
+    this.serializationConfigs.addAll(
+        directories.flatMap(
+            files -> ConfigFileProviders.resolving(files, SERIALIZATION_CONFIG_JSON)));
   }
 
   @Override
@@ -220,5 +239,10 @@ public class DefaultMergeNativeImageConfigTask extends DefaultTask
   @InputFiles
   public @NotNull ListProperty<File> getResourceConfigs() {
     return resourceConfigs;
+  }
+
+  @Override
+  public @NotNull ListProperty<File> getSerializationConfigs() {
+    return serializationConfigs;
   }
 }

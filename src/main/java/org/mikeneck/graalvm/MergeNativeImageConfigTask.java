@@ -25,6 +25,7 @@ public interface MergeNativeImageConfigTask extends Task {
   String PROXY_CONFIG_JSON = "proxy-config.json";
   String REFLECT_CONFIG_JSON = "reflect-config.json";
   String RESOURCE_CONFIG_JSON = "resource-config.json";
+  String SERIALIZATION_CONFIG_JSON = "serialization-config.json";
 
   void destinationDir(@NotNull String destinationDir);
 
@@ -57,4 +58,8 @@ public interface MergeNativeImageConfigTask extends Task {
   @NotNull
   @InputFiles
   ListProperty<File> getResourceConfigs();
+
+  @NotNull
+  @InputFiles
+  ListProperty<File> getSerializationConfigs();
 }
