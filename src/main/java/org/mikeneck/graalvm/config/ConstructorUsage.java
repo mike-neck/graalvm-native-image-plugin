@@ -1,5 +1,6 @@
 package org.mikeneck.graalvm.config;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -8,7 +9,9 @@ public class ConstructorUsage implements Comparable<ConstructorUsage> {
 
   @NotNull public String name = "";
 
-  @Nullable public String customTargetConstructorClass;
+  @Nullable
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  public String customTargetConstructorClass;
 
   public ConstructorUsage() {}
 
