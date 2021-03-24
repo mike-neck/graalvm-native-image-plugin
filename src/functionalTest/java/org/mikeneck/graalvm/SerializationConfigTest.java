@@ -93,4 +93,27 @@ public class SerializationConfigTest {
                     context.rootDir.resolve("build/native-image-config/serialization-config.json"))
                 .exists());
   }
+
+  @Test
+  @ExtendWith(TestProjectSetup.class)
+  @TestProject(value = "serialization-config", directoryName = "serialization-config-native-image")
+  void nativeImage(@NotNull final Gradlew gradlew, @NotNull FunctionalTestContext context) {
+    if (!hasSerializationConfig()) {
+      System.out.printf(
+          "'nativeImage' test is skipped because of unsupported graalvm version(%s)\n",
+          graalVmVersionString());
+      return;
+    } else {
+      System.out.printf(
+          "running 'nativeImage' test because of supported graalvm version(%s)\n",
+          graalVmVersionString());
+    }
+    BuildResult result = gradlew.invoke("--info", "clean", "runNativeCommand");
+    assertAll(
+        () ->
+            assertThat(result.task(":runNativeCommand"))
+                .satisfies(
+                    buildTask -> assertThat(buildTask.getOutcome()).isEqualTo(TaskOutcome.SUCCESS)),
+        () -> assertThat(context.rootDir.resolve("build/native-image/test-app")).exists());
+  }
 }

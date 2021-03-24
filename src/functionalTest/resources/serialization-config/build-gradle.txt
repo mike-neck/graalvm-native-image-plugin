@@ -26,3 +26,8 @@ generateNativeImageConfig {
   enabled = true
   byRunningApplicationWithoutArguments()
 }
+
+task runNativeCommand(type: Exec) {
+  commandLine 'build/native-image/test-app'
+  dependsOn 'nativeImage'
+}
