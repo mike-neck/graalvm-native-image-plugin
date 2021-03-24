@@ -50,6 +50,11 @@ public class DefaultMergeConfigFileWork<C extends MergeableConfig<C>>
   @Override
   public void run() throws IOException {
     List<C> entries = readAllFromInputFiles();
+    logger.info("config file size: {}", entries.size());
+    if (entries.isEmpty()) {
+      logger.info("work aborted by no available config files.");
+      return;
+    }
     C merged = merge(entries);
     logger.info("merged config file: {}", merged);
     writeToOutput(merged);
