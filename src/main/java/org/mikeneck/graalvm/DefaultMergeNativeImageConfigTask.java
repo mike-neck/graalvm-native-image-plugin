@@ -209,6 +209,11 @@ public class DefaultMergeNativeImageConfigTask extends DefaultTask
     public void addResourceConfig(File resourceConfig) {
       thisObject.resourceConfigs.add(resourceConfig);
     }
+
+    @Override
+    public void addSerializationConfig(File serializationConfig) {
+      thisObject.serializationConfigs.add(serializationConfig);
+    }
   }
 
   @Override

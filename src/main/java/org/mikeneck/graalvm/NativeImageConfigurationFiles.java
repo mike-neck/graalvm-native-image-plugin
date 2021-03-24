@@ -18,6 +18,7 @@ public interface NativeImageConfigurationFiles extends ConfigFileConfiguration {
     getProxyConfigs().builtBy(mergeNativeImageConfigTask);
     getReflectConfigs().builtBy(mergeNativeImageConfigTask);
     getResourceConfigs().builtBy(mergeNativeImageConfigTask);
+    getSerializationConfigs().builtBy(mergeNativeImageConfigTask);
 
     DirectoryProperty directory = mergeNativeImageConfigTask.getDestinationDir();
 
@@ -25,6 +26,8 @@ public interface NativeImageConfigurationFiles extends ConfigFileConfiguration {
     addProxyConfig(traverse(directory.file(MergeNativeImageConfigTask.PROXY_CONFIG_JSON)));
     addReflectConfig(traverse(directory.file(MergeNativeImageConfigTask.REFLECT_CONFIG_JSON)));
     addResourceConfig(traverse(directory.file(MergeNativeImageConfigTask.RESOURCE_CONFIG_JSON)));
+    addSerializationConfig(
+        traverse(directory.file(MergeNativeImageConfigTask.SERIALIZATION_CONFIG_JSON)));
   }
 
   void addJniConfig(@NotNull RegularFileProperty file);
@@ -34,6 +37,8 @@ public interface NativeImageConfigurationFiles extends ConfigFileConfiguration {
   void addReflectConfig(@NotNull RegularFileProperty file);
 
   void addResourceConfig(@NotNull RegularFileProperty file);
+
+  void addSerializationConfig(@NotNull RegularFileProperty file);
 
   RegularFileProperty traverse(@NotNull Provider<RegularFile> provider);
 
@@ -48,4 +53,7 @@ public interface NativeImageConfigurationFiles extends ConfigFileConfiguration {
 
   @InputFiles
   ConfigurableFileCollection getResourceConfigs();
+
+  @InputFiles
+  ConfigurableFileCollection getSerializationConfigs();
 }
