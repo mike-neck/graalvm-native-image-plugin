@@ -154,11 +154,19 @@ public class ConfigurationFiles implements NativeImageConfigurationFiles {
   @Internal
   public List<String> getArguments() {
     List<String> arguments = new ArrayList<>();
-    arguments.add(jniConfigArguments());
-    arguments.add(proxyConfigArguments());
-    arguments.add(reflectConfigArguments());
-    arguments.add(resourceConfigArguments());
-    arguments.add(serializationConfigArguments());
+    String[] options =
+        new String[] {
+          jniConfigArguments(),
+          proxyConfigArguments(),
+          reflectConfigArguments(),
+          resourceConfigArguments(),
+          serializationConfigArguments()
+        };
+    for (String option : options) {
+      if (!option.isEmpty()) {
+        arguments.add(option);
+      }
+    }
     return Collections.unmodifiableList(arguments);
   }
 
@@ -183,11 +191,16 @@ public class ConfigurationFiles implements NativeImageConfigurationFiles {
   }
 
   private static String createArguments(String option, Iterable<File> files) {
-    return StreamSupport.stream(files.spliterator(), false)
-        .map(File::toPath)
-        .filter(Files::exists)
-        .map(Path::toString)
-        .collect(Collectors.joining(",", "-H:" + option + "=", ""));
+    String filePaths =
+        StreamSupport.stream(files.spliterator(), false)
+            .map(File::toPath)
+            .filter(Files::exists)
+            .map(Path::toString)
+            .collect(Collectors.joining(","));
+    if (filePaths.isEmpty()) {
+      return "";
+    }
+    return String.format("-H:%s=%s", option, filePaths);
   }
 
   @Override
