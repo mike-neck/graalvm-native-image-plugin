@@ -39,9 +39,9 @@ public class SerializationConfigTest {
     return extractGraalVmVersion(javaVmName);
   }
 
-  private static boolean hasSerializationConfig() {
+  private static boolean hasNoSerializationConfig() {
     String graalVmVersion = graalVmVersionString();
-    return "21".compareTo(graalVmVersion) < 0;
+    return "21".compareTo(graalVmVersion) >= 0;
   }
 
   @TestFactory
@@ -67,7 +67,7 @@ public class SerializationConfigTest {
   @ExtendWith(TestProjectSetup.class)
   @TestProject(value = "serialization-config")
   void outputConfig(@NotNull final Gradlew gradlew, @NotNull FunctionalTestContext context) {
-    if (!hasSerializationConfig()) {
+    if (hasNoSerializationConfig()) {
       System.out.printf(
           "'outputConfig' test is skipped because of unsupported graalvm version(%s)\n",
           graalVmVersionString());
@@ -98,7 +98,7 @@ public class SerializationConfigTest {
   @ExtendWith(TestProjectSetup.class)
   @TestProject(value = "serialization-config", directoryName = "serialization-config-native-image")
   void nativeImage(@NotNull final Gradlew gradlew, @NotNull FunctionalTestContext context) {
-    if (!hasSerializationConfig()) {
+    if (hasNoSerializationConfig()) {
       System.out.printf(
           "'nativeImage' test is skipped because of unsupported graalvm version(%s)\n",
           graalVmVersionString());
