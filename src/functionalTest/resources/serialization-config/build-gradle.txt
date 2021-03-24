@@ -1,0 +1,33 @@
+plugins {
+  id 'java'
+  id 'org.mikeneck.graalvm-native-image'
+}
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+}
+
+nativeImage {
+  graalVmHome = System.getenv('JAVA_HOME')
+  mainClass = 'com.example.App'
+  executableName = 'test-app'
+  arguments {
+    add '--no-fallback'
+    add options.traceClassInitialization { it.option() }
+    add '--initialize-at-build-time=com.example.Printer'
+    add '-H:+ReportExceptionStackTraces'
+  }
+}
+
+generateNativeImageConfig {
+  enabled = true
+  byRunningApplicationWithoutArguments()
+}
+
+task runNativeCommand(type: Exec) {
+  commandLine 'build/native-image/test-app'
+  dependsOn 'nativeImage'
+}

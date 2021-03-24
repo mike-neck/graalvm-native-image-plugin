@@ -11,4 +11,6 @@ public interface ConfigFileConfiguration {
   void addReflectConfig(File reflectConfig);
 
   void addResourceConfig(File resourceConfig);
+
+  void addSerializationConfig(File serializationConfig);
 }

@@ -1,6 +1,7 @@
 package org.mikeneck.graalvm.config.task;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -23,6 +24,7 @@ public class ConfigFileProviders extends DefaultProvider<List<File>> {
             files.getFiles().stream()
                 .map(File::toPath)
                 .map(path -> path.resolve(fileName))
+                .filter(Files::exists)
                 .map(Path::toFile)
                 .collect(Collectors.toList()));
   }

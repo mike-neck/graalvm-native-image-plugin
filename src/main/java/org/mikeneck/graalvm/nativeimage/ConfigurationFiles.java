@@ -30,6 +30,7 @@ public class ConfigurationFiles implements NativeImageConfigurationFiles {
   private final ConfigurableFileCollection proxyConfigs;
   private final ConfigurableFileCollection reflectConfigs;
   private final ConfigurableFileCollection resourceConfigs;
+  private final ConfigurableFileCollection serializationConfigs;
 
   public ConfigurationFiles(Project project) {
     this.project = project;
@@ -38,35 +39,23 @@ public class ConfigurationFiles implements NativeImageConfigurationFiles {
     this.proxyConfigs = objects.fileCollection();
     this.reflectConfigs = objects.fileCollection();
     this.resourceConfigs = objects.fileCollection();
+    this.serializationConfigs = objects.fileCollection();
   }
 
   @SuppressWarnings("DuplicatedCode")
   @Override
   public void fromMergeTask(@NotNull MergeNativeImageConfigTask mergeNativeImageConfigTask) {
     String taskName = mergeNativeImageConfigTask.getName();
-    jniConfigs.builtBy(taskName);
-    proxyConfigs.builtBy(taskName);
-    reflectConfigs.builtBy(taskName);
-    resourceConfigs.builtBy(taskName);
-
-    jniConfigs.from(
-        taskOutputFile(mergeNativeImageConfigTask, MergeNativeImageConfigTask.JNI_CONFIG_JSON));
-    proxyConfigs.from(
-        taskOutputFile(mergeNativeImageConfigTask, MergeNativeImageConfigTask.PROXY_CONFIG_JSON));
-    reflectConfigs.from(
-        taskOutputFile(mergeNativeImageConfigTask, MergeNativeImageConfigTask.REFLECT_CONFIG_JSON));
-    resourceConfigs.from(
-        taskOutputFile(
-            mergeNativeImageConfigTask, MergeNativeImageConfigTask.RESOURCE_CONFIG_JSON));
+    fromMergeTask(taskName);
   }
 
-  @SuppressWarnings("DuplicatedCode")
   @Override
   public void fromMergeTask(@NotNull String mergeNativeImageConfigTask) {
     jniConfigs.builtBy(mergeNativeImageConfigTask);
     proxyConfigs.builtBy(mergeNativeImageConfigTask);
     reflectConfigs.builtBy(mergeNativeImageConfigTask);
     resourceConfigs.builtBy(mergeNativeImageConfigTask);
+    serializationConfigs.builtBy(mergeNativeImageConfigTask);
 
     jniConfigs.from(
         taskOutputFile(mergeNativeImageConfigTask, MergeNativeImageConfigTask.JNI_CONFIG_JSON));
@@ -77,10 +66,9 @@ public class ConfigurationFiles implements NativeImageConfigurationFiles {
     resourceConfigs.from(
         taskOutputFile(
             mergeNativeImageConfigTask, MergeNativeImageConfigTask.RESOURCE_CONFIG_JSON));
-  }
-
-  private Provider<RegularFile> taskOutputFile(MergeNativeImageConfigTask task, String fileName) {
-    return taskOutputFile(project.provider(() -> task), fileName);
+    serializationConfigs.from(
+        taskOutputFile(
+            mergeNativeImageConfigTask, MergeNativeImageConfigTask.SERIALIZATION_CONFIG_JSON));
   }
 
   private Provider<RegularFile> taskOutputFile(String taskName, String fileName) {
@@ -117,6 +105,11 @@ public class ConfigurationFiles implements NativeImageConfigurationFiles {
   }
 
   @Override
+  public void addSerializationConfig(@NotNull RegularFileProperty file) {
+    serializationConfigs.from(file);
+  }
+
+  @Override
   public RegularFileProperty traverse(@NotNull Provider<RegularFile> provider) {
     RegularFileProperty file = project.getObjects().fileProperty();
     return file.convention(provider);
@@ -150,14 +143,30 @@ public class ConfigurationFiles implements NativeImageConfigurationFiles {
     addJniConfig(file);
   }
 
+  @Override
+  public void addSerializationConfig(File serializationConfig) {
+    RegularFileProperty file = project.getObjects().fileProperty();
+    file.set(serializationConfig);
+    addSerializationConfig(file);
+  }
+
   @NotNull
   @Internal
   public List<String> getArguments() {
     List<String> arguments = new ArrayList<>();
-    arguments.add(jniConfigArguments());
-    arguments.add(proxyConfigArguments());
-    arguments.add(reflectConfigArguments());
-    arguments.add(resourceConfigArguments());
+    String[] options =
+        new String[] {
+          jniConfigArguments(),
+          proxyConfigArguments(),
+          reflectConfigArguments(),
+          resourceConfigArguments(),
+          serializationConfigArguments()
+        };
+    for (String option : options) {
+      if (!option.isEmpty()) {
+        arguments.add(option);
+      }
+    }
     return Collections.unmodifiableList(arguments);
   }
 
@@ -177,12 +186,21 @@ public class ConfigurationFiles implements NativeImageConfigurationFiles {
     return createArguments("ResourceConfigurationFiles", resourceConfigs);
   }
 
+  private String serializationConfigArguments() {
+    return createArguments("SerializationConfigurationFiles", serializationConfigs);
+  }
+
   private static String createArguments(String option, Iterable<File> files) {
-    return StreamSupport.stream(files.spliterator(), false)
-        .map(File::toPath)
-        .filter(Files::exists)
-        .map(Path::toString)
-        .collect(Collectors.joining(",", "-H:" + option + "=", ""));
+    String filePaths =
+        StreamSupport.stream(files.spliterator(), false)
+            .map(File::toPath)
+            .filter(Files::exists)
+            .map(Path::toString)
+            .collect(Collectors.joining(","));
+    if (filePaths.isEmpty()) {
+      return "";
+    }
+    return String.format("-H:%s=%s", option, filePaths);
   }
 
   @Override
@@ -207,5 +225,10 @@ public class ConfigurationFiles implements NativeImageConfigurationFiles {
   @InputFiles
   public ConfigurableFileCollection getResourceConfigs() {
     return resourceConfigs;
+  }
+
+  @Override
+  public ConfigurableFileCollection getSerializationConfigs() {
+    return serializationConfigs;
   }
 }

@@ -1,0 +1,6 @@
+[
+  {
+    "name": "com.example.Foo",
+    "customTargetConstructorClass": "com.example.Bar"
+  }
+]
