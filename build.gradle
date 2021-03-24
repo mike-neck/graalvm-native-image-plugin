@@ -106,6 +106,12 @@ task functionalTest(type: Test) {
     classpath = sourceSets.functionalTest.runtimeClasspath
 }
 
+task removeFunctionalTestProjects(type: Delete) {
+    group = 'build'
+    description = 'Removes test projects'
+    delete "$buildDir/functionalTest"
+}
+
 tasks.withType(Test) {
     useJUnitPlatform()
 }
