@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
@@ -22,19 +23,31 @@ public class TestProjectSetup implements ParameterResolver, BeforeEachCallback {
     if (testProject == null) {
       throw new IllegalArgumentException("@TestProject annotation is required.");
     }
-    String resourceName = testProject.value();
-    String[] subprojects = testProject.subprojects();
-    List<SubProject> subProjects =
-        Arrays.stream(subprojects).<SubProject>map(path -> () -> path).collect(Collectors.toList());
-    FunctionalTestContext ctx =
-        subProjects.isEmpty()
-            ? new FunctionalTestContext(resourceName)
-            : new FunctionalTestContext(resourceName, subProjects);
+    FunctionalTestContext ctx = createContext(testProject);
     ctx.setup();
 
     ExtensionContext.Store store =
         context.getStore(ExtensionContext.Namespace.create(TestProject.class));
     store.put(testProject, ctx);
+  }
+
+  @NotNull
+  private static FunctionalTestContext createContext(TestProject testProject) {
+    String resourceName = testProject.value();
+    String directoryName = testProject.directoryName();
+    String[] subprojects = testProject.subprojects();
+    List<SubProject> subProjects =
+        Arrays.stream(subprojects).<SubProject>map(path -> () -> path).collect(Collectors.toList());
+
+    if (directoryName.isEmpty()) {
+      return subProjects.isEmpty()
+          ? new FunctionalTestContext(resourceName)
+          : new FunctionalTestContext(resourceName, subProjects);
+    } else {
+      return subProjects.isEmpty()
+          ? new FunctionalTestContext(resourceName, directoryName)
+          : new FunctionalTestContext(resourceName, directoryName, subProjects);
+    }
   }
 
   @Override

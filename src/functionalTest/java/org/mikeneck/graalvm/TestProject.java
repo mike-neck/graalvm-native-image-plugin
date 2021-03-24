@@ -12,6 +12,9 @@ public @interface TestProject {
   /** @return The path from test resource route. */
   String value();
 
+  /** @return The directory name where resource files are copied. */
+  String directoryName() default "";
+
   /** @return The subprojects of the test project. */
   String[] subprojects() default {};
 }
