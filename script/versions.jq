@@ -6,6 +6,7 @@
   .[] |
   .name |
   select(contains("RC") == false) |
+  select(contains("M1") == false) |
   {version: ., indices: indices(".")} |
   {version: .version, index: (.indices[1] // (.version | utf8bytelength))} |
   {version: .version, majorMinor: .version[:.index]}
