@@ -1,0 +1,19 @@
+plugins {
+  id 'java'
+  id 'org.mikeneck.graalvm-native-image'
+}
+
+nativeImage {
+  graalVmHome = System.getenv('JAVA_HOME')
+  mainClass = 'com.example.App'
+  classpath = sourceSets.main.output
+  executableName = 'test-app'
+  runtimeClasspath = configurations.runtimeClasspath
+  arguments {
+    preferByFile(file("$buildDir/tmp/"))
+    add '--no-fallback'
+    add options.traceClassInitialization('com.example.MessageProvider')
+    add '--initialize-at-build-time=com.example.Printer'
+    add '-H:+ReportExceptionStackTraces'
+  }
+}
