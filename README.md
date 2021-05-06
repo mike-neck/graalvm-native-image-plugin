@@ -28,6 +28,9 @@ You can configure arguments to be passed to GraalVM via `arguments(String...)` m
 - `arguments {}` - Configure `native-image` command's arguments in configuration block.
   - `add(String)` - Equivalent to `arguments(String...)`.
   - `add(Provider<String>)` - Equivalent to `arguments(Provider<String>...)`.
+  - `preferByFile(File)` - pass arguments/parameters to `native-image` command by file. The file will be created by this plugin.
+  - `preferByFile(Path)` - ibid.
+  - `preferByFile(RegularFile)` - ibid.
 
 For more information, please see appendix at the bottom of this README.
 
