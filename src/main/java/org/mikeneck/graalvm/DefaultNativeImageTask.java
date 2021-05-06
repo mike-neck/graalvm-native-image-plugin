@@ -3,11 +3,9 @@ package org.mikeneck.graalvm;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import javax.inject.Inject;
 import org.gradle.api.Action;
 import org.gradle.api.DefaultTask;
@@ -209,10 +207,13 @@ public class DefaultNativeImageTask extends DefaultTask implements NativeImageTa
   @Override
   public void arguments(String... arguments) {
     Project project = getProject();
-    nativeImageArguments.addArguments(
-        project.provider(
-            () ->
-                Arrays.stream(arguments).filter(it -> !it.isEmpty()).collect(Collectors.toList())));
+    ListProperty<String> listProperty = project.getObjects().listProperty(String.class);
+    for (String argument : arguments) {
+      if (!argument.isEmpty()) {
+        listProperty.add(argument);
+      }
+    }
+    nativeImageArguments.addArguments(listProperty);
   }
 
   @SafeVarargs
@@ -223,8 +224,6 @@ public class DefaultNativeImageTask extends DefaultTask implements NativeImageTa
     for (Provider<String> argument : arguments) {
       listProperty.add(argument);
     }
-    nativeImageArguments.addArguments(
-        listProperty.map(
-            list -> list.stream().filter(it -> !it.isEmpty()).collect(Collectors.toList())));
+    nativeImageArguments.addArguments(listProperty);
   }
 }

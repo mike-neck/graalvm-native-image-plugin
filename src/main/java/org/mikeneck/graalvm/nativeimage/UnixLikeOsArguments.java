@@ -93,9 +93,16 @@ class UnixLikeOsArguments implements NativeImageArguments {
   @Override
   public List<String> additionalArguments() {
     List<String> nativeImageConfigOptions = configurationFiles.getArguments();
+    if (!additionalArguments.isPresent()) {
+      return nativeImageConfigOptions;
+    }
+
     List<String> arguments = new ArrayList<>(nativeImageConfigOptions);
-    if (additionalArguments.isPresent()) {
-      arguments.addAll(additionalArguments.get());
+    List<String> list = additionalArguments.get();
+    for (String arg : list) {
+      if (!arg.isEmpty()) {
+        arguments.add(arg);
+      }
     }
     return Collections.unmodifiableList(arguments);
   }
@@ -208,6 +215,11 @@ class UnixLikeOsArguments implements NativeImageArguments {
   @Override
   public void addArguments(@NotNull Provider<Iterable<String>> arguments) {
     this.additionalArguments.addAll(arguments);
+  }
+
+  @Override
+  public void addArguments(ListProperty<String> listProperty) {
+    this.additionalArguments.addAll(listProperty);
   }
 
   @Override

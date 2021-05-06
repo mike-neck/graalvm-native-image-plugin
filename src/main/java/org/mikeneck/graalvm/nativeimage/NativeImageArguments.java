@@ -10,6 +10,7 @@ import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileCollection;
+import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.OutputDirectory;
@@ -75,6 +76,8 @@ public interface NativeImageArguments {
   void setExecutableName(@NotNull Provider<String> executableName);
 
   void addArguments(@NotNull Provider<Iterable<String>> arguments);
+
+  void addArguments(ListProperty<String> listProperty);
 
   void configureConfigFiles(@NotNull Action<NativeImageConfigurationFiles> configuration);
 }
