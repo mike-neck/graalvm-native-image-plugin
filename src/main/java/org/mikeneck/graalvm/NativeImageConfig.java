@@ -49,5 +49,5 @@ public interface NativeImageConfig {
   /** {@inheritDoc} */
   interface ArgumentsConfig extends NativeImageArgumentsConfig {}
 
-  void arguments(@NotNull Action<ArgumentsConfig> config);
+  void arguments(@NotNull Action<? super NativeImageArgumentsConfig> config);
 }

@@ -14,6 +14,7 @@ import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.bundling.Jar;
 import org.jetbrains.annotations.NotNull;
+import org.mikeneck.graalvm.NativeImageArgumentsConfig;
 import org.mikeneck.graalvm.NativeImageConfigurationFiles;
 
 class WindowsNativeImageArguments implements NativeImageArguments {
@@ -129,6 +130,17 @@ class WindowsNativeImageArguments implements NativeImageArguments {
   }
 
   @Override
+  public void addArguments(@NotNull String... arguments) {
+    delegate.addArguments(arguments);
+  }
+
+  @SafeVarargs
+  @Override
+  public final void addArguments(@NotNull Provider<String>... arguments) {
+    delegate.addArguments(arguments);
+  }
+
+  @Override
   public void addArguments(@NotNull Provider<Iterable<String>> arguments) {
     delegate.addArguments(arguments);
   }
@@ -136,6 +148,11 @@ class WindowsNativeImageArguments implements NativeImageArguments {
   @Override
   public void addArguments(ListProperty<String> listProperty) {
     delegate.addArguments(listProperty);
+  }
+
+  @Override
+  public void applyArgumentsConfig(Action<? super NativeImageArgumentsConfig> config) {
+    delegate.applyArgumentsConfig(config);
   }
 
   @Override

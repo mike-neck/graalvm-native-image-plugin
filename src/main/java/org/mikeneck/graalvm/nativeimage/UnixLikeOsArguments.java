@@ -22,6 +22,7 @@ import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.bundling.Jar;
 import org.jetbrains.annotations.NotNull;
+import org.mikeneck.graalvm.NativeImageArgumentsConfig;
 import org.mikeneck.graalvm.NativeImageConfigurationFiles;
 import org.slf4j.LoggerFactory;
 
@@ -213,6 +214,21 @@ class UnixLikeOsArguments implements NativeImageArguments {
   }
 
   @Override
+  public void addArguments(@NotNull String... arguments) {
+    for (String arg : arguments) {
+      this.additionalArguments.add(arg);
+    }
+  }
+
+  @SafeVarargs
+  @Override
+  public final void addArguments(@NotNull Provider<String>... arguments) {
+    for (Provider<String> arg : arguments) {
+      this.additionalArguments.add(arg);
+    }
+  }
+
+  @Override
   public void addArguments(@NotNull Provider<Iterable<String>> arguments) {
     this.additionalArguments.addAll(arguments);
   }
@@ -220,6 +236,23 @@ class UnixLikeOsArguments implements NativeImageArguments {
   @Override
   public void addArguments(ListProperty<String> listProperty) {
     this.additionalArguments.addAll(listProperty);
+  }
+
+  @Override
+  public void applyArgumentsConfig(Action<? super NativeImageArgumentsConfig> config) {
+    NativeImageArgumentsConfig nativeImageArgumentsConfig =
+        new NativeImageArgumentsConfig() {
+          @Override
+          public void add(String argument) {
+            additionalArguments.add(argument);
+          }
+
+          @Override
+          public void add(Provider<String> argument) {
+            additionalArguments.add(argument);
+          }
+        };
+    config.execute(nativeImageArgumentsConfig);
   }
 
   @Override

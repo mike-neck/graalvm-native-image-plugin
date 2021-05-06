@@ -206,25 +206,13 @@ public class DefaultNativeImageTask extends DefaultTask implements NativeImageTa
 
   @Override
   public void arguments(String... arguments) {
-    Project project = getProject();
-    ListProperty<String> listProperty = project.getObjects().listProperty(String.class);
-    for (String argument : arguments) {
-      if (!argument.isEmpty()) {
-        listProperty.add(argument);
-      }
-    }
-    nativeImageArguments.addArguments(listProperty);
+    nativeImageArguments.addArguments(arguments);
   }
 
   @SafeVarargs
   @Override
   public final void arguments(Provider<String>... arguments) {
-    Project project = getProject();
-    ListProperty<String> listProperty = project.getObjects().listProperty(String.class);
-    for (Provider<String> argument : arguments) {
-      listProperty.add(argument);
-    }
-    nativeImageArguments.addArguments(listProperty);
+    nativeImageArguments.addArguments(arguments);
   }
 
   @Override
