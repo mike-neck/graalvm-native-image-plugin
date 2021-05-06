@@ -16,6 +16,7 @@ import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.bundling.Jar;
 import org.jetbrains.annotations.NotNull;
+import org.mikeneck.graalvm.NativeImageArgumentsConfig;
 import org.mikeneck.graalvm.NativeImageConfigurationFiles;
 
 public interface NativeImageArguments {
@@ -75,9 +76,16 @@ public interface NativeImageArguments {
 
   void setExecutableName(@NotNull Provider<String> executableName);
 
+  void addArguments(@NotNull String... arguments);
+
+  @SuppressWarnings("unchecked")
+  void addArguments(@NotNull Provider<String>... arguments);
+
   void addArguments(@NotNull Provider<Iterable<String>> arguments);
 
   void addArguments(ListProperty<String> listProperty);
 
   void configureConfigFiles(@NotNull Action<NativeImageConfigurationFiles> configuration);
+
+  void applyArgumentsConfig(Action<? super NativeImageArgumentsConfig> config);
 }

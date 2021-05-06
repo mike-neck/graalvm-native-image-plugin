@@ -17,6 +17,7 @@ import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.file.ProjectLayout;
+import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
@@ -24,6 +25,7 @@ import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Nested;
+import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.bundling.Jar;
 import org.jetbrains.annotations.NotNull;
@@ -134,6 +136,11 @@ public class DefaultNativeImageTask extends DefaultTask implements NativeImageTa
     }
   }
 
+  @OutputFile
+  public RegularFileProperty getArgumentsFile() {
+    throw new UnsupportedOperationException();
+  }
+
   private List<String> arguments() {
     return getArguments().getOrElse(Collections.emptyList());
   }
@@ -216,21 +223,7 @@ public class DefaultNativeImageTask extends DefaultTask implements NativeImageTa
   }
 
   @Override
-  public void arguments(@NotNull Action<ArgumentsConfig> config) {
-    NativeImageConfig thisConfig = this;
-    ArgumentsConfig argumentsConfig =
-        new ArgumentsConfig() {
-          @Override
-          public void add(String argument) {
-            thisConfig.arguments(argument);
-          }
-
-          @SuppressWarnings("unchecked")
-          @Override
-          public void add(Provider<String> argument) {
-            thisConfig.arguments(argument);
-          }
-        };
-    config.execute(argumentsConfig);
+  public void arguments(@NotNull Action<? super NativeImageArgumentsConfig> config) {
+    nativeImageArguments.applyArgumentsConfig(config);
   }
 }
