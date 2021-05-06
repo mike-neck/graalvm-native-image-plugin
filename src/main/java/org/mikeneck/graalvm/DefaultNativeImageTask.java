@@ -14,9 +14,7 @@ import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.Directory;
-import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileCollection;
-import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.ListProperty;
@@ -29,7 +27,6 @@ import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.bundling.Jar;
 import org.jetbrains.annotations.NotNull;
-import org.mikeneck.graalvm.nativeimage.ConfigurationFiles;
 import org.mikeneck.graalvm.nativeimage.NativeImageArguments;
 import org.mikeneck.graalvm.nativeimage.NativeImageArgumentsFactory;
 import org.mikeneck.graalvm.nativeimage.options.DefaultOptions;
@@ -44,7 +41,6 @@ public class DefaultNativeImageTask extends DefaultTask implements NativeImageTa
 
   @NotNull private final NativeImageArguments nativeImageArguments;
 
-  @SuppressWarnings("UnstableApiUsage")
   @Inject
   public DefaultNativeImageTask(
       @NotNull Project project,
@@ -52,27 +48,11 @@ public class DefaultNativeImageTask extends DefaultTask implements NativeImageTa
       @NotNull Property<String> mainClass,
       @NotNull Property<Configuration> runtimeClasspath,
       @NotNull ConfigurableFileCollection jarFile) {
-    ObjectFactory objectFactory = project.getObjects();
-    ProjectLayout projectLayout = project.getLayout();
-    this.graalVmHome = graalVmHome;
-    @NotNull Property<String> executableName = objectFactory.property(String.class);
-    @NotNull ListProperty<String> additionalArguments = objectFactory.listProperty(String.class);
-    @NotNull
-    DirectoryProperty outputDirectory =
-        objectFactory
-            .directoryProperty()
-            .value(projectLayout.getBuildDirectory().dir(DEFAULT_OUTPUT_DIRECTORY_NAME));
     NativeImageArgumentsFactory nativeImageArgumentsFactory =
         NativeImageArgumentsFactory.getInstance();
+    this.graalVmHome = graalVmHome;
     this.nativeImageArguments =
-        nativeImageArgumentsFactory.create(
-            runtimeClasspath,
-            mainClass,
-            jarFile,
-            outputDirectory,
-            executableName,
-            additionalArguments,
-            new ConfigurationFiles(project));
+        nativeImageArgumentsFactory.create(project, mainClass, runtimeClasspath, jarFile);
   }
 
   @TaskAction
