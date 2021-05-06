@@ -46,24 +46,8 @@ public interface NativeImageConfig {
   @SuppressWarnings("unchecked")
   void arguments(Provider<String>... arguments);
 
-  /**
-   * Represents native-image command options. You can configure command options via this interface.
-   */
-  interface ArgumentsConfig {
-    /**
-     * Passes an option to native-image one by one.
-     *
-     * @param argument - native-image option argument.
-     */
-    void add(String argument);
-
-    /**
-     * Passes an option to native-image one by one.
-     *
-     * @param argument - native-image option argument.
-     */
-    void add(Provider<String> argument);
-  }
+  /** {@inheritDoc} */
+  interface ArgumentsConfig extends NativeImageArgumentsConfig {}
 
   @SuppressWarnings("unchecked")
   default void arguments(@NotNull Action<ArgumentsConfig> config) {
