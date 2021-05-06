@@ -49,21 +49,5 @@ public interface NativeImageConfig {
   /** {@inheritDoc} */
   interface ArgumentsConfig extends NativeImageArgumentsConfig {}
 
-  @SuppressWarnings("unchecked")
-  default void arguments(@NotNull Action<ArgumentsConfig> config) {
-    NativeImageConfig thisConfig = this;
-    ArgumentsConfig argumentsConfig =
-        new ArgumentsConfig() {
-          @Override
-          public void add(String argument) {
-            thisConfig.arguments(argument);
-          }
-
-          @Override
-          public void add(Provider<String> argument) {
-            thisConfig.arguments(argument);
-          }
-        };
-    config.execute(argumentsConfig);
-  }
+  void arguments(@NotNull Action<ArgumentsConfig> config);
 }

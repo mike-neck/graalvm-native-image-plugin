@@ -226,4 +226,23 @@ public class DefaultNativeImageTask extends DefaultTask implements NativeImageTa
     }
     nativeImageArguments.addArguments(listProperty);
   }
+
+  @Override
+  public void arguments(@NotNull Action<ArgumentsConfig> config) {
+    NativeImageConfig thisConfig = this;
+    ArgumentsConfig argumentsConfig =
+        new ArgumentsConfig() {
+          @Override
+          public void add(String argument) {
+            thisConfig.arguments(argument);
+          }
+
+          @SuppressWarnings("unchecked")
+          @Override
+          public void add(Provider<String> argument) {
+            thisConfig.arguments(argument);
+          }
+        };
+    config.execute(argumentsConfig);
+  }
 }
