@@ -10,6 +10,7 @@ import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileCollection;
+import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Internal;
@@ -47,6 +48,10 @@ public interface NativeImageArguments {
 
   @NotNull
   String mainClass();
+
+  @NotNull
+  @Internal
+  RegularFileProperty argumentsFile();
 
   void setRuntimeClasspath(@NotNull Provider<Configuration> runtimeClasspath);
 

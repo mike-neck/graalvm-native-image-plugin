@@ -13,6 +13,7 @@ import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileCollection;
+import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
@@ -35,6 +36,7 @@ class UnixLikeOsArguments implements NativeImageArguments {
   @NotNull private final Property<String> executableName;
   @NotNull private final ListProperty<String> additionalArguments;
   @NotNull private final ConfigurationFiles configurationFiles;
+  @NotNull private final RegularFileProperty argumentsFile;
 
   UnixLikeOsArguments(
       @NotNull Property<Configuration> runtimeClasspath,
@@ -43,7 +45,8 @@ class UnixLikeOsArguments implements NativeImageArguments {
       @NotNull DirectoryProperty outputDirectory,
       @NotNull Property<String> executableName,
       @NotNull ListProperty<String> additionalArguments,
-      @NotNull ConfigurationFiles configurationFiles) {
+      @NotNull ConfigurationFiles configurationFiles,
+      @NotNull RegularFileProperty argumentsFile) {
     this.runtimeClasspath = runtimeClasspath;
     this.mainClass = mainClass;
     this.jarFile = jarFile;
@@ -51,6 +54,7 @@ class UnixLikeOsArguments implements NativeImageArguments {
     this.executableName = executableName;
     this.additionalArguments = additionalArguments;
     this.configurationFiles = configurationFiles;
+    this.argumentsFile = argumentsFile;
   }
 
   @NotNull
@@ -111,6 +115,12 @@ class UnixLikeOsArguments implements NativeImageArguments {
   @Override
   public @NotNull String mainClass() {
     return mainClass.get();
+  }
+
+  @NotNull
+  @Override
+  public RegularFileProperty argumentsFile() {
+    return argumentsFile;
   }
 
   @NotNull

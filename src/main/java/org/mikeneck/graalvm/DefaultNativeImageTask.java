@@ -15,7 +15,6 @@ import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.FileCollection;
-import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
@@ -117,8 +116,8 @@ public class DefaultNativeImageTask extends DefaultTask implements NativeImageTa
   }
 
   @OutputFile
-  public RegularFileProperty getArgumentsFile() {
-    throw new UnsupportedOperationException();
+  public Provider<File> getArgumentsFile() {
+    return nativeImageArguments.argumentsFile().getAsFile();
   }
 
   private List<String> arguments() {

@@ -9,6 +9,7 @@ import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileCollection;
+import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Nested;
@@ -62,6 +63,11 @@ class WindowsNativeImageArguments implements NativeImageArguments {
   @Override
   public String mainClass() {
     return wrapValue(delegate.mainClass());
+  }
+
+  @Override
+  public @NotNull RegularFileProperty argumentsFile() {
+    return delegate.argumentsFile();
   }
 
   @Override

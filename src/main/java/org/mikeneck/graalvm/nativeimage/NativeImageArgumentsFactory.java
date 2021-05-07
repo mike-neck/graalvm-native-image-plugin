@@ -6,6 +6,7 @@ import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.ProjectLayout;
+import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
@@ -48,6 +49,7 @@ public interface NativeImageArgumentsFactory {
                 projectLayout
                     .getBuildDirectory()
                     .dir(DefaultNativeImageTask.DEFAULT_OUTPUT_DIRECTORY_NAME));
+    RegularFileProperty argumentsFile = objectFactory.fileProperty();
     return create(
         runtimeClasspath,
         mainClass,
@@ -55,7 +57,8 @@ public interface NativeImageArgumentsFactory {
         outputDirectory,
         executableName,
         additionalArguments,
-        new ConfigurationFiles(project));
+        new ConfigurationFiles(project),
+        argumentsFile);
   }
 
   @NotNull
@@ -66,5 +69,6 @@ public interface NativeImageArgumentsFactory {
       @NotNull DirectoryProperty outputDirectory,
       @NotNull Property<String> executableName,
       @NotNull ListProperty<String> additionalArguments,
-      @NotNull ConfigurationFiles configurationFiles);
+      @NotNull ConfigurationFiles configurationFiles,
+      @NotNull RegularFileProperty argumentsFile);
 }

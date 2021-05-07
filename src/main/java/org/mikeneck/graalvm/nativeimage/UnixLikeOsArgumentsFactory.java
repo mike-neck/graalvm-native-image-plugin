@@ -5,6 +5,7 @@ import java.util.Collection;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
 import org.jetbrains.annotations.NotNull;
@@ -27,7 +28,8 @@ public class UnixLikeOsArgumentsFactory implements NativeImageArgumentsFactory {
       @NotNull DirectoryProperty outputDirectory,
       @NotNull Property<String> executableName,
       @NotNull ListProperty<String> additionalArguments,
-      @NotNull ConfigurationFiles configurationFiles) {
+      @NotNull ConfigurationFiles configurationFiles,
+      @NotNull RegularFileProperty argumentsFile) {
     return new UnixLikeOsArguments(
         runtimeClasspath,
         mainClass,
@@ -35,6 +37,7 @@ public class UnixLikeOsArgumentsFactory implements NativeImageArgumentsFactory {
         outputDirectory,
         executableName,
         additionalArguments,
-        configurationFiles);
+        configurationFiles,
+        argumentsFile);
   }
 }
