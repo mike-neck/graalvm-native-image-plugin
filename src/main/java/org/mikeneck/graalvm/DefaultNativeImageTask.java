@@ -67,6 +67,15 @@ public class DefaultNativeImageTask extends DefaultTask implements NativeImageTa
             });
   }
 
+  @SuppressWarnings("ResultOfMethodCallIgnored")
+  private void createOutputDirectoryIfNotExisting() {
+    File outputDir = outputDirectory();
+    getLogger().info("create output directory if not exists: {}", outputDir);
+    if (!outputDir.exists()) {
+      outputDir.mkdirs();
+    }
+  }
+
   private Path nativeImageCommand() {
     GraalVmHome graalVmHome = graalVmHome();
     Optional<Path> nativeImage = graalVmHome.nativeImage();
@@ -104,15 +113,6 @@ public class DefaultNativeImageTask extends DefaultTask implements NativeImageTa
 
   public File outputDirectory() {
     return nativeImageArguments.getOutputDirectory().getAsFile().get();
-  }
-
-  @SuppressWarnings("ResultOfMethodCallIgnored")
-  private void createOutputDirectoryIfNotExisting() {
-    File outputDir = outputDirectory();
-    getLogger().info("create output directory if not exists: {}", outputDir);
-    if (!outputDir.exists()) {
-      outputDir.mkdirs();
-    }
   }
 
   @OutputFile
