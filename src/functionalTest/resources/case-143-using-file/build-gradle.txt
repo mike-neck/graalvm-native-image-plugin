@@ -10,7 +10,7 @@ nativeImage {
   executableName = 'test-app'
   runtimeClasspath = configurations.runtimeClasspath
   arguments {
-    preferByFile(file("$buildDir/tmp/"))
+    preferByFile()
     add '--no-fallback'
     add options.traceClassInitialization('com.example.MessageProvider')
     add '--initialize-at-build-time=com.example.Printer'
