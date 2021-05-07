@@ -15,7 +15,7 @@ class Case143UsingFileTest {
   @Test
   @TestProject("case-143-using-file")
   void preferByFile(@NotNull Gradlew gradlew, @NotNull FunctionalTestContext context) {
-    BuildResult result = gradlew.invoke("nativeImage");
+    BuildResult result = gradlew.invoke("nativeImage", "--info");
 
     assertAll(
         () ->

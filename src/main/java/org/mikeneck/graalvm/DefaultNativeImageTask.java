@@ -1,8 +1,12 @@
 package org.mikeneck.graalvm;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +19,7 @@ import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.FileCollection;
+import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
@@ -58,12 +63,20 @@ public class DefaultNativeImageTask extends DefaultTask implements NativeImageTa
   public void createNativeImage() {
     createOutputDirectoryIfNotExisting();
     Path nativeImageCommand = nativeImageCommand();
+    Optional<Path> argumentsFile = prepareArgumentsFile();
+
+    List<String> arguments =
+        argumentsFile
+            .map(file -> String.format("@%s", file))
+            .map(Arrays::asList)
+            .orElseGet(this::arguments);
+
     getProject()
         .exec(
             execSpec -> {
               getLogger().info("run native-image binary.");
               execSpec.setExecutable(nativeImageCommand);
-              execSpec.args(arguments());
+              execSpec.args(arguments);
             });
   }
 
@@ -85,6 +98,26 @@ public class DefaultNativeImageTask extends DefaultTask implements NativeImageTa
           "native-image not found in graalVmHome(" + graalVmHome + ")");
     }
     return nativeImage.get();
+  }
+
+  private Optional<Path> prepareArgumentsFile() {
+    RegularFileProperty file = nativeImageArguments.argumentsFile();
+    if (!file.isPresent()) {
+      return Optional.empty();
+    }
+    try {
+      Path argumentsFile = file.get().getAsFile().toPath();
+      Path directory = argumentsFile.getParent();
+      if (!Files.exists(directory)) {
+        Files.createDirectories(directory);
+      }
+      List<String> arguments = arguments();
+      Files.write(argumentsFile, arguments);
+      return Optional.of(argumentsFile);
+    } catch (IOException e) {
+      throw new UncheckedIOException(
+          "error while preparing arguments file for native-image task", e);
+    }
   }
 
   private GraalVmHome graalVmHome() {
