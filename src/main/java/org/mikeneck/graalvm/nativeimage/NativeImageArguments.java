@@ -1,6 +1,7 @@
 package org.mikeneck.graalvm.nativeimage;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -10,6 +11,7 @@ import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileCollection;
+import org.gradle.api.file.RegularFile;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Provider;
@@ -89,6 +91,12 @@ public interface NativeImageArguments {
   void addArguments(@NotNull Provider<Iterable<String>> arguments);
 
   void addArguments(ListProperty<String> listProperty);
+
+  void setArgumentsFile(@NotNull File file);
+
+  void setArgumentsFile(@NotNull Path file);
+
+  void setArgumentsFile(@NotNull RegularFile file);
 
   void configureConfigFiles(@NotNull Action<NativeImageConfigurationFiles> configuration);
 

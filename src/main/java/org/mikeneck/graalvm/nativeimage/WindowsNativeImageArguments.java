@@ -1,6 +1,7 @@
 package org.mikeneck.graalvm.nativeimage;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -9,6 +10,7 @@ import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileCollection;
+import org.gradle.api.file.RegularFile;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Provider;
@@ -154,6 +156,21 @@ class WindowsNativeImageArguments implements NativeImageArguments {
   @Override
   public void addArguments(ListProperty<String> listProperty) {
     delegate.addArguments(listProperty);
+  }
+
+  @Override
+  public void setArgumentsFile(@NotNull File file) {
+    delegate.setArgumentsFile(file);
+  }
+
+  @Override
+  public void setArgumentsFile(@NotNull Path file) {
+    delegate.setArgumentsFile(file);
+  }
+
+  @Override
+  public void setArgumentsFile(@NotNull RegularFile file) {
+    delegate.setArgumentsFile(file);
   }
 
   @Override

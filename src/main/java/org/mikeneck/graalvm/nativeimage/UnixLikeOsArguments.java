@@ -1,6 +1,7 @@
 package org.mikeneck.graalvm.nativeimage;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -13,6 +14,7 @@ import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileCollection;
+import org.gradle.api.file.RegularFile;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
@@ -246,6 +248,21 @@ class UnixLikeOsArguments implements NativeImageArguments {
   @Override
   public void addArguments(ListProperty<String> listProperty) {
     this.additionalArguments.addAll(listProperty);
+  }
+
+  @Override
+  public void setArgumentsFile(@NotNull File file) {
+    this.argumentsFile.set(file);
+  }
+
+  @Override
+  public void setArgumentsFile(@NotNull Path file) {
+    this.argumentsFile.set(file.toFile());
+  }
+
+  @Override
+  public void setArgumentsFile(@NotNull RegularFile file) {
+    this.argumentsFile.set(file);
   }
 
   @Override
