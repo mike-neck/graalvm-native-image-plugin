@@ -17,6 +17,7 @@ public class WindowsNativeImageArgumentsFactory implements NativeImageArgumentsF
 
   @Override
   public @NotNull NativeImageArguments create(
+      @NotNull DirectoryProperty buildDirectory,
       @NotNull Property<Configuration> runtimeClasspath,
       @NotNull Property<String> mainClass,
       @NotNull ConfigurableFileCollection jarFile,
@@ -27,6 +28,7 @@ public class WindowsNativeImageArgumentsFactory implements NativeImageArgumentsF
       @NotNull RegularFileProperty argumentsFile) {
     UnixLikeOsArguments delegate =
         new UnixLikeOsArguments(
+            buildDirectory,
             runtimeClasspath,
             mainClass,
             jarFile,

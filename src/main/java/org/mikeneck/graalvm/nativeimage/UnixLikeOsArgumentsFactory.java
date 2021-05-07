@@ -22,6 +22,7 @@ public class UnixLikeOsArgumentsFactory implements NativeImageArgumentsFactory {
 
   @Override
   public @NotNull NativeImageArguments create(
+      @NotNull DirectoryProperty buildDirectory,
       @NotNull Property<Configuration> runtimeClasspath,
       @NotNull Property<String> mainClass,
       @NotNull ConfigurableFileCollection jarFile,
@@ -31,6 +32,7 @@ public class UnixLikeOsArgumentsFactory implements NativeImageArgumentsFactory {
       @NotNull ConfigurationFiles configurationFiles,
       @NotNull RegularFileProperty argumentsFile) {
     return new UnixLikeOsArguments(
+        buildDirectory,
         runtimeClasspath,
         mainClass,
         jarFile,

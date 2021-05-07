@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 
 class UnixLikeOsArguments implements NativeImageArguments {
 
+  private final @NotNull DirectoryProperty buildDirectory;
   @NotNull private final Property<Configuration> runtimeClasspath;
   @NotNull private final Property<String> mainClass;
   @NotNull private final ConfigurableFileCollection jarFile;
@@ -41,6 +42,7 @@ class UnixLikeOsArguments implements NativeImageArguments {
   @NotNull private final RegularFileProperty argumentsFile;
 
   UnixLikeOsArguments(
+      @NotNull DirectoryProperty buildDirectory,
       @NotNull Property<Configuration> runtimeClasspath,
       @NotNull Property<String> mainClass,
       @NotNull ConfigurableFileCollection jarFile,
@@ -49,6 +51,7 @@ class UnixLikeOsArguments implements NativeImageArguments {
       @NotNull ListProperty<String> additionalArguments,
       @NotNull ConfigurationFiles configurationFiles,
       @NotNull RegularFileProperty argumentsFile) {
+    this.buildDirectory = buildDirectory;
     this.runtimeClasspath = runtimeClasspath;
     this.mainClass = mainClass;
     this.jarFile = jarFile;
@@ -267,23 +270,53 @@ class UnixLikeOsArguments implements NativeImageArguments {
 
   @Override
   public void applyArgumentsConfig(Action<? super NativeImageArgumentsConfig> config) {
-    NativeImageArgumentsConfig nativeImageArgumentsConfig =
-        new NativeImageArgumentsConfig() {
-          @Override
-          public void add(String argument) {
-            additionalArguments.add(argument);
-          }
-
-          @Override
-          public void add(Provider<String> argument) {
-            additionalArguments.add(argument);
-          }
-        };
+    NativeImageArgumentsConfig nativeImageArgumentsConfig = new NativeImageArgumentsConfigImpl();
     config.execute(nativeImageArgumentsConfig);
   }
 
   @Override
   public void configureConfigFiles(@NotNull Action<NativeImageConfigurationFiles> configuration) {
     configuration.execute(configurationFiles);
+  }
+
+  private class NativeImageArgumentsConfigImpl implements NativeImageArgumentsConfig {
+    @Override
+    public void preferByFile() {
+      Provider<RegularFile> file =
+          buildDirectory.map(
+              directory ->
+                  directory.dir("tmp").dir("native-image-arguments").file("arguments.txt"));
+      preferByFile(file);
+    }
+
+    @Override
+    public void preferByFile(@NotNull File file) {
+      argumentsFile.set(file);
+    }
+
+    @Override
+    public void preferByFile(@NotNull Path file) {
+      argumentsFile.set(file.toAbsolutePath().toFile());
+    }
+
+    @Override
+    public void preferByFile(@NotNull RegularFile file) {
+      argumentsFile.set(file);
+    }
+
+    @Override
+    public void preferByFile(@NotNull Provider<? extends RegularFile> file) {
+      argumentsFile.set(file);
+    }
+
+    @Override
+    public void add(String argument) {
+      additionalArguments.add(argument);
+    }
+
+    @Override
+    public void add(Provider<String> argument) {
+      additionalArguments.add(argument);
+    }
   }
 }

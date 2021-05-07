@@ -50,7 +50,9 @@ public interface NativeImageArgumentsFactory {
                     .getBuildDirectory()
                     .dir(DefaultNativeImageTask.DEFAULT_OUTPUT_DIRECTORY_NAME));
     RegularFileProperty argumentsFile = objectFactory.fileProperty();
+    DirectoryProperty buildDirectory = projectLayout.getBuildDirectory();
     return create(
+        buildDirectory,
         runtimeClasspath,
         mainClass,
         jarFile,
@@ -63,6 +65,7 @@ public interface NativeImageArgumentsFactory {
 
   @NotNull
   NativeImageArguments create(
+      @NotNull DirectoryProperty buildDirectory,
       @NotNull Property<Configuration> runtimeClasspath,
       @NotNull Property<String> mainClass,
       @NotNull ConfigurableFileCollection jarFile,
