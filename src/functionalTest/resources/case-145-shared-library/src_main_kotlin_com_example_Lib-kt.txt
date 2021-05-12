@@ -1,0 +1,34 @@
+package com.example
+
+import org.apache.commons.codec.digest.DigestUtils
+import org.graalvm.nativeimage.c.function.CEntryPoint
+import java.io.File
+
+object Lib {
+    @CEntryPoint(name = "kotlin_lib_com_example_add")
+    @JvmStatic
+    fun addIntWithInt(@CEntryPoint.IsolateThreadContext threadId: Long, left: Int, right: Int): Int {
+        return left + right
+    }
+
+    @JvmStatic
+    fun hash(filePath: String): Int {
+        val file = File(filePath)
+        if (!file.exists()) {
+            return -1
+        }
+        if (file.isDirectory) {
+            return -10
+        }
+        return try {
+            val md5 = file.inputStream().use {
+                DigestUtils.md5Hex(it)
+            }
+            println(md5)
+            0
+        } catch (e: Exception) {
+            System.err.println(e.message)
+            -100
+        }
+    }
+}
