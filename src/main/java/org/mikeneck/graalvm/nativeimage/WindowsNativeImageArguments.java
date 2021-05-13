@@ -73,6 +73,11 @@ class WindowsNativeImageArguments implements NativeImageArguments {
   }
 
   @Override
+  public void setBuildType(BuildTypeOption buildTypeOption) {
+    delegate.setBuildType(buildTypeOption);
+  }
+
+  @Override
   public void addClasspath(@NotNull File jarFile) {
     delegate.addClasspath(jarFile);
   }

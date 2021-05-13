@@ -1,5 +1,6 @@
 package org.mikeneck.graalvm;
 
+import groovy.lang.Closure;
 import java.io.File;
 import java.nio.file.Path;
 import org.gradle.api.Action;
@@ -27,7 +28,18 @@ public interface NativeImageConfig {
 
   void setClasspath(Jar jarTask);
 
+  /**
+   * set FQCN of main class.
+   *
+   * @param mainClass - FQCN of main class.
+   * @deprecated use {@link #buildType(BuildTypeConfiguration)}
+   */
+  @Deprecated
   void setMainClass(String mainClass);
+
+  void buildType(@NotNull BuildTypeConfiguration buildTypeConfiguration);
+
+  void buildType(@NotNull Closure<@NotNull BuildType> buildTypeConfiguration);
 
   void setExecutableName(String name);
 

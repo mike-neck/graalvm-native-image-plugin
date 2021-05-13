@@ -23,12 +23,14 @@ import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.bundling.Jar;
 import org.jetbrains.annotations.NotNull;
 import org.mikeneck.graalvm.NativeImageConfigurationFiles;
+import org.mikeneck.graalvm.nativeimage.options.type.BuildExecutable;
 import org.slf4j.LoggerFactory;
 
 class UnixLikeOsArguments implements NativeImageArguments {
 
   @NotNull private final Property<Configuration> runtimeClasspath;
   @NotNull private final Property<String> mainClass;
+  @NotNull private final Property<BuildTypeOption> buildTypeOption;
   @NotNull private final ConfigurableFileCollection jarFile;
   @NotNull private final DirectoryProperty outputDirectory;
   @NotNull private final Property<String> executableName;
@@ -38,6 +40,7 @@ class UnixLikeOsArguments implements NativeImageArguments {
   UnixLikeOsArguments(
       @NotNull Property<Configuration> runtimeClasspath,
       @NotNull Property<String> mainClass,
+      @NotNull Property<BuildTypeOption> buildTypeOption,
       @NotNull ConfigurableFileCollection jarFile,
       @NotNull DirectoryProperty outputDirectory,
       @NotNull Property<String> executableName,
@@ -45,6 +48,7 @@ class UnixLikeOsArguments implements NativeImageArguments {
       @NotNull ConfigurationFiles configurationFiles) {
     this.runtimeClasspath = runtimeClasspath;
     this.mainClass = mainClass;
+    this.buildTypeOption = buildTypeOption;
     this.jarFile = jarFile;
     this.outputDirectory = outputDirectory;
     this.executableName = executableName;
@@ -116,15 +120,18 @@ class UnixLikeOsArguments implements NativeImageArguments {
     this.runtimeClasspath.set(runtimeClasspath);
   }
 
-  @NotNull
-  @Input
-  public Provider<String> getMainClass() {
-    return mainClass;
+  @Override
+  public void setMainClass(@NotNull Provider<String> mainClass) {
+    this.buildTypeOption.set(mainClass.map(BuildExecutable::new));
   }
 
   @Override
-  public void setMainClass(@NotNull Provider<String> mainClass) {
-    this.mainClass.set(mainClass);
+  public void setBuildType(BuildTypeOption buildTypeOption) {
+    this.buildTypeOption.set(buildTypeOption);
+  }
+
+  public Provider<BuildTypeOption> getBuildType() {
+    return this.buildTypeOption;
   }
 
   @InputFiles

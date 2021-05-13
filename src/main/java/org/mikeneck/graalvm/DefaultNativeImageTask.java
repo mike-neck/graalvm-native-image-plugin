@@ -1,5 +1,6 @@
 package org.mikeneck.graalvm;
 
+import groovy.lang.Closure;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -14,11 +15,8 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.InvalidUserDataException;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
-import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.Directory;
-import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileCollection;
-import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
@@ -29,11 +27,12 @@ import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.bundling.Jar;
 import org.jetbrains.annotations.NotNull;
-import org.mikeneck.graalvm.nativeimage.ConfigurationFiles;
+import org.mikeneck.graalvm.nativeimage.BuildTypeOption;
 import org.mikeneck.graalvm.nativeimage.NativeImageArguments;
-import org.mikeneck.graalvm.nativeimage.NativeImageArgumentsFactory;
 import org.mikeneck.graalvm.nativeimage.options.DefaultOptions;
 import org.mikeneck.graalvm.nativeimage.options.Options;
+import org.mikeneck.graalvm.nativeimage.options.type.BuildExecutable;
+import org.mikeneck.graalvm.nativeimage.options.type.BuildSharedLibrary;
 import org.slf4j.LoggerFactory;
 
 public class DefaultNativeImageTask extends DefaultTask implements NativeImageTask {
@@ -44,35 +43,12 @@ public class DefaultNativeImageTask extends DefaultTask implements NativeImageTa
 
   @NotNull private final NativeImageArguments nativeImageArguments;
 
-  @SuppressWarnings("UnstableApiUsage")
   @Inject
   public DefaultNativeImageTask(
-      @NotNull Project project,
       @NotNull Property<GraalVmHome> graalVmHome,
-      @NotNull Property<String> mainClass,
-      @NotNull Property<Configuration> runtimeClasspath,
-      @NotNull ConfigurableFileCollection jarFile) {
-    ObjectFactory objectFactory = project.getObjects();
-    ProjectLayout projectLayout = project.getLayout();
+      @NotNull NativeImageArguments nativeImageArguments) {
     this.graalVmHome = graalVmHome;
-    @NotNull Property<String> executableName = objectFactory.property(String.class);
-    @NotNull ListProperty<String> additionalArguments = objectFactory.listProperty(String.class);
-    @NotNull
-    DirectoryProperty outputDirectory =
-        objectFactory
-            .directoryProperty()
-            .value(projectLayout.getBuildDirectory().dir(DEFAULT_OUTPUT_DIRECTORY_NAME));
-    NativeImageArgumentsFactory nativeImageArgumentsFactory =
-        NativeImageArgumentsFactory.getInstance();
-    this.nativeImageArguments =
-        nativeImageArgumentsFactory.create(
-            runtimeClasspath,
-            mainClass,
-            jarFile,
-            outputDirectory,
-            executableName,
-            additionalArguments,
-            new ConfigurationFiles(project));
+    this.nativeImageArguments = nativeImageArguments;
   }
 
   @TaskAction
@@ -181,8 +157,39 @@ public class DefaultNativeImageTask extends DefaultTask implements NativeImageTa
 
   @Override
   public void setMainClass(String mainClass) {
-    Project project = getProject();
-    nativeImageArguments.setMainClass(project.provider(() -> mainClass));
+    nativeImageArguments.setBuildType(new BuildExecutable(mainClass));
+  }
+
+  @Override
+  public void buildType(@NotNull BuildTypeConfiguration buildTypeConfiguration) {
+    BuildTypeSelector selector =
+        new BuildTypeSelector() {
+          @Override
+          public @NotNull BuildType getSharedLibrary() {
+            return BuildSharedLibrary.INSTANCE;
+          }
+
+          @Override
+          public @NotNull BuildType executable(
+              @NotNull Action<BuildExecutableOption> executableOptionConfig) {
+            String[] mainClassName = new String[1];
+            BuildExecutableOption option = mainClass -> mainClassName[0] = mainClass;
+            executableOptionConfig.execute(option);
+            if (mainClassName[0] == null) {
+              throw new IllegalArgumentException(
+                  "Main class name is required for buildType=executable");
+            }
+            return new BuildExecutable(mainClassName[0]);
+          }
+        };
+    BuildTypeOption buildType = (BuildTypeOption) buildTypeConfiguration.select(selector);
+    nativeImageArguments.setBuildType(buildType);
+  }
+
+  @SuppressWarnings("NullableProblems")
+  @Override
+  public void buildType(@NotNull Closure<@NotNull BuildType> buildTypeConfiguration) {
+    buildType(buildTypeConfiguration::call);
   }
 
   @Override

@@ -48,7 +48,10 @@ public interface NativeImageArguments {
 
   void setRuntimeClasspath(@NotNull Provider<Configuration> runtimeClasspath);
 
+  @Deprecated
   void setMainClass(@NotNull Provider<String> mainClass);
+
+  void setBuildType(BuildTypeOption buildTypeOption);
 
   void addClasspath(@NotNull File jarFile);
 
