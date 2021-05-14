@@ -80,6 +80,21 @@ class WindowsNativeImageArguments implements NativeImageArguments, NativeImageSt
   }
 
   @Override
+  public @NotNull BuildTypeOption buildType() {
+    return new BuildTypeOption() {
+      @Override
+      public @NotNull Optional<@NotNull String> sharedLibraryOption() {
+        return delegate.buildType().sharedLibraryOption();
+      }
+
+      @Override
+      public @NotNull Optional<@NotNull String> mainClassName() {
+        return delegate.buildType().mainClassName().map(name -> wrapValue(name));
+      }
+    };
+  }
+
+  @Override
   public void setBuildType(BuildTypeOption buildTypeOption) {
     delegate.setBuildType(buildTypeOption);
   }

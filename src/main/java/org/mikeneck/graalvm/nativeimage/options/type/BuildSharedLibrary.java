@@ -11,12 +11,12 @@ public class BuildSharedLibrary implements BuildTypeOption {
   private BuildSharedLibrary() {}
 
   @Override
-  public @NotNull Optional<@NotNull String> firstOption() {
+  public @NotNull Optional<@NotNull String> sharedLibraryOption() {
     return Optional.of("--shared");
   }
 
   @Override
-  public @NotNull Optional<@NotNull String> lastOption() {
+  public @NotNull Optional<@NotNull String> mainClassName() {
     return Optional.empty();
   }
 

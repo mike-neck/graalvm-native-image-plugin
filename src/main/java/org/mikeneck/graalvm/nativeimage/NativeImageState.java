@@ -13,26 +13,27 @@ import org.jetbrains.annotations.NotNull;
 
 public interface NativeImageState {
 
-    @NotNull
-    @InputFiles
-    Provider<Configuration> getRuntimeClasspath();
+  @NotNull
+  @InputFiles
+  Provider<Configuration> getRuntimeClasspath();
 
-    @NotNull
-    @Internal
-    Provider<BuildTypeOption> getBuildType();
+  @NotNull
+  @Internal
+  Provider<BuildTypeOption> getBuildType();
 
-    @InputFiles
-    @NotNull Iterable<File> getJarFiles();
+  @InputFiles
+  @NotNull
+  Iterable<File> getJarFiles();
 
-    @NotNull
-    @OutputDirectory
-    DirectoryProperty getOutputDirectory();
+  @NotNull
+  @OutputDirectory
+  DirectoryProperty getOutputDirectory();
 
-    @NotNull
-    @Input
-    Provider<String> getExecutableName();
+  @NotNull
+  @Input
+  Provider<String> getExecutableName();
 
-    @NotNull
-    @Input
-    ListProperty<String> getAdditionalArguments();
+  @NotNull
+  @Input
+  ListProperty<String> getAdditionalArguments();
 }

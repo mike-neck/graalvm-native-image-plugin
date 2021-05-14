@@ -22,12 +22,12 @@ public class BuildExecutable implements BuildTypeOption {
   }
 
   @Override
-  public @NotNull Optional<String> firstOption() {
+  public @NotNull Optional<String> sharedLibraryOption() {
     return Optional.empty();
   }
 
   @Override
-  public @NotNull Optional<String> lastOption() {
+  public @NotNull Optional<String> mainClassName() {
     return Optional.of(mainClass);
   }
 }

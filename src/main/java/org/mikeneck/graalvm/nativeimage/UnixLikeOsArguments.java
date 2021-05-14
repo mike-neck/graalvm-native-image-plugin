@@ -128,6 +128,11 @@ class UnixLikeOsArguments implements NativeImageArguments, NativeImageState {
   }
 
   @Override
+  public @NotNull BuildTypeOption buildType() {
+    return buildTypeOption.get();
+  }
+
+  @Override
   public void setBuildType(BuildTypeOption buildTypeOption) {
     this.buildTypeOption.set(buildTypeOption);
   }

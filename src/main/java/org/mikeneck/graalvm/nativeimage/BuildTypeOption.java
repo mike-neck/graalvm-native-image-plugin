@@ -7,8 +7,8 @@ import org.mikeneck.graalvm.BuildType;
 public interface BuildTypeOption extends BuildType {
 
   @NotNull
-  Optional<@NotNull String> firstOption();
+  Optional<@NotNull String> sharedLibraryOption();
 
   @NotNull
-  Optional<@NotNull String> lastOption();
+  Optional<@NotNull String> mainClassName();
 }
