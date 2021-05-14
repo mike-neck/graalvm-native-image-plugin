@@ -21,9 +21,9 @@ class Case145SharedLibrary {
   void run(@NotNull Gradlew gradlew, @NotNull FunctionalTestContext context) {
     BuildResult result = gradlew.invoke("nativeImage");
 
-    Path headerFile = context.file("build/shared-lib/shared-lib.h");
-    Path soFile = context.file("build/shared-lib/shared-lib.so");
-    Path dylibFile = context.file("build/shared-lib/shared-lib.dylib");
+    Path headerFile = context.file("build/native-image/hash-lib.h");
+    Path soFile = context.file("build/native-image/hash-lib.so");
+    Path dylibFile = context.file("build/native-image/hash-lib.dylib");
     assertAll(
         () ->
             assertThat(result.tasks(TaskOutcome.SUCCESS).stream().map(BuildTask::getPath))
@@ -31,7 +31,9 @@ class Case145SharedLibrary {
         () -> assertThat(headerFile).exists(),
         () ->
             assertThat(Files.readAllLines(headerFile))
-                .contains("kotlin_lib_com_example_add", "java_lib_com_example_get_hash"),
+                .contains(
+                    "int kotlin_lib_com_example_add(long long int, int, int);",
+                    "int java_lib_com_example_get_hash(long long int, int, char*);"),
         () ->
             assertThat(Arrays.asList(soFile, dylibFile))
                 .anySatisfy(lib -> assertThat(lib).exists()));

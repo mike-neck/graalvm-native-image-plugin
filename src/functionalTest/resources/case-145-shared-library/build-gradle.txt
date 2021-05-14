@@ -20,35 +20,19 @@ test {
     useJUnitPlatform()
 }
 
+import org.mikeneck.graalvm.BuildTypeSelector
+
 nativeImage {
     graalVmHome = System.getProperty('java.home')
     buildType { BuildTypeSelector selector ->
         selector.sharedLibrary
     }
+
     executableName = 'hash-lib'
     arguments {
         add '-H:+ReportExceptionStackTraces'
         add '--no-fallback'
         add '--enable-all-security-services'
         add '--report-unsupported-elements-at-runtime'
-    }
-}
-
-task sharedLib(type: Exec, group: 'graalvm', dependsOn: 'jar') {
-    def graalVmHome = System.getProperty('java.home')
-    executable = "$graalVmHome/bin/native-image"
-    def classpath = project.objects.fileCollection()
-    classpath.from(configurations.named('runtimeClasspath'))
-    classpath.from(tasks.named('jar'))
-
-    def outputDir = file("$buildDir/shared")
-    outputs.dir(outputDir)
-
-    args('--shared', "-H:Name=lib-hash", "-H:Path=$outputDir", '-cp', classpath.asPath)
-
-    doFirst {
-        if (!outputDir.exists()) {
-            outputDir.mkdirs()
-        }
     }
 }
