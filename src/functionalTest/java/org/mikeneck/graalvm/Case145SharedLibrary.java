@@ -11,11 +11,14 @@ import org.gradle.testkit.runner.BuildTask;
 import org.gradle.testkit.runner.TaskOutcome;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledForJreRange;
+import org.junit.jupiter.api.condition.JRE;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith(TestProjectSetup.class)
 class Case145SharedLibrary {
 
+  @DisabledForJreRange(max = JRE.JAVA_8)
   @Test
   @TestProject(value = "case-145-shared-library")
   void run(@NotNull Gradlew gradlew, @NotNull FunctionalTestContext context) {
