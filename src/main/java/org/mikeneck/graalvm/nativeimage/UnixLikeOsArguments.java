@@ -124,6 +124,7 @@ class UnixLikeOsArguments implements NativeImageArguments, NativeImageState {
 
   @Override
   public void setMainClass(@NotNull Provider<String> mainClass) {
+    this.mainClass.set(mainClass);
     this.buildTypeOption.set(mainClass.map(BuildExecutable::new));
   }
 

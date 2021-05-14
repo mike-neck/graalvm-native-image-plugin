@@ -157,6 +157,8 @@ public class DefaultNativeImageTask extends DefaultTask implements NativeImageTa
 
   @Override
   public void setMainClass(String mainClass) {
+    Provider<String> mainClassProvider = getProject().provider(() -> mainClass);
+    nativeImageArguments.setMainClass(mainClassProvider);
     nativeImageArguments.setBuildType(new BuildExecutable(mainClass));
   }
 
