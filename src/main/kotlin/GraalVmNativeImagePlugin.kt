@@ -2,6 +2,8 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.bundling.Jar
+import org.mikeneck.graalvm.BuildType
+import org.mikeneck.graalvm.BuildTypeSelector
 import org.mikeneck.graalvm.GenerateNativeImageConfigTask
 import org.mikeneck.graalvm.GenerateNativeImageConfigTaskWrapper
 import org.mikeneck.graalvm.NativeImageTask
@@ -26,6 +28,7 @@ var NativeImageTask.classpath: FileCollection
   get() = throw UnsupportedOperationException("getClasspath is not supported.")
   set(value) = this.setClasspath(value)
 
+@Deprecated(message = "use `buildType(BuildTypeConfiguration) instead`", level = DeprecationLevel.WARNING)
 var NativeImageTask.mainClass: String
   get() = throw UnsupportedOperationException("getMainClass is not supported.")
   set(value) = this.setMainClass(value)
