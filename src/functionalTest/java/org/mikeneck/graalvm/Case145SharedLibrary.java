@@ -29,7 +29,9 @@ class Case145SharedLibrary {
             assertThat(result.tasks(TaskOutcome.SUCCESS).stream().map(BuildTask::getPath))
                 .contains(":nativeImage"),
         () -> assertThat(headerFile).exists(),
-        () -> assertThat(Files.readAllLines(headerFile)).contains("kotlin_lib_com_example_add", "java_lib_com_example_get_hash"),
+        () ->
+            assertThat(Files.readAllLines(headerFile))
+                .contains("kotlin_lib_com_example_add", "java_lib_com_example_get_hash"),
         () ->
             assertThat(Arrays.asList(soFile, dylibFile))
                 .anySatisfy(lib -> assertThat(lib).exists()));
