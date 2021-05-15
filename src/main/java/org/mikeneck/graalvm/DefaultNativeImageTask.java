@@ -183,6 +183,19 @@ public class DefaultNativeImageTask extends DefaultTask implements NativeImageTa
             }
             return new BuildExecutable(mainClassName[0]);
           }
+
+          @Override
+          public @NotNull BuildType executable(@NotNull Closure<Void> executableOptionConfig) {
+            String[] mainClassName = new String[1];
+            BuildExecutableOption option = mainClass -> mainClassName[0] = mainClass;
+            executableOptionConfig.setDelegate(option);
+            executableOptionConfig.call(option);
+            if (mainClassName[0] == null) {
+              throw new IllegalArgumentException(
+                  "Main class name is required for buildType=executable");
+            }
+            return new BuildExecutable(mainClassName[0]);
+          }
         };
     BuildTypeOption buildType = (BuildTypeOption) buildTypeConfiguration.select(selector);
     nativeImageArguments.setBuildType(buildType);

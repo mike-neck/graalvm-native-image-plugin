@@ -41,4 +41,16 @@ class Case145SharedLibrary {
             assertThat(Arrays.asList(soFile, dylibFile))
                 .anySatisfy(lib -> assertThat(lib).exists()));
   }
+
+  @Test
+  @TestProject("case-145-main-class-name")
+  void mainClassName(@NotNull Gradlew gradlew, @NotNull FunctionalTestContext context) {
+    BuildResult result = gradlew.invoke("nativeImage", "--stacktrace");
+    Path executable = context.file("build/native-image/hash-lib");
+    assertAll(
+        () ->
+            assertThat(result.tasks(TaskOutcome.SUCCESS).stream().map(BuildTask::getPath))
+                .contains(":nativeImage"),
+        () -> assertThat(executable).exists());
+  }
 }

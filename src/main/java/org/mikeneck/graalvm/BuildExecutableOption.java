@@ -4,5 +4,5 @@ import org.jetbrains.annotations.NotNull;
 
 public interface BuildExecutableOption {
 
-  void setMainClass(@NotNull String mainClass);
+  void setMain(@NotNull String mainClass);
 }
