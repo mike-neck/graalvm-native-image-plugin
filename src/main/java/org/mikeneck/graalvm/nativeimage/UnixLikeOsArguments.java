@@ -18,17 +18,20 @@ import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFiles;
+import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.bundling.Jar;
 import org.jetbrains.annotations.NotNull;
 import org.mikeneck.graalvm.NativeImageConfigurationFiles;
+import org.mikeneck.graalvm.nativeimage.options.type.BuildExecutable;
 import org.slf4j.LoggerFactory;
 
-class UnixLikeOsArguments implements NativeImageArguments {
+class UnixLikeOsArguments implements NativeImageArguments, NativeImageState {
 
   @NotNull private final Property<Configuration> runtimeClasspath;
   @NotNull private final Property<String> mainClass;
+  @NotNull private final Property<BuildTypeOption> buildTypeOption;
   @NotNull private final ConfigurableFileCollection jarFile;
   @NotNull private final DirectoryProperty outputDirectory;
   @NotNull private final Property<String> executableName;
@@ -38,6 +41,7 @@ class UnixLikeOsArguments implements NativeImageArguments {
   UnixLikeOsArguments(
       @NotNull Property<Configuration> runtimeClasspath,
       @NotNull Property<String> mainClass,
+      @NotNull Property<BuildTypeOption> buildTypeOption,
       @NotNull ConfigurableFileCollection jarFile,
       @NotNull DirectoryProperty outputDirectory,
       @NotNull Property<String> executableName,
@@ -45,6 +49,7 @@ class UnixLikeOsArguments implements NativeImageArguments {
       @NotNull ConfigurationFiles configurationFiles) {
     this.runtimeClasspath = runtimeClasspath;
     this.mainClass = mainClass;
+    this.buildTypeOption = buildTypeOption;
     this.jarFile = jarFile;
     this.outputDirectory = outputDirectory;
     this.executableName = executableName;
@@ -105,6 +110,7 @@ class UnixLikeOsArguments implements NativeImageArguments {
     return mainClass.get();
   }
 
+  @Override
   @NotNull
   @InputFiles
   public Provider<Configuration> getRuntimeClasspath() {
@@ -116,17 +122,30 @@ class UnixLikeOsArguments implements NativeImageArguments {
     this.runtimeClasspath.set(runtimeClasspath);
   }
 
-  @NotNull
-  @Input
-  public Provider<String> getMainClass() {
-    return mainClass;
-  }
-
   @Override
   public void setMainClass(@NotNull Provider<String> mainClass) {
     this.mainClass.set(mainClass);
+    this.buildTypeOption.set(mainClass.map(BuildExecutable::new));
   }
 
+  @Override
+  public @NotNull BuildTypeOption buildType() {
+    return buildTypeOption.get();
+  }
+
+  @Override
+  public void setBuildType(BuildTypeOption buildTypeOption) {
+    this.buildTypeOption.set(buildTypeOption);
+  }
+
+  @Override
+  @NotNull
+  @Internal
+  public Provider<BuildTypeOption> getBuildType() {
+    return this.buildTypeOption;
+  }
+
+  @Override
   @InputFiles
   public @NotNull Iterable<File> getJarFiles() {
     LoggerFactory.getLogger(NativeImageArguments.class)
@@ -188,6 +207,7 @@ class UnixLikeOsArguments implements NativeImageArguments {
     this.outputDirectory.set(outputDirectory);
   }
 
+  @Override
   @NotNull
   @Input
   public Provider<String> getExecutableName() {
@@ -199,6 +219,7 @@ class UnixLikeOsArguments implements NativeImageArguments {
     this.executableName.set(executableName);
   }
 
+  @Override
   @NotNull
   @Input
   public ListProperty<String> getAdditionalArguments() {

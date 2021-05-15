@@ -9,20 +9,27 @@ import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileCollection;
+import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Provider;
+import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.InputFiles;
+import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Nested;
+import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.bundling.Jar;
 import org.jetbrains.annotations.NotNull;
 import org.mikeneck.graalvm.NativeImageConfigurationFiles;
 
-class WindowsNativeImageArguments implements NativeImageArguments {
+class WindowsNativeImageArguments implements NativeImageArguments, NativeImageState {
 
   private static final char DOUBLE_QUOT = '"';
 
   private final NativeImageArguments delegate;
+  private final NativeImageState delegateState;
 
-  WindowsNativeImageArguments(NativeImageArguments delegate) {
+  <T extends NativeImageArguments & NativeImageState> WindowsNativeImageArguments(T delegate) {
     this.delegate = delegate;
+    this.delegateState = delegate;
   }
 
   @NotNull
@@ -73,6 +80,26 @@ class WindowsNativeImageArguments implements NativeImageArguments {
   }
 
   @Override
+  public @NotNull BuildTypeOption buildType() {
+    return new BuildTypeOption() {
+      @Override
+      public @NotNull Optional<@NotNull String> sharedLibraryOption() {
+        return delegate.buildType().sharedLibraryOption();
+      }
+
+      @Override
+      public @NotNull Optional<@NotNull String> mainClassName() {
+        return delegate.buildType().mainClassName().map(name -> wrapValue(name));
+      }
+    };
+  }
+
+  @Override
+  public void setBuildType(BuildTypeOption buildTypeOption) {
+    delegate.setBuildType(buildTypeOption);
+  }
+
+  @Override
   public void addClasspath(@NotNull File jarFile) {
     delegate.addClasspath(jarFile);
   }
@@ -113,6 +140,25 @@ class WindowsNativeImageArguments implements NativeImageArguments {
   }
 
   @Override
+  @InputFiles
+  public @NotNull Provider<Configuration> getRuntimeClasspath() {
+    return delegateState.getRuntimeClasspath();
+  }
+
+  @Override
+  @Internal
+  public @NotNull Provider<BuildTypeOption> getBuildType() {
+    return delegateState.getBuildType();
+  }
+
+  @Override
+  @InputFiles
+  public @NotNull Iterable<File> getJarFiles() {
+    return delegateState.getJarFiles();
+  }
+
+  @Override
+  @OutputDirectory
   public @NotNull DirectoryProperty getOutputDirectory() {
     return delegate.getOutputDirectory();
   }
@@ -123,8 +169,20 @@ class WindowsNativeImageArguments implements NativeImageArguments {
   }
 
   @Override
+  @Input
+  public @NotNull Provider<String> getExecutableName() {
+    return delegateState.getExecutableName();
+  }
+
+  @Override
   public void setExecutableName(@NotNull Provider<String> executableName) {
     delegate.setExecutableName(executableName);
+  }
+
+  @Override
+  @Input
+  public @NotNull ListProperty<String> getAdditionalArguments() {
+    return delegateState.getAdditionalArguments();
   }
 
   @Override

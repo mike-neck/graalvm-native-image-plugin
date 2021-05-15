@@ -1,0 +1,21 @@
+package com.example;
+
+import java.nio.charset.StandardCharsets;
+import org.graalvm.nativeimage.c.function.CEntryPoint;
+import org.graalvm.nativeimage.c.type.CCharPointer;
+
+public class LibInterface {
+
+    @CEntryPoint(name = "java_lib_com_example_get_hash")
+    public static int getHash(
+            @CEntryPoint.IsolateThreadContext long threadId,
+            int lengthOfFilePath,
+            CCharPointer filePath) {
+        byte[] bytes = new byte[lengthOfFilePath];
+        for (int index = 0; index < lengthOfFilePath; index++) {
+            bytes[index] = filePath.read(index);
+        }
+        String path = new String(bytes, StandardCharsets.UTF_8);
+        return Lib.hash(path);
+    }
+}

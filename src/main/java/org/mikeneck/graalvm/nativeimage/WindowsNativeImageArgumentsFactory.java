@@ -18,6 +18,7 @@ public class WindowsNativeImageArgumentsFactory implements NativeImageArgumentsF
   public @NotNull NativeImageArguments create(
       @NotNull Property<Configuration> runtimeClasspath,
       @NotNull Property<String> mainClass,
+      @NotNull Property<BuildTypeOption> buildTypeOption,
       @NotNull ConfigurableFileCollection jarFile,
       @NotNull DirectoryProperty outputDirectory,
       @NotNull Property<String> executableName,
@@ -27,6 +28,7 @@ public class WindowsNativeImageArgumentsFactory implements NativeImageArgumentsF
         new UnixLikeOsArguments(
             runtimeClasspath,
             mainClass,
+            buildTypeOption,
             jarFile,
             outputDirectory,
             executableName,

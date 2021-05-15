@@ -1,0 +1,40 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm' version '1.5.0'
+    id 'org.mikeneck.graalvm-native-image'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'commons-io:commons-io:2.5'
+    implementation 'commons-codec:commons-codec:1.9'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib"
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+import org.mikeneck.graalvm.BuildTypeSelector
+
+nativeImage {
+    graalVmHome = System.getProperty('java.home')
+    buildType { BuildTypeSelector selector ->
+        selector.executable {
+          main = 'com.example.Main'
+        }
+    }
+
+    executableName = 'hash-lib'
+    arguments {
+        add '-H:+ReportExceptionStackTraces'
+        add '--no-fallback'
+        add '--enable-all-security-services'
+        add '--report-unsupported-elements-at-runtime'
+    }
+}

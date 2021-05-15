@@ -30,6 +30,7 @@ public interface NativeImageArgumentsFactory {
   NativeImageArguments create(
       @NotNull Property<Configuration> runtimeClasspath,
       @NotNull Property<String> mainClass,
+      @NotNull Property<BuildTypeOption> buildTypeOption,
       @NotNull ConfigurableFileCollection jarFile,
       @NotNull DirectoryProperty outputDirectory,
       @NotNull Property<String> executableName,

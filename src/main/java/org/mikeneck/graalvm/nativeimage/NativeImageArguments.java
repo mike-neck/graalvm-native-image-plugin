@@ -21,13 +21,18 @@ public interface NativeImageArguments {
 
   @Internal
   default List<String> getArguments() {
+    BuildTypeOption option = buildType();
+    Optional<@NotNull String> sharedLibraryOption = option.sharedLibraryOption();
+    Optional<@NotNull String> mainClassName = option.mainClassName();
+
     List<String> args = new ArrayList<>();
+    sharedLibraryOption.ifPresent(args::add);
     args.add("-cp");
     args.add(classpath());
     args.add(outputPath());
     executableName().ifPresent(args::add);
     args.addAll(additionalArguments());
-    args.add(mainClass());
+    mainClassName.ifPresent(args::add);
     return Collections.unmodifiableList(args);
   }
 
@@ -43,12 +48,18 @@ public interface NativeImageArguments {
   @NotNull
   List<String> additionalArguments();
 
+  void setRuntimeClasspath(@NotNull Provider<Configuration> runtimeClasspath);
+
   @NotNull
   String mainClass();
 
-  void setRuntimeClasspath(@NotNull Provider<Configuration> runtimeClasspath);
-
+  @Deprecated
   void setMainClass(@NotNull Provider<String> mainClass);
+
+  @NotNull
+  BuildTypeOption buildType();
+
+  void setBuildType(BuildTypeOption buildTypeOption);
 
   void addClasspath(@NotNull File jarFile);
 

@@ -1,0 +1,25 @@
+package com.example
+
+import org.apache.commons.codec.digest.DigestUtils
+import java.io.File
+
+object Lib {
+
+    @JvmStatic
+    fun hash(filePath: String): String {
+        val file = File(filePath)
+        if (!file.exists()) {
+            throw IllegalArgumentException("$filePath does not exists.")
+        }
+        if (file.isDirectory) {
+            throw IllegalArgumentException("$filePath is directory")
+        }
+        return try {
+            file.inputStream().use {
+                DigestUtils.md5Hex(it)
+            }
+        } catch (e: Exception) {
+            throw IllegalStateException("error while reading $filePath", e)
+        }
+    }
+}

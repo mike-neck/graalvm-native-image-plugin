@@ -1,0 +1,22 @@
+package com.example;
+
+public class Main {
+  public static void main(String[] args) {
+    if (args.length == 0) {
+      System.err.println("This program needs file as command line parameter.");
+      System.exit(1);
+    }
+    for (int i = 0; i < args.length; i++) {
+      String file = args[i];
+      try {
+        String hash = Lib.hash(file);
+        System.out.printf("%s: %s\n", file, hash);
+      } catch (Exception e) {
+        System.err.printf(
+          "failed to get hash of %s. reason: %s\n",
+          file,
+          e.getMessage());
+      }
+    }
+  }
+}

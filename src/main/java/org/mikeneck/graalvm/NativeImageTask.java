@@ -1,5 +1,6 @@
 package org.mikeneck.graalvm;
 
+import groovy.lang.Closure;
 import java.io.File;
 import java.nio.file.Path;
 import org.gradle.api.Action;
@@ -58,6 +59,12 @@ public interface NativeImageTask extends Task, NativeImageConfig {
 
   @Override
   void setMainClass(String mainClass);
+
+  @Override
+  void buildType(@NotNull BuildTypeConfiguration buildTypeConfiguration);
+
+  @Override
+  void buildType(@NotNull Closure<@NotNull BuildType> buildTypeConfiguration);
 
   @Override
   void setExecutableName(String name);
