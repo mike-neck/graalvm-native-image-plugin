@@ -39,6 +39,9 @@ var NativeImageTask.mainClass: String
 
 fun BuildTypeSelector.executable(main: String): BuildType = this.executable { it.main = main }
 
+fun NativeImageTask.buildType(configure: (BuildTypeSelector) -> BuildType): Unit = 
+  this.buildType { configure(it) }
+
 var BuildExecutableOption.main: String
   get() = throw UnsupportedOperationException("getMain is not supported.")
   set(value) = this.setMain(value)
