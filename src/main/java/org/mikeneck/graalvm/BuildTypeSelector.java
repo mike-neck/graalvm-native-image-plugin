@@ -10,6 +10,12 @@ public interface BuildTypeSelector {
   BuildType getSharedLibrary();
 
   @NotNull
+  default BuildExecutableOptionExtended getExecutable() {
+    BuildTypeSelector selector = this;
+    return mainClass -> selector.executable(option -> option.setMain(mainClass));
+  }
+
+  @NotNull
   BuildType executable(@NotNull Action<BuildExecutableOption> executableOptionConfig);
 
   @NotNull
