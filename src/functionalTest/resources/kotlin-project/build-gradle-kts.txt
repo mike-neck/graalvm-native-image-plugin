@@ -23,7 +23,7 @@ application {
 nativeImage {
   setGraalVmHome(System.getenv("JAVA_HOME"))
   buildType {
-    executable(main = "com.example.AppKt")
+    it.executable(main = "com.example.AppKt")
   }
   setExecutableName("test-app")
   arguments("--no-fallback")
