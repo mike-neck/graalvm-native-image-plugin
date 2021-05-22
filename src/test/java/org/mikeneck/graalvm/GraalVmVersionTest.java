@@ -42,7 +42,9 @@ class GraalVmVersionTest {
         "GRAAL_20_3_0_JAVA_8",
         "GRAAL_20_3_0_JAVA_11",
         "GRAAL_21_0_0_JAVA_8",
-        "GRAAL_21_0_0_JAVA_11"
+        "GRAAL_21_0_0_JAVA_11",
+        "GRAAL_21_1_0_JAVA_11",
+        "GRAAL_21_1_0_JAVA_16"
       })
   void loading(GraalVmVersion graalVmVersion) throws IOException {
     try (Reader reader = new InputStreamReader(loadPropertiesFile(graalVmVersion))) {
@@ -56,6 +58,14 @@ class GraalVmVersionTest {
     try (Reader reader = new InputStreamReader(loadPropertiesFile("mandrel", "20.2.0.0"))) {
       GraalVmVersion version = GraalVmVersion.findFromReader(reader);
       assertThat(version).isEqualTo(GraalVmVersion.MANDREL_20_2_0_0);
+    }
+  }
+
+  @Test
+  void graalM21M1P0Java16() throws IOException {
+    try (Reader reader = new InputStreamReader(loadPropertiesFile("java16", "21.1.0"))) {
+      GraalVmVersion version = GraalVmVersion.findFromReader(reader);
+      assertThat(version).isEqualTo(GraalVmVersion.GRAAL_21_1_0_JAVA_16);
     }
   }
 }

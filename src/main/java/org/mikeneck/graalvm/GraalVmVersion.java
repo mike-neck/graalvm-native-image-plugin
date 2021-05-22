@@ -29,7 +29,8 @@ public enum GraalVmVersion {
   GRAAL_20_3_0_JAVA_11("20.3.0-java11", new GraalVm20Matcher("20.3.0", "java11")),
   GRAAL_21_0_0_JAVA_8("21.0.0-java8", new GraalVm21Matcher("21.0.0", "java8")),
   GRAAL_21_0_0_JAVA_11("21.0.0-java11", new GraalVm21Matcher("21.0.0", "java11")),
-  ;
+  GRAAL_21_1_0_JAVA_11("21.1.0-java11", new GraalVm21Matcher("21.1.0", "java11")),
+  GRAAL_21_1_0_JAVA_16("21.1.0-java16", new GraalVm21Matcher("21.1.0", "java16"));
 
   @NotNull final String version;
   final @NotNull Matcher matcher;
@@ -172,7 +173,18 @@ public enum GraalVmVersion {
     GraalVm20Matcher(String graalVmVersion, String javaVersion) {
       this.graalVmVersion = graalVmVersion;
       this.simplifiedJavaVersion = javaVersion;
-      this.javaVersion = "java8".equals(javaVersion) ? "1.8.0" : "11.0";
+      this.javaVersion = javaVersionOf(javaVersion);
+    }
+
+    private static String javaVersionOf(String javaVersion) {
+      if ("java8".equals(javaVersion)) {
+        return "1.8.0";
+      } else if ("java11".equals(javaVersion)) {
+        return "11.0";
+      } else if ("java16".equals(javaVersion)) {
+        return "16.0";
+      }
+      throw new IllegalArgumentException(String.format("unknown java version %s", javaVersion));
     }
 
     @Override
