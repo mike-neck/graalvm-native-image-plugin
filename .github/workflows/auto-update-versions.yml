@@ -40,6 +40,11 @@ jobs:
           YJ: ${{ steps.yj.outputs.path }}
         run: ./script/generate-versions.sh
 
+      - name: Get GraalVM version
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: script/auto-detect-graal-version.sh
+
       - name: Set Date
         id: date
         run: echo "::set-output name=value::$(date '+%Y-%m-%d')"
@@ -48,6 +53,6 @@ jobs:
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.GH_TOKEN }}
-          commit-message: "Update gradle versions to the latest in ${{ steps.date.outputs.value }}."
+          commit-message: "Update gradle/graalvm versions to the latest in ${{ steps.date.outputs.value }}."
           branch: "versions/update-${{ steps.date.outputs.value }}"
           title: "Update Gradle versions for versions test(${{ steps.date.outputs.value }})"
