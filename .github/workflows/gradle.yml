@@ -101,6 +101,17 @@ jobs:
         env:
           KOTLIN_VERSION_FOR_GRADLE_7: "1.4.31"
 
+      - name: Show JAVA_HOME contents if 21.1.0
+        if: "${{ '21.1.0' == matrix.graal }}"
+        run: |
+          ls -l "${JAVA_HOME}"
+          if [[ -f "${JAVA_HOME}/release" ]]; then
+            echo "release exists"
+            cat "${JAVA_HOME}/release"
+          else
+            echo "release does not exist"
+          fi
+
       - name: Cache gradle wrapper
         id: gradle-wrapper
         uses: actions/cache@v2
