@@ -101,12 +101,12 @@ jobs:
         env:
           KOTLIN_VERSION_FOR_GRADLE_7: "1.4.31"
 
-      - name: Show JAVA_HOME contents if 21.1.0
-        if: "${{ '21.1.0' == matrix.graal }}"
+      - name: Show JAVA_HOME contents
         run: |
+          echo "${JAVA_HOME}"
           ls -l "${JAVA_HOME}"
           if [[ -f "${JAVA_HOME}/release" ]]; then
-            echo "release exists"
+            echo "release file contents"
             cat "${JAVA_HOME}/release"
           else
             echo "release does not exist"
