@@ -84,14 +84,31 @@ jobs:
         run: gu install native-image
         if: "startsWith(matrix.nativeImage, 'installed')"
 
+      - name: Get latest gradle version if Java16
+        if: "${{ 'java16' == matrix.javaVersion }}"
+        id: latest-gradle
+        run:  grep -A 1 " version:" ./.github/workflows/versions.yml | tail -n 1 | sed 's/[- :]//g' | tr -d '"' | awk '{print "::set-output name=version::" $1}'
+
+      - name: Override gradle wrapper if Java16
+        if: "${{ 'java16' == matrix.javaVersion }}"
+        run: sed -i "s/[0-9]\.[0-9]\.[0-9]/${WRAPPER_VERSION}/g" gradle/wrapper/gradle-wrapper.properties
+        env:
+          WRAPPER_VERSION: "${{ steps.latest-gradle.outputs.version }}"
+
+      - name: Cache gradle wrapper
+        id: gradle-wrapper
+        uses: actions/cache@v2
+        with: 
+          path: ~/.gradle/wrapper
+          key: wrapper-${{ hashFiles('**/gradle-wrapper.properties') }}
+          restore-keys: wrapper-
+
       - name: Cache gradle
         id: gradle
         uses: actions/cache@v2
         with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: gradle-${{ hashFiles('**/*.gradle') }}-${{ hashFiles('**/gradle-wrapper.properties') }}
+          path: ~/.gradle/caches
+          key: gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: gradle-
 
       - name: Build Cache
