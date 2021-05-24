@@ -1,0 +1,201 @@
+{
+  "tag": "vm-19.3.6",
+  "date": "2020-02-26T17:43:51Z",
+  "name": "GraalVM Community Edition 19.3.6",
+  "version": "19.3.6",
+  "items": [
+    "java11",
+    "java8"
+  ]
+}
+{
+  "tag": "vm-20.3.2",
+  "date": "2020-02-26T17:43:51Z",
+  "name": "GraalVM Community Edition 20.3.2",
+  "version": "20.3.2",
+  "items": [
+    "java11",
+    "java8"
+  ]
+}
+{
+  "tag": "vm-21.1.0",
+  "date": "2020-02-26T17:43:51Z",
+  "name": "GraalVM Community Edition 21.1.0",
+  "version": "21.1.0",
+  "items": [
+    "java11",
+    "java16",
+    "java8"
+  ]
+}
+{
+  "tag": "vm-21.0.0.2",
+  "date": "2020-02-26T17:43:51Z",
+  "name": "GraalVM Community Edition 21.0.0.2",
+  "version": "21.0.0.2",
+  "items": [
+    "java11",
+    "java8"
+  ]
+}
+{
+  "tag": "vm-20.3.1.2",
+  "date": "2020-02-26T17:43:51Z",
+  "name": "GraalVM Community Edition 20.3.1.2",
+  "version": "20.3.1.2",
+  "items": [
+    "java11",
+    "java8"
+  ]
+}
+{
+  "tag": "vm-21.0.0",
+  "date": "2020-02-26T17:43:51Z",
+  "name": "GraalVM Community Edition 21.0.0",
+  "version": "21.0.0",
+  "items": [
+    "java11",
+    "java8"
+  ]
+}
+{
+  "tag": "vm-20.3.1",
+  "date": "2020-02-26T17:43:51Z",
+  "name": "GraalVM Community Edition 20.3.1",
+  "version": "20.3.1",
+  "items": [
+    "java11",
+    "java8"
+  ]
+}
+{
+  "tag": "vm-19.3.5",
+  "date": "2020-02-26T17:43:51Z",
+  "name": "GraalVM Community Edition 19.3.5",
+  "version": "19.3.5",
+  "items": [
+    "java11",
+    "java8"
+  ]
+}
+{
+  "tag": "vm-20.3.0",
+  "date": "2020-02-26T17:43:51Z",
+  "name": "GraalVM Community Edition 20.3.0",
+  "version": "20.3.0",
+  "items": [
+    "java11",
+    "java8"
+  ]
+}
+{
+  "tag": "vm-19.3.4",
+  "date": "2020-02-26T17:43:51Z",
+  "name": "GraalVM Community Edition 19.3.4",
+  "version": "19.3.4",
+  "items": [
+    "java11",
+    "java8"
+  ]
+}
+{
+  "tag": "vm-20.2.0",
+  "date": "2020-02-26T17:43:51Z",
+  "name": "GraalVM Community Edition 20.2.0",
+  "version": "20.2.0",
+  "items": [
+    "java11",
+    "java8"
+  ]
+}
+{
+  "tag": "vm-19.3.3",
+  "date": "2020-02-26T17:43:51Z",
+  "name": "GraalVM Community Edition 19.3.3",
+  "version": "19.3.3",
+  "items": [
+    "java11",
+    "java8"
+  ]
+}
+{
+  "tag": "vm-20.1.0",
+  "date": "2020-02-26T17:43:51Z",
+  "name": "GraalVM Community Edition 20.1.0",
+  "version": "20.1.0",
+  "items": [
+    "java11",
+    "java8"
+  ]
+}
+{
+  "tag": "vm-19.3.2",
+  "date": "2020-02-26T17:43:51Z",
+  "name": "GraalVM Community Edition 19.3.2",
+  "version": "19.3.2",
+  "items": [
+    "java11",
+    "java8"
+  ]
+}
+{
+  "tag": "vm-20.0.1",
+  "date": "2020-02-26T17:43:51Z",
+  "name": "GraalVM LLVM Toolchain 20.0.1",
+  "version": "20.0.1",
+  "items": [
+    "java11",
+    "java8"
+  ]
+}
+{
+  "tag": "vm-19.3.2-pre",
+  "date": "2020-02-26T17:43:51Z",
+  "name": "GraalVM LLVM Toolchain 19.3.2",
+  "version": "19.3.2-pre",
+  "items": [
+    "java11",
+    "java8"
+  ]
+}
+{
+  "tag": "vm-20.0.0",
+  "date": "2020-01-14T17:24:54Z",
+  "name": "GraalVM Community Edition 20.0.0",
+  "version": "20.0.0",
+  "items": [
+    "java11",
+    "java8"
+  ]
+}
+{
+  "tag": "vm-19.3.1",
+  "date": "2020-01-14T17:24:54Z",
+  "name": "GraalVM Community Edition 19.3.1",
+  "version": "19.3.1",
+  "items": [
+    "java11",
+    "java8"
+  ]
+}
+{
+  "tag": "vm-19.3.0.2",
+  "date": "2019-12-24T17:12:35Z",
+  "name": "GraalVM Community Edition 19.3.0.2",
+  "version": "19.3.0.2",
+  "items": [
+    "java11",
+    "java8"
+  ]
+}
+{
+  "tag": "vm-19.3.0",
+  "date": "2019-11-20T11:30:57Z",
+  "name": "GraalVM Community Edition 19.3.0",
+  "version": "19.3.0",
+  "items": [
+    "java11",
+    "java8"
+  ]
+}

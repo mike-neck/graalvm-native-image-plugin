@@ -7,8 +7,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Objects;
+import java.util.stream.Stream;
 import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
@@ -43,6 +45,7 @@ class GraalVmVersionTest {
         "GRAAL_20_3_0_JAVA_11",
         "GRAAL_21_0_0_JAVA_8",
         "GRAAL_21_0_0_JAVA_11",
+        "GRAAL_21_1_0_JAVA_8",
         "GRAAL_21_1_0_JAVA_11",
         "GRAAL_21_1_0_JAVA_16"
       })
@@ -53,19 +56,45 @@ class GraalVmVersionTest {
     }
   }
 
-  @Test
-  void mandrel() throws IOException {
-    try (Reader reader = new InputStreamReader(loadPropertiesFile("mandrel", "20.2.0.0"))) {
-      GraalVmVersion version = GraalVmVersion.findFromReader(reader);
-      assertThat(version).isEqualTo(GraalVmVersion.MANDREL_20_2_0_0);
+  static class SpecificProperties {
+    private final String javaVersion;
+    private final String graalVersion;
+    private final GraalVmVersion expected;
+
+    SpecificProperties(String javaVersion, String graalVersion, GraalVmVersion expected) {
+      this.javaVersion = javaVersion;
+      this.graalVersion = graalVersion;
+      this.expected = expected;
+    }
+
+    DynamicTest toDynamicTest() {
+      return DynamicTest.dynamicTest(
+          String.format("file %s/%s is properties file of %s", javaVersion, graalVersion, expected),
+          () -> {
+            try (Reader reader =
+                new InputStreamReader(loadPropertiesFile(javaVersion, graalVersion))) {
+              GraalVmVersion version = GraalVmVersion.findFromReader(reader);
+              assertThat(version).isEqualTo(expected);
+            }
+          });
+    }
+
+    static ToBeSpecificProperties of(String javaVersion, String graalVersion) {
+      return expected -> new SpecificProperties(javaVersion, graalVersion, expected);
     }
   }
 
-  @Test
-  void graalM21M1P0Java16() throws IOException {
-    try (Reader reader = new InputStreamReader(loadPropertiesFile("java16", "21.1.0"))) {
-      GraalVmVersion version = GraalVmVersion.findFromReader(reader);
-      assertThat(version).isEqualTo(GraalVmVersion.GRAAL_21_1_0_JAVA_16);
-    }
+  @FunctionalInterface
+  interface ToBeSpecificProperties {
+    SpecificProperties toBe(GraalVmVersion expected);
+  }
+
+  @TestFactory
+  Stream<DynamicTest> specificPropertiesFiles() {
+    return Stream.of(
+            SpecificProperties.of("mandrel", "20.2.0.0").toBe(GraalVmVersion.MANDREL_20_2_0_0),
+            SpecificProperties.of("java16", "21.1.0").toBe(GraalVmVersion.GRAAL_21_1_0_JAVA_16),
+            SpecificProperties.of("java8", "21.1.0").toBe(GraalVmVersion.GRAAL_21_1_0_JAVA_8))
+        .map(SpecificProperties::toDynamicTest);
   }
 }

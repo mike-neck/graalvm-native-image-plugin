@@ -29,8 +29,10 @@ public enum GraalVmVersion {
   GRAAL_20_3_0_JAVA_11("20.3.0-java11", new GraalVm20Matcher("20.3.0", "java11")),
   GRAAL_21_0_0_JAVA_8("21.0.0-java8", new GraalVm21Matcher("21.0.0", "java8")),
   GRAAL_21_0_0_JAVA_11("21.0.0-java11", new GraalVm21Matcher("21.0.0", "java11")),
+  GRAAL_21_1_0_JAVA_8("21.1.0-java8", new GraalVm21Matcher("21.1.0", "java8")),
   GRAAL_21_1_0_JAVA_11("21.1.0-java11", new GraalVm21Matcher("21.1.0", "java11")),
-  GRAAL_21_1_0_JAVA_16("21.1.0-java16", new GraalVm21Matcher("21.1.0", "java16"));
+  GRAAL_21_1_0_JAVA_16("21.1.0-java16", new GraalVm21Matcher("21.1.0", "java16")),
+  ;
 
   @NotNull final String version;
   final @NotNull Matcher matcher;
