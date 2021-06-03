@@ -123,8 +123,8 @@ dependencies {
 nativeImage {
     graalVmHome = System.getenv("JAVA_HOME")
     mainClass ="com.example.App" // Deprecated, use `buildType.executable.main` as follows instead.
-    buildType {
-      executable(main = 'com.example.App')
+    buildType { build ->
+      build.executable(main = 'com.example.App')
     }
     executableName = "my-native-application"
     outputDirectory = file("$buildDir/executable")
