@@ -23,8 +23,10 @@ import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Nested;
+import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
+import org.gradle.api.tasks.TaskCollection;
 import org.gradle.process.ExecResult;
 import org.jetbrains.annotations.NotNull;
 
@@ -67,6 +69,23 @@ public class DefaultGenerateNativeImageConfigTask extends DefaultTask
     this.exitOnApplicationError.set(true);
     File buildDir = project.getBuildDir();
     this.temporaryDirectory = buildDir.toPath().resolve("tmp/native-image-config").toFile();
+
+    TaskCollection<NativeImageTask> nativeImageTasks =
+        project.getTasks().withType(NativeImageTask.class);
+    nativeImageTasks.configureEach(
+        nativeImageTask -> {
+          Provider<String> provider =
+              project
+                  .getProviders()
+                  .provider(
+                      () ->
+                          nativeImageTask
+                              .getNativeImageArguments()
+                              .buildType()
+                              .mainClassName()
+                              .get());
+          this.mainClass.convention(provider);
+        });
   }
 
   @TaskAction
@@ -162,6 +181,7 @@ public class DefaultGenerateNativeImageConfigTask extends DefaultTask
 
   @Override
   @Input
+  @Optional
   @NotNull
   public Provider<String> getMainClass() {
     return mainClass;
