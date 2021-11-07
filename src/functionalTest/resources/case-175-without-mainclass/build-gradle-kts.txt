@@ -1,0 +1,26 @@
+plugins {
+  `java`
+  id("org.mikeneck.graalvm-native-image")
+}
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  implementation("org.slf4j:slf4j-simple:1.7.28")
+}
+
+nativeImage {
+  graalVmHome = System.getenv("JAVA_HOME")
+  buildType { build ->
+    build.executable(main = "com.example.App")
+  }
+  executableName = "test-app"
+  arguments("--no-fallback")
+}
+
+generateNativeImageConfig {
+  enabled = true
+  byRunningApplicationWithoutArguments()
+}
