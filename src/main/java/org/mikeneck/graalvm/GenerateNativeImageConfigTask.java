@@ -10,6 +10,7 @@ import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Nested;
+import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,6 +41,7 @@ public interface GenerateNativeImageConfigTask extends ShareEnabledState {
   boolean getExitOnApplicationError();
 
   @Input
+  @Optional
   @NotNull
   Provider<String> getMainClass();
 
