@@ -124,17 +124,17 @@ nativeImage {
     graalVmHome = System.getenv("JAVA_HOME")
     mainClass ="com.example.App" // Deprecated, use `buildType.executable.main` as follows instead.
     buildType { build ->
-      build.executable(main = 'com.example.App')
+      build.executable(main = "com.example.App")
     }
     executableName = "my-native-application"
     outputDirectory = file("$buildDir/executable")
-    arguments(
+    arguments(*arrayOf(
         "--no-fallback",
         "--enable-all-security-services",
-        options.traceClassInitialization('com.example.MyDataProvider,com.example.MyDataConsumer'),
+        options.traceClassInitialization("com.example.MyDataProvider,com.example.MyDataConsumer"),
         "--initialize-at-run-time=com.example.runtime",
         "--report-unsupported-elements-at-runtime"
-    )
+    ))
 }
 
 generateNativeImageConfig {
@@ -149,7 +149,7 @@ generateNativeImageConfig {
   }
   byRunningApplicationWithoutArguments()
   byRunningApplication {
-    arguments('-h')
+    arguments("-h")
   }
 }
 ```
@@ -229,16 +229,18 @@ dependencies {
 
 nativeImage {
     graalVmHome = System.getenv("JAVA_HOME")
-    buildType { sharedLibrary }
+    buildType { build ->
+        build.sharedLibrary
+    }
     executableName = "my-native-lib"
     outputDirectory = file("$buildDir/native-lib")
-    arguments(
+    arguments(*arrayOf(
         "--no-fallback",
         "--enable-all-security-services",
-        options.traceClassInitialization('com.example.MyDataProvider,com.example.MyDataConsumer'),
+        options.traceClassInitialization("com.example.MyDataProvider,com.example.MyDataConsumer"),
         "--initialize-at-run-time=com.example.runtime",
         "--report-unsupported-elements-at-runtime"
-    )
+    ))
 }
 
 generateNativeImageConfig {
@@ -255,7 +257,7 @@ generateNativeImageConfig {
   }
   byRunningApplicationWithoutArguments()
   byRunningApplication {
-    arguments('-h')
+    arguments("-h")
   }
 }
 ```
