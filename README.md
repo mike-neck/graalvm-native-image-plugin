@@ -54,7 +54,7 @@ Example
 ```groovy
 plugins {
   id 'java'
-  id 'org.mikeneck.graalvm-native-image' version 'v1.4.0'
+  id 'org.mikeneck.graalvm-native-image' version '1.4.1'
 }
 
 repositories {
@@ -109,7 +109,7 @@ import org.mikeneck.graalvm.GenerateNativeImageConfigTask
 
 plugins {
   kotlin("jvm") version "1.3.72"
-  id("org.mikeneck.graalvm-native-image") version "v1.4.0"
+  id("org.mikeneck.graalvm-native-image") version "1.4.1"
 }
 
 repositories {
@@ -162,7 +162,7 @@ Shared library feature is one of GraalVM's feature to build shared library('so' 
 ```groovy
 plugins {
   id 'java'
-  id 'org.mikeneck.graalvm-native-image' version 'v1.4.0'
+  id 'org.mikeneck.graalvm-native-image' version '1.4.1'
 }
 
 repositories {
@@ -216,7 +216,7 @@ import org.mikeneck.graalvm.GenerateNativeImageConfigTask
 
 plugins {
   kotlin("jvm") version "1.3.72"
-  id("org.mikeneck.graalvm-native-image") version "v1.4.0"
+  id("org.mikeneck.graalvm-native-image") version "1.4.1"
 }
 
 repositories {
