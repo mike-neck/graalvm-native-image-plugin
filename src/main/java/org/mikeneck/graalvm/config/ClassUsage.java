@@ -57,6 +57,22 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
   @JsonInclude(JsonInclude.Include.NON_NULL)
   public Boolean allPublicClasses;
 
+  @Nullable
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  public Boolean queryAllDeclaredConstructors;
+
+  @Nullable
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  public Boolean queryAllPublicConstructors;
+
+  @Nullable
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  public Boolean queryAllDeclaredMethods;
+
+  @Nullable
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  public Boolean queryAllPublicMethods;
+
   @SuppressWarnings("unused")
   public ClassUsage() {}
 
@@ -71,7 +87,11 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
       @Nullable Boolean allPublicConstructors,
       @Nullable Boolean allPublicFields,
       @Nullable Boolean allDeclaredClasses,
-      @Nullable Boolean allPublicClasses) {
+      @Nullable Boolean allPublicClasses,
+      @Nullable Boolean queryAllDeclaredConstructors,
+      @Nullable Boolean queryAllPublicConstructors,
+      @Nullable Boolean queryAllDeclaredMethods,
+      @Nullable Boolean queryAllPublicMethods) {
     this.name = name;
     this.methods = methods;
     this.fields = fields;
@@ -83,6 +103,10 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
     this.allPublicFields = allPublicFields;
     this.allDeclaredClasses = allDeclaredClasses;
     this.allPublicClasses = allPublicClasses;
+    this.queryAllDeclaredConstructors = queryAllDeclaredConstructors;
+    this.queryAllPublicConstructors = queryAllPublicConstructors;
+    this.queryAllDeclaredMethods = queryAllDeclaredMethods;
+    this.queryAllPublicMethods = queryAllPublicMethods;
   }
 
   public ClassUsage(
@@ -180,7 +204,11 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
         && Objects.equals(allPublicConstructors, that.allPublicConstructors)
         && Objects.equals(allPublicFields, that.allPublicFields)
         && Objects.equals(allDeclaredClasses, that.allDeclaredClasses)
-        && Objects.equals(allPublicClasses, that.allPublicClasses);
+        && Objects.equals(allPublicClasses, that.allPublicClasses)
+        && Objects.equals(queryAllDeclaredConstructors, that.queryAllDeclaredConstructors)
+        && Objects.equals(queryAllPublicConstructors, that.queryAllPublicConstructors)
+        && Objects.equals(queryAllDeclaredMethods, that.queryAllDeclaredMethods)
+        && Objects.equals(queryAllPublicMethods, that.queryAllPublicMethods);
   }
 
   @Override
@@ -196,7 +224,11 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
         allPublicConstructors,
         allPublicFields,
         allDeclaredClasses,
-        allPublicClasses);
+        allPublicClasses,
+        queryAllDeclaredConstructors,
+        queryAllPublicConstructors,
+        queryAllDeclaredMethods,
+        queryAllPublicMethods);
   }
 
   @SuppressWarnings("StringBufferReplaceableByString")
@@ -214,6 +246,10 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
     sb.append(", allPublicFields=").append(allPublicFields);
     sb.append(", allDeclaredClasses=").append(allDeclaredClasses);
     sb.append(", allPublicClasses=").append(allPublicClasses);
+    sb.append(", queryAllDeclaredConstructors=").append(queryAllDeclaredConstructors);
+    sb.append(", queryAllPublicConstructors=").append(queryAllPublicConstructors);
+    sb.append(", queryAllDeclaredMethods=").append(queryAllDeclaredMethods);
+    sb.append(", queryAllPublicMethods=").append(queryAllPublicMethods);
     sb.append('}');
     return sb.toString();
   }
@@ -243,6 +279,10 @@ public class ClassUsage implements Comparable<ClassUsage>, MergeableConfig<Class
         BooleanMergeable.mergeBoolean(this.allPublicConstructors, other.allPublicConstructors),
         BooleanMergeable.mergeBoolean(this.allPublicFields, other.allPublicFields),
         BooleanMergeable.mergeBoolean(this.allDeclaredClasses, other.allDeclaredClasses),
-        BooleanMergeable.mergeBoolean(this.allPublicClasses, other.allPublicClasses));
+        BooleanMergeable.mergeBoolean(this.allPublicClasses, other.allPublicClasses),
+        BooleanMergeable.mergeBoolean(this.queryAllDeclaredConstructors, other.queryAllDeclaredConstructors),
+        BooleanMergeable.mergeBoolean(this.queryAllPublicConstructors, other.queryAllPublicConstructors),
+        BooleanMergeable.mergeBoolean(this.queryAllDeclaredMethods, other.queryAllDeclaredMethods),
+        BooleanMergeable.mergeBoolean(this.queryAllPublicMethods, other.queryAllPublicMethods));
   }
 }
