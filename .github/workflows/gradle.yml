@@ -101,6 +101,12 @@ jobs:
         env:
           KOTLIN_VERSION_FOR_GRADLE_7: "1.5.31"
 
+      - name: Override shadow plugin version if Java16
+        if: "${{ 'java16' == matrix.javaVersion }}"
+        run: sed -i -r "/com.github.johnrengelman.shadow/s/[0-9]+\.[0-9]+\.[0-9]+/${SHADOW_PLUGIN_VERSION_FOR_GRADLE_7}/g" ./build.gradle
+        env:
+          SHADOW_PLUGIN_VERSION_FOR_GRADLE_7: "7.1.0"
+
       - name: Show JAVA_HOME contents
         run: |
           echo "${JAVA_HOME}"
