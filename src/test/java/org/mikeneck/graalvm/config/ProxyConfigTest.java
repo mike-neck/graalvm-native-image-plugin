@@ -111,4 +111,14 @@ class ProxyConfigTest {
 
     assertThat(proxyConfig).isEqualTo(Collections.emptySortedSet());
   }
+
+  /** GraalVM 21.3.0 generates proxy-config in new format */
+  @Test
+  void graal213() throws IOException {
+    try (InputStream inputStream = reader.configJsonResource("config/proxy-config-4.json")) {
+      ProxyConfig proxyConfig = objectMapper.readValue(inputStream, ProxyConfig.class);
+      assertThat(proxyConfig)
+          .contains(new ProxyUsage("com.example.Printer", "com.example.ExitCode"));
+    }
+  }
 }
