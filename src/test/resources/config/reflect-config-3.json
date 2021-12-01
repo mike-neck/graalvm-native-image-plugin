@@ -1,0 +1,5 @@
+[{
+  "name": "org.graalvm.Example",
+  "queryAllDeclaredConstructors": true,
+  "queriedMethods": [{"name":"queriedOnlyMethod", "parameterTypes":[]}]
+}]

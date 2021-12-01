@@ -6,11 +6,7 @@ import static org.assertj.core.api.Assertions.fail;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
@@ -274,6 +270,26 @@ class ReflectConfigTest {
                           classUsage ->
                               assertThat(classUsage.name).isEqualTo("java.lang.String"))));
       return tests;
+    }
+  }
+
+  /**
+   * GraalVM 21.3.0 added the {@code queriedMethods} field into the class usage
+   *
+   * @see <a
+   *     href="https://medium.com/graalvm/graalvm-21-3-is-here-java-17-native-image-performance-updates-and-more-ac4cbafcfc05"
+   *     >Official example config file</a>
+   */
+  @Test
+  void graal213() throws IOException {
+    ClassUsage expected = new ClassUsage("org.graalvm.Example");
+    expected.queryAllDeclaredConstructors = true;
+    expected.queriedMethods = new TreeSet<>();
+    expected.queriedMethods.add(new MethodUsage("queriedOnlyMethod"));
+
+    try (InputStream inputStream = reader.configJsonResource("config/reflect-config-3.json")) {
+      ReflectConfig reflectConfig = objectMapper.readValue(inputStream, ReflectConfig.class);
+      assertThat(reflectConfig).contains(expected);
     }
   }
 }
