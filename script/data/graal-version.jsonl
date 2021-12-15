@@ -1,6 +1,48 @@
 {
+  "tag": "vm-20.3.4",
+  "date": "2021-10-19T14:22:29Z",
+  "name": "GraalVM Community Edition 20.3.4",
+  "version": "20.3.4",
+  "items": [
+    "java11",
+    "java8"
+  ]
+}
+{
+  "tag": "vm-21.3.0",
+  "date": "2021-10-20T16:22:46Z",
+  "name": "GraalVM Community Edition 21.3.0",
+  "version": "21.3.0",
+  "items": [
+    "java11",
+    "java17",
+    "java8"
+  ]
+}
+{
+  "tag": "vm-21.2.0",
+  "date": "2021-07-20T15:26:27Z",
+  "name": "GraalVM Community Edition 21.2.0",
+  "version": "21.2.0",
+  "items": [
+    "java11",
+    "java16",
+    "java8"
+  ]
+}
+{
+  "tag": "vm-20.3.3",
+  "date": "2021-07-20T15:26:11Z",
+  "name": "GraalVM Community Edition 20.3.3",
+  "version": "20.3.3",
+  "items": [
+    "java11",
+    "java8"
+  ]
+}
+{
   "tag": "vm-19.3.6",
-  "date": "2020-02-26T17:43:51Z",
+  "date": "2021-04-20T13:38:57Z",
   "name": "GraalVM Community Edition 19.3.6",
   "version": "19.3.6",
   "items": [
@@ -10,7 +52,7 @@
 }
 {
   "tag": "vm-20.3.2",
-  "date": "2020-02-26T17:43:51Z",
+  "date": "2021-04-20T13:39:17Z",
   "name": "GraalVM Community Edition 20.3.2",
   "version": "20.3.2",
   "items": [
@@ -20,7 +62,7 @@
 }
 {
   "tag": "vm-21.1.0",
-  "date": "2020-02-26T17:43:51Z",
+  "date": "2021-04-20T13:39:31Z",
   "name": "GraalVM Community Edition 21.1.0",
   "version": "21.1.0",
   "items": [
@@ -31,7 +73,7 @@
 }
 {
   "tag": "vm-21.0.0.2",
-  "date": "2020-02-26T17:43:51Z",
+  "date": "2021-02-12T10:01:58Z",
   "name": "GraalVM Community Edition 21.0.0.2",
   "version": "21.0.0.2",
   "items": [
@@ -41,7 +83,7 @@
 }
 {
   "tag": "vm-20.3.1.2",
-  "date": "2020-02-26T17:43:51Z",
+  "date": "2021-02-12T10:02:10Z",
   "name": "GraalVM Community Edition 20.3.1.2",
   "version": "20.3.1.2",
   "items": [
@@ -51,7 +93,7 @@
 }
 {
   "tag": "vm-21.0.0",
-  "date": "2020-02-26T17:43:51Z",
+  "date": "2021-01-19T18:13:11Z",
   "name": "GraalVM Community Edition 21.0.0",
   "version": "21.0.0",
   "items": [
@@ -61,7 +103,7 @@
 }
 {
   "tag": "vm-20.3.1",
-  "date": "2020-02-26T17:43:51Z",
+  "date": "2021-01-19T18:12:59Z",
   "name": "GraalVM Community Edition 20.3.1",
   "version": "20.3.1",
   "items": [
@@ -71,7 +113,7 @@
 }
 {
   "tag": "vm-19.3.5",
-  "date": "2020-02-26T17:43:51Z",
+  "date": "2021-01-19T18:12:50Z",
   "name": "GraalVM Community Edition 19.3.5",
   "version": "19.3.5",
   "items": [
@@ -81,7 +123,7 @@
 }
 {
   "tag": "vm-20.3.0",
-  "date": "2020-02-26T17:43:51Z",
+  "date": "2020-11-17T17:47:59Z",
   "name": "GraalVM Community Edition 20.3.0",
   "version": "20.3.0",
   "items": [
@@ -91,7 +133,7 @@
 }
 {
   "tag": "vm-19.3.4",
-  "date": "2020-02-26T17:43:51Z",
+  "date": "2020-11-03T21:40:46Z",
   "name": "GraalVM Community Edition 19.3.4",
   "version": "19.3.4",
   "items": [
@@ -101,7 +143,7 @@
 }
 {
   "tag": "vm-20.2.0",
-  "date": "2020-02-26T17:43:51Z",
+  "date": "2020-08-18T20:17:56Z",
   "name": "GraalVM Community Edition 20.2.0",
   "version": "20.2.0",
   "items": [
@@ -111,7 +153,7 @@
 }
 {
   "tag": "vm-19.3.3",
-  "date": "2020-02-26T17:43:51Z",
+  "date": "2020-08-04T21:36:33Z",
   "name": "GraalVM Community Edition 19.3.3",
   "version": "19.3.3",
   "items": [
@@ -121,7 +163,7 @@
 }
 {
   "tag": "vm-20.1.0",
-  "date": "2020-02-26T17:43:51Z",
+  "date": "2020-05-19T18:09:27Z",
   "name": "GraalVM Community Edition 20.1.0",
   "version": "20.1.0",
   "items": [
@@ -131,7 +173,7 @@
 }
 {
   "tag": "vm-19.3.2",
-  "date": "2020-02-26T17:43:51Z",
+  "date": "2020-05-12T20:09:56Z",
   "name": "GraalVM Community Edition 19.3.2",
   "version": "19.3.2",
   "items": [
@@ -141,7 +183,7 @@
 }
 {
   "tag": "vm-20.0.1",
-  "date": "2020-02-26T17:43:51Z",
+  "date": "2020-04-21T09:02:38Z",
   "name": "GraalVM LLVM Toolchain 20.0.1",
   "version": "20.0.1",
   "items": [
@@ -151,7 +193,7 @@
 }
 {
   "tag": "vm-19.3.2-pre",
-  "date": "2020-02-26T17:43:51Z",
+  "date": "2020-04-21T08:59:50Z",
   "name": "GraalVM LLVM Toolchain 19.3.2",
   "version": "19.3.2-pre",
   "items": [
